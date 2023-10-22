@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "DesktopLauncher",
+      "request": "launch",
+      "mainClass": "com.finalproject.game.DesktopLauncher",
+      "projectName": "finalProject-desktop",
+      "vmArgs": "-XstartOnFirstThread"
+    },
+  ]
+}
