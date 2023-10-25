@@ -1,0 +1,11 @@
+button.png
+size:512,128
+repeat:none
+disable-button
+bounds:262,10,120,60
+down-button
+bounds:384,10,120,60
+highlight-button
+bounds:2,2,128,68
+up-button
+bounds:132,2,128,68
