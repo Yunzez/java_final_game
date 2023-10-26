@@ -63,6 +63,11 @@ public class WelcomeScreen implements Screen {
                     if ("Quit".equals(finalLabel)) {
                         Gdx.app.exit();
                     }
+
+                    if("Settings".equals(finalLabel)){
+                        game.setScreen(new SettingScreen(game));
+                        dispose();
+                    }
                 }
             });
             stage.addActor(button);
