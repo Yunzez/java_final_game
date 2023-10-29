@@ -72,9 +72,10 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // Create labels
-        healthLabel = new Label("Health: " + health, new Label.LabelStyle(game.font, Color.WHITE));
-        attackLabel = new Label("Attack: " + attack, new Label.LabelStyle(game.font, Color.WHITE));
-        defenseLabel = new Label("Defense: " + defense, new Label.LabelStyle(game.font, Color.WHITE));
+        Label.LabelStyle gameFont = new Label.LabelStyle(game.font, Color.WHITE);
+        healthLabel = new Label("Health: " + health, gameFont);
+        attackLabel = new Label("Attack: " + attack, gameFont);
+        defenseLabel = new Label("Defense: " + defense, gameFont);
 
         // Create and add the Inventory button
         TextButton inventoryButton = GameButton.createButton("Inventory", game.font);
