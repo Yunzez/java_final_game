@@ -3,6 +3,7 @@
 *.class
 *.war
 *.ear
+launch.json
 hs_err_pid*
 
 ## Robovm
