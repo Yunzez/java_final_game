@@ -55,7 +55,7 @@ public class ChooseCharacterScreen implements Screen {
         String characterCardPath = "charactors/xiaochuan.png";
         characterList.add(new GameCharacter(100, 10, 10, 10, 1, "Mikado Sun", characterCardPath));
         characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Relx Ding", characterCardPath));
-        characterList.add(new GameCharacter());
+        characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Mark Zucks", "charactors/mark.png"));
         characterList.add(new GameCharacter());
         characterList.add(new GameCharacter());
         characterList.add(new GameCharacter());
