@@ -4,18 +4,21 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public abstract class Character {
+public class GameCharacter {
     private int health;
     private int attack;
-    private int defence; 
+    private int defence;
     private int speed;
     private int level;
     private String name;
     private int experience = 0;
     private ArrayList<Item> inventory = new ArrayList<Item>();
+    private ArrayList<Buff> buffs = new ArrayList<Buff>();
     private Texture characterCard;
+    private String characterCardPath;
 
-    public Character(int health, int attack, int defence, int speed, int level , String name, String characterCardPath) {
+    public GameCharacter(int health, int attack, int defence, int speed, int level, String name,
+            String characterCardPath) {
         // Add validation here if needed
         this.health = health;
         this.attack = attack;
@@ -23,9 +26,11 @@ public abstract class Character {
         this.speed = speed;
         this.level = level;
         this.name = name;
+        this.characterCardPath = characterCardPath;
+        this.characterCard = new Texture(characterCardPath);
     }
 
-    public Character() {
+    public GameCharacter() {
         // Default values
         this(100, 10, 10, 10, 1, "Unknown Character", "charactors/xiaochuan.png");
     }
@@ -66,10 +71,13 @@ public abstract class Character {
         return level;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
+    public Texture getImageTexture() {
+        return characterCard;
+    }
 
     public void setHealth(int health) {
         this.health = health;
@@ -91,7 +99,7 @@ public abstract class Character {
         this.level = level;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 }
