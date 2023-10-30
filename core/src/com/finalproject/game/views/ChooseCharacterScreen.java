@@ -51,10 +51,10 @@ public class ChooseCharacterScreen implements Screen {
         Label title = new Label("Choose your characters: ", biggerFont);
         title.setPosition(100, stage.getHeight() - 100); // Adjust the position
         ArrayList<GameCharacter> characterList = new ArrayList<>();
-        //int health, int attack, int defence, int speed, int level, String name,
+        // int health, int attack, int defence, int speed, int level, String name,
         String characterCardPath = "charactors/xiaochuan.png";
         characterList.add(new GameCharacter(100, 10, 10, 10, 1, "Mikado Sun", characterCardPath));
-        characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Relx Ding", characterCardPath));
+        characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Relx Ding", "charactors/dingzhen.png"));
         characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Mark Zucks", "charactors/mark.png"));
         characterList.add(new GameCharacter());
         characterList.add(new GameCharacter());
@@ -67,7 +67,7 @@ public class ChooseCharacterScreen implements Screen {
 
         // Then add this characterTable to your scrollPane
         ScrollPane scrollPane = new ScrollPane(characterTable);
-        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.6f); // adjust as needed
+        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.6f); 
 
         TextButton backButton = GameButton.createButton("Back", game.font);
         backButton.setPosition(50, 50); // Set the position where you want the button to appear
@@ -103,33 +103,30 @@ public class ChooseCharacterScreen implements Screen {
             Texture texture = character.getImageTexture();
             Image characterImage = new Image(texture);
             characterImage.setScaling(Scaling.fit);
-            characterImage.setHeight(900); // Set only the height
 
             // Create Labels for the character's stats or description
-            Label nameLabel = new Label(character.getName(), new Label.LabelStyle(game.font, Color.WHITE));
-            Label healthLabel = new Label("Hp: " + character.getHealth(),
-                    new Label.LabelStyle(game.font, Color.WHITE));
-            Label attackLabel = new Label("Attack: " + character.getAttack(),
-                    new Label.LabelStyle(game.font, Color.WHITE));
-            Label defenceLabel = new Label("Defence: " + character.getDefence(),
-                    new Label.LabelStyle(game.font, Color.WHITE));
+            Label.LabelStyle normalFont = new Label.LabelStyle(game.font, Color.WHITE);
+            normalFont.font.getData().setScale(1.3f);
+            Label nameLabel = new Label(character.getName(), normalFont);
+            Label healthLabel = new Label("Hp: " + character.getHealth(), normalFont);
+            Label attackLabel = new Label("Attack: " + character.getAttack(), normalFont);
+            Label defenceLabel = new Label("Defence: " + character.getDefence(), normalFont);
             // ... more labels
 
             // Add the Image and Labels to the characterCard
-            characterCard.add(characterImage).height(300).expand().fill();
+            characterCard.add(characterImage).height(250).expand().fill();
 
             characterCard.row(); // Move to next row
-            characterCard.add(nameLabel).pad(10);
+            characterCard.add(nameLabel).pad(2);
             characterCard.row();
-            characterCard.add(healthLabel).pad(10);
+            characterCard.add(healthLabel).pad(2);
             characterCard.row();
-            characterCard.add(attackLabel).pad(10);
+            characterCard.add(attackLabel).pad(2);
             characterCard.row();
-            characterCard.add(defenceLabel).pad(10);
+            characterCard.add(defenceLabel).pad(2);
 
             // Add the characterCard to the main characterTable
             characterTable.add(characterCard).width(stage.getWidth() * 0.2f).pad(40).expand();
-
 
         }
     }
