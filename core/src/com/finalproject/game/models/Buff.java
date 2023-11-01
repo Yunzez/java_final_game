@@ -10,8 +10,8 @@ public class Buff {
     }
 
     private String buffName;
-    private String buffDescription; 
-    private boolean isDebuff; 
+    private String buffDescription;
+    private boolean isDebuff;
     private BuffType buffType;
     private int amount;  // could be positive or negative
 
@@ -64,7 +64,7 @@ public class Buff {
         this.amount = amount;
     }
 
-    public void applyBuff(Character character) {
+    public void applyBuff(GameCharacter character) {
         switch (buffType) {
             case ATTACK:
                 character.setAttack(character.getAttack() + amount);

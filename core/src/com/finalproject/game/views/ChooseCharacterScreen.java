@@ -56,7 +56,7 @@ public class ChooseCharacterScreen implements Screen {
         characterList.add(new GameCharacter(100, 10, 10, 10, 1, "Mikado Sun", characterCardPath));
         characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Relx Ding", "charactors/dingzhen.png"));
         characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Mark Zucks", "charactors/mark.png"));
-        characterList.add(new GameCharacter());
+        characterList.add(new GameCharacter(88,10,10,10,1,"Medicine", "charactors/medicine.png"));
         characterList.add(new GameCharacter());
         characterList.add(new GameCharacter());
         characterList.add(new GameCharacter());
@@ -67,7 +67,7 @@ public class ChooseCharacterScreen implements Screen {
 
         // Then add this characterTable to your scrollPane
         ScrollPane scrollPane = new ScrollPane(characterTable);
-        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.6f); 
+        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.6f);
 
         TextButton backButton = GameButton.createButton("Back", game.font);
         backButton.setPosition(50, 50); // Set the position where you want the button to appear
@@ -79,7 +79,7 @@ public class ChooseCharacterScreen implements Screen {
         });
 
         TextButton startButton = GameButton.createButton("Start", game.font);
-        startButton.setPosition(150, 50); // You had 'backButton' here, change it to 'startButton'
+        startButton.setPosition(200, 50); // You had 'backButton' here, change it to 'startButton'
 
         startButton.addListener(new ClickListener() {
             @Override
