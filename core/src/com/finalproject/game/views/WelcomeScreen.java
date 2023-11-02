@@ -3,8 +3,11 @@ package com.finalproject.game.views;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,6 +33,7 @@ public class WelcomeScreen implements Screen {
     private FinalProjectGame game;
     OrthographicCamera camera;
     Stage stage;
+    private Texture background;
 
     public WelcomeScreen(FinalProjectGame finalProjectGame) {
         this.game = finalProjectGame;
@@ -42,10 +46,9 @@ public class WelcomeScreen implements Screen {
 
     @Override
     public void show() {
-        // Initialize your assets and layout here
-
-        // Create buttons using GameButton class
         String[] buttonLabels = { "Start", "Settings", "Quit" };
+        background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
+
         float y = 300; // Initial y-coordinate
         for (String label : buttonLabels) {
             final String finalLabel = label; // Create a final local variable
@@ -64,7 +67,7 @@ public class WelcomeScreen implements Screen {
                         Gdx.app.exit();
                     }
 
-                    if("Settings".equals(finalLabel)){
+                    if ("Settings".equals(finalLabel)) {
                         game.setScreen(new SettingScreen(game));
                         dispose();
                     }
@@ -79,7 +82,6 @@ public class WelcomeScreen implements Screen {
     public void render(float delta) {
 
         // Clear the screen
-        ScreenUtils.clear(0, 0, 0.2f, 1);
 
         // Update the camera and set the projection matrix
         camera.update();
@@ -87,6 +89,13 @@ public class WelcomeScreen implements Screen {
 
         // Begin the batch
         game.batch.begin();
+
+        // Clear the screen
+        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Draw the background
+        game.batch.draw(background, 0, 0);
 
         // Draw your text here
         GlyphLayout layout = new GlyphLayout();

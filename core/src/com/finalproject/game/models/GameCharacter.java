@@ -16,10 +16,26 @@ public class GameCharacter {
     private ArrayList<Buff> buffs = new ArrayList<Buff>();
     private Texture characterCard;
     private String characterCardPath;
+    private int id;
+    private static int autoId = 0;
+
+    public GameCharacter(int id, int health, int attack, int defence, int speed, int level, String name,
+            String characterCardPath) {
+        this.id = id;
+        this.health = health;
+        this.attack = attack;
+        this.defence = defence;
+        this.speed = speed;
+        this.level = level;
+        this.name = name;
+        this.characterCardPath = characterCardPath;
+        this.characterCard = new Texture(characterCardPath);
+    }
 
     public GameCharacter(int health, int attack, int defence, int speed, int level, String name,
             String characterCardPath) {
         // Add validation here if needed
+        this.id = autoId++;
         this.health = health;
         this.attack = attack;
         this.defence = defence;
@@ -48,6 +64,10 @@ public class GameCharacter {
             levelUp();
             this.experience = 0;
         }
+    }
+
+    public int getId() {
+        return id;
     }
 
     // create all setters and getters

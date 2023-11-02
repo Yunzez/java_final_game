@@ -19,11 +19,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
+
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.models.GameCharacter;
+import com.finalproject.game.models.GameCharacter;
 
 public class GameScreen implements Screen {
     private FinalProjectGame game;
@@ -53,8 +55,10 @@ public class GameScreen implements Screen {
 
     private Stage settingsStage;
     private boolean isSettingsOpen = false;
+    private GameCharacter currentCharacter;
 
-    public GameScreen(FinalProjectGame game) {
+    public GameScreen(FinalProjectGame game, GameCharacter currentCharacter) {
+        this.currentCharacter = currentCharacter;
         characterX = 0;
         characterY = 0;
         this.game = game;
@@ -137,10 +141,12 @@ public class GameScreen implements Screen {
         });
 
         TextButton backToMainButton = GameButton.createButton("Main menu", game.font);
-        quitButton.addListener(new ClickListener() {
+        backToMainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                isSettingsOpen = false;
                 game.setScreen(new WelcomeScreen(game));
+                dispose();
             }
         });
 
@@ -149,6 +155,7 @@ public class GameScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isSettingsOpen = false;
+                isPaused = false;
                 Gdx.input.setInputProcessor(stage);
             }
         });
@@ -178,7 +185,7 @@ public class GameScreen implements Screen {
             camera.update();
             game.batch.setProjectionMatrix(camera.combined);
             game.batch.begin();
-            game.batch.draw(characterTexture, characterX, characterY);
+            game.batch.draw(currentCharacter.getImageTexture(), characterX, characterY);
             game.batch.end();
 
             stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
