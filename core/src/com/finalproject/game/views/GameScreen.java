@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -24,7 +25,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.components.MapGenerator;
 import com.finalproject.game.models.GameCharacter;
+import com.finalproject.game.models.TilePoint;
 import com.finalproject.game.models.GameCharacter;
 
 public class GameScreen implements Screen {
@@ -57,6 +60,16 @@ public class GameScreen implements Screen {
     private boolean isSettingsOpen = false;
     private GameCharacter currentCharacter;
 
+    private float baseSizeFactor = Gdx.graphics.getHeight() * 0.09f;
+
+    private float charactorDesiredHeight = baseSizeFactor * 0.8f; // 10% of the screen height
+    private float charactorDesiredWidth = 0; // 10% of the screen width
+    private int mapWidthInTiles = 43;
+    private int mapHeightInTiles = 33;
+    private MapGenerator mapGenerator;
+
+    private TilePoint exitLocation;
+
     public GameScreen(FinalProjectGame game, GameCharacter currentCharacter) {
         this.currentCharacter = currentCharacter;
         characterX = 0;
@@ -66,11 +79,20 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        characterTexture = new Texture(Gdx.files.internal("charactors/xiaochuan.png"));
+        characterTexture = currentCharacter.getImageTexture();
+        float aspectRatio = (float) this.characterTexture.getWidth() / (float) this.characterTexture.getHeight();
+        charactorDesiredWidth = charactorDesiredHeight * aspectRatio; // width to maintain aspect ratio
+
         statusBarBackground = new Texture(Gdx.files.internal("backgrounds/statusbarbg.png"));
 
         settingsStage = new Stage(new ScreenViewport());
-
+        // Generate map, baseSizeFactor is the size of each tile
+        mapGenerator = new MapGenerator(mapWidthInTiles, mapHeightInTiles, (int) baseSizeFactor);
+        mapGenerator.generateMap();
+        TilePoint entranceLocation = mapGenerator.getEntranceLocation();
+        characterX = entranceLocation.x * baseSizeFactor;
+        characterY = entranceLocation.y * baseSizeFactor;
+        exitLocation = mapGenerator.getExitLocation();
     }
 
     @Override
@@ -176,7 +198,14 @@ public class GameScreen implements Screen {
         }
 
         ScreenUtils.clear(0, 0, 0, 0);
-
+        // Adjust camera to follow character, while clamping to map bounds
+        camera.position.set(
+                MathUtils.clamp(characterX, camera.viewportWidth / 2,
+                        mapWidthInTiles * baseSizeFactor - camera.viewportWidth / 2),
+                MathUtils.clamp(characterY, camera.viewportHeight / 2,
+                        mapHeightInTiles * baseSizeFactor - camera.viewportHeight / 2),
+                0);
+        camera.update();
         if (isSettingsOpen) {
             settingsStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
             settingsStage.draw();
@@ -185,7 +214,11 @@ public class GameScreen implements Screen {
             camera.update();
             game.batch.setProjectionMatrix(camera.combined);
             game.batch.begin();
-            game.batch.draw(currentCharacter.getImageTexture(), characterX, characterY);
+            // draw map
+            mapGenerator.renderMap(game.batch);
+
+            game.batch.draw(characterTexture, characterX, characterY, charactorDesiredWidth, charactorDesiredHeight);
+
             game.batch.end();
 
             stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -210,13 +243,56 @@ public class GameScreen implements Screen {
             potentialY -= speedY * gameHeight * delta;
         }
 
-        // Boundary checks
-        if (potentialX >= 0 && potentialX <= gameWidth - characterTexture.getWidth()) {
-            characterX = potentialX;
+        // Convert pixel coordinates to tile coordinates safely
+        int tileX = (int) (potentialX / baseSizeFactor);
+        int tileY = (int) (potentialY / baseSizeFactor);
+
+        // Ensure that the tile coordinates stay within the array bounds
+        tileX = MathUtils.clamp(tileX, 0, mapWidthInTiles - 1);
+        tileY = MathUtils.clamp(tileY, 0, mapHeightInTiles - 1);
+
+        // Map boundaries
+        float mapWidthPixels = mapWidthInTiles * baseSizeFactor;
+        float mapHeightPixels = mapHeightInTiles * baseSizeFactor;
+
+        float exitX = exitLocation.x * baseSizeFactor;
+        float exitY = exitLocation.y * baseSizeFactor;
+
+        if (Math.abs(characterX - exitX) < 5 && Math.abs(characterY - exitY) < 5) {
+            System.out.println("Exit reached, loading new map");
+
+            // Dispose of the current GameScreen properly
+            this.dispose();
+
+            // Create a new GameScreen with a new character or the current character
+            // Ensure that the constructor of GameScreen creates a new map
+            game.setScreen(new GameScreen(game, currentCharacter));
+            return;
+            // No need to call dispose() here, as setScreen() should handle the old screen
         }
-        if (potentialY >= 0 && potentialY <= gameHeight - characterTexture.getHeight()) {
-            characterY = potentialY;
+
+        // Convert potential coordinates to tile coordinates for wall checking
+        int leftTile = (int) ((potentialX));
+        int rightTile = (int) ((potentialX + charactorDesiredWidth));
+        int topTile = (int) ((potentialY + charactorDesiredHeight));
+        int bottomTile = (int) ((potentialY));
+
+        // Check if any of the four corners of the character are inside a wall
+        boolean topLeftIsWall = mapGenerator.isWall(leftTile, topTile);
+        boolean topRightIsWall = mapGenerator.isWall(rightTile, topTile);
+        boolean bottomLeftIsWall = mapGenerator.isWall(leftTile, bottomTile);
+        boolean bottomRightIsWall = mapGenerator.isWall(rightTile, bottomTile);
+
+        // Allow movement if none of the corners are colliding with a wall
+        if (!topLeftIsWall && !topRightIsWall && !bottomLeftIsWall && !bottomRightIsWall) {
+            // Additional check for boundaries
+            if (potentialX >= 0 && potentialX <= mapWidthPixels - charactorDesiredWidth &&
+                    potentialY >= 0 && potentialY <= mapHeightPixels - charactorDesiredHeight) {
+                characterX = potentialX;
+                characterY = potentialY;
+            }
         }
+
     }
 
     @Override
@@ -245,6 +321,14 @@ public class GameScreen implements Screen {
     public void dispose() {
         // Dispose your assets here
     }
+
+    // @Override
+    // public void resize(int width, int height) {
+    // camera.setToOrtho(false, width, height);
+    // camera.update();
+    // stage.getViewport().update(width, height, true);
+    // // Your code to update any other necessary components/layouts
+    // }
 
     // ... (implement other Screen methods but leave them empty for now)
 }

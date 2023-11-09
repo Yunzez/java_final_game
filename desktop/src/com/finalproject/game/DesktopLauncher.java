@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Game");
 		config.setWindowedMode(1920, 1080);
-
+		// config.setResizable(false); // setResizable method used instead of resizable field
 		new Lwjgl3Application(new FinalProjectGame(), config);
 	}
 }
