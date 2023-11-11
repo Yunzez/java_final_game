@@ -9,4 +9,8 @@ public class TilePoint {
             this.x = x;
             this.y = y;
         }
+    // Manhattan distance
+    public int distance(TilePoint other) {
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+    }
 }

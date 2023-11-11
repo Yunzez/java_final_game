@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum TileType {
-    FLOOR("floor", true, "map/floor.png", 100, 100),
+    FLOOR("floor", true, "map/floor1.png", 100, 100),
     WALL("wall", false, "map/wall.png", 100, 100);
 
     private String tileName;

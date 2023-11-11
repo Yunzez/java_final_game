@@ -53,15 +53,52 @@ public class MapGenerator {
         return exitLocation;
     }
 
+    public ArrayList<TilePoint> returnAccessibleLocations(int numberOfMonsters) {
+        ArrayList<TilePoint> accessibleLocations = new ArrayList<>();
+    
+        // Collect all possible floor locations
+        ArrayList<TilePoint> potentialLocations = new ArrayList<>();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (map[x][y] == TileType.FLOOR) {
+                    potentialLocations.add(new TilePoint(x, y));
+                }
+            }
+        }
+    
+        // Shuffle the list to get random floor locations
+        Collections.shuffle(potentialLocations, random);
+    
+        // Add a check to avoid placing monsters near the entrance and exit
+        TilePoint entrance = getEntranceLocation();
+        TilePoint exit = getExitLocation();
+        for (TilePoint point : potentialLocations) {
+            if (accessibleLocations.size() < numberOfMonsters) {
+                // Check the distance from the entrance and exit to avoid placing monsters too close
+                if (point.distance(entrance) > 2 && point.distance(exit) > 2) {
+                    accessibleLocations.add(point);
+                }
+            } else {
+                break; // Break if we have enough locations
+            }
+        }
+    
+        return accessibleLocations;
+    }
+    
+
     private void generateRoomsAndCorridors() {
         rooms = new ArrayList<Room>();
+        // Set buffer for outer walls
+        int buffer = 2;
         int numberOfRooms = random.nextInt(4) + 3; // Number of rooms from 3 to 5
 
         for (int i = 0; i < numberOfRooms; i++) {
             int roomWidth = random.nextInt(3) + 3;
             int roomHeight = random.nextInt(3) + 2;
-            int roomX = random.nextInt(width - roomWidth);
-            int roomY = random.nextInt(height - roomHeight);
+            // Adjust room position to account for outer buffer
+            int roomX = random.nextInt(width - roomWidth - 2 * buffer) + buffer;
+            int roomY = random.nextInt(height - roomHeight - 2 * buffer) + buffer;
 
             Room room = new Room(roomX + roomWidth / 2, roomY + roomHeight / 2, roomWidth, roomHeight);
             rooms.add(room);
@@ -110,16 +147,18 @@ public class MapGenerator {
     }
 
     public TileType getTile(int x, int y) {
-        return map[x / tileSize][y / tileSize];
-    }
-
-    public boolean isWall(int x, int y) {
         int tileX = (int) (x / tileSize);
-        int tileY = (int) (x / tileSize);
+        int tileY = (int) (y / tileSize);
 
         // Ensure that the tile coordinates stay within the array bounds
         tileX = MathUtils.clamp(tileX, 0, width - 1);
         tileY = MathUtils.clamp(tileY, 0, height - 1);
+        System.out.println(tileX + " " + tileY);
+        return map[tileX][tileY];
+    }
+
+    public boolean isWall(int x, int y) {
+
         return getTile(x, y) == TileType.WALL;
     }
 

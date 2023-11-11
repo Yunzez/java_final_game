@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
+import com.badlogic.gdx.utils.Array;
+import java.util.ArrayList;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
@@ -29,15 +31,17 @@ import com.finalproject.game.components.MapGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.TilePoint;
 import com.finalproject.game.models.GameCharacter;
+import java.util.Random;
 
 public class GameScreen implements Screen {
     private FinalProjectGame game;
     OrthographicCamera camera;
+    private Random random = new Random();
     Stage stage;
     private Texture characterTexture;
     float characterX, characterY; // character position
-    float speedX = 0.12f; // speed as a percentage of screen width
-    float speedY = 0.15f; // speed as a percentage of screen height
+    float speedX = 0.15f; // speed as a percentage of screen width
+    float speedY = 0.2f; // speed as a percentage of screen height
 
     // New variables for health, attack, and defense
     int health = 100;
@@ -65,10 +69,13 @@ public class GameScreen implements Screen {
     private float charactorDesiredHeight = baseSizeFactor * 0.8f; // 10% of the screen height
     private float charactorDesiredWidth = 0; // 10% of the screen width
     private int mapWidthInTiles = 43;
-    private int mapHeightInTiles = 33;
+    private int mapHeightInTiles = 23;
     private MapGenerator mapGenerator;
 
     private TilePoint exitLocation;
+
+    private Array<GameCharacter> gameMonsters;
+    private ArrayList<TilePoint> monstersLocations;
 
     public GameScreen(FinalProjectGame game, GameCharacter currentCharacter) {
         this.currentCharacter = currentCharacter;
@@ -93,6 +100,8 @@ public class GameScreen implements Screen {
         characterX = entranceLocation.x * baseSizeFactor;
         characterY = entranceLocation.y * baseSizeFactor;
         exitLocation = mapGenerator.getExitLocation();
+        gameMonsters = new Array<GameCharacter>();
+        createGameMonsters();
     }
 
     @Override
@@ -218,7 +227,7 @@ public class GameScreen implements Screen {
             mapGenerator.renderMap(game.batch);
 
             game.batch.draw(characterTexture, characterX, characterY, charactorDesiredWidth, charactorDesiredHeight);
-
+            renderMonsters(game.batch);
             game.batch.end();
 
             stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -258,7 +267,8 @@ public class GameScreen implements Screen {
         float exitX = exitLocation.x * baseSizeFactor;
         float exitY = exitLocation.y * baseSizeFactor;
 
-        if (Math.abs(characterX - exitX) < 5 && Math.abs(characterY - exitY) < 5) {
+        if (Math.abs(characterX - exitX) < this.charactorDesiredHeight / 2
+                && Math.abs(characterY - exitY) < this.charactorDesiredHeight / 2) {
             System.out.println("Exit reached, loading new map");
 
             // Dispose of the current GameScreen properly
@@ -300,6 +310,36 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, width, height);
         camera.update();
         stage.getViewport().update(width, height, true);
+    }
+
+    public void createGameMonsters() {
+        String characterCardPath = "charactors/xiaochuan.png";
+        int numberOfMonsters = random.nextInt(5) + 6;
+        for (int i = 0; i < numberOfMonsters; i++) {
+            gameMonsters.add(new GameCharacter(100, 10, 10, 10, 1, "Xiaochuan", characterCardPath));
+        }
+        monstersLocations = mapGenerator.returnAccessibleLocations(numberOfMonsters);
+
+    }
+
+    public void renderMonsters(SpriteBatch batch) {
+        if (gameMonsters.size != monstersLocations.size()) {
+            throw new IllegalStateException("Monsters and locations lists sizes do not match.");
+        }
+
+        for (int i = 0; i < gameMonsters.size; i++) {
+            GameCharacter monster = gameMonsters.get(i);
+            TilePoint location = monstersLocations.get(i);
+
+            // Assuming that the characterCard in GameCharacter is the texture you want to
+            // draw
+            Texture monsterTexture = monster.getImageTexture();
+            int drawX = (int) (location.x * baseSizeFactor); // Calculate the actual x position in pixels
+            int drawY = (int) (location.y * baseSizeFactor); // Calculate the actual y position in pixels
+
+            // Draw the monster texture at its location
+            batch.draw(monsterTexture, drawX, drawY, charactorDesiredWidth, charactorDesiredHeight);
+        }
     }
 
     @Override
