@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,8 +32,11 @@ import com.finalproject.game.components.GameButton;
 import com.finalproject.game.components.MapGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.TilePoint;
+import com.finalproject.game.models.TileType;
 import com.finalproject.game.models.GameCharacter;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Map.Entry;
 
 public class GameScreen implements Screen {
     private FinalProjectGame game;
@@ -74,8 +79,12 @@ public class GameScreen implements Screen {
 
     private TilePoint exitLocation;
 
-    private Array<GameCharacter> gameMonsters;
+    private HashMap<GameCharacter, TilePoint> gameMonsters = new HashMap<>();
     private ArrayList<TilePoint> monstersLocations;
+
+    private String battleResult;
+
+    private GameCharacter currentMonster;
 
     public GameScreen(FinalProjectGame game, GameCharacter currentCharacter) {
         this.currentCharacter = currentCharacter;
@@ -100,7 +109,7 @@ public class GameScreen implements Screen {
         characterX = entranceLocation.x * baseSizeFactor;
         characterY = entranceLocation.y * baseSizeFactor;
         exitLocation = mapGenerator.getExitLocation();
-        gameMonsters = new Array<GameCharacter>();
+        gameMonsters = new HashMap<>();
         createGameMonsters();
     }
 
@@ -235,6 +244,16 @@ public class GameScreen implements Screen {
         }
     }
 
+    public void setBattleResult(String result) {
+        System.out.println("Battle result: " + result);
+        this.battleResult = result;
+
+        // Remove the monster from the game after the battle
+        if(this.battleResult != null) {
+              gameMonsters.remove(currentMonster);
+        }
+    }
+
     public void handleMoveCharactor(float delta) {
         float potentialX = characterX;
         float potentialY = characterY;
@@ -298,11 +317,51 @@ public class GameScreen implements Screen {
             // Additional check for boundaries
             if (potentialX >= 0 && potentialX <= mapWidthPixels - charactorDesiredWidth &&
                     potentialY >= 0 && potentialY <= mapHeightPixels - charactorDesiredHeight) {
-                characterX = potentialX;
-                characterY = potentialY;
+                 currentMonster = isCollidingWithMonster(potentialX, potentialY);
+                // Check for collision with monsters before actually moving
+                if (currentMonster == null) {
+                    // No collision with monster, update character position
+                    characterX = potentialX;
+                    characterY = potentialY;
+                } else {
+                    // Handle collision with monster
+                    triggerBattle(currentMonster);
+                }
+
             }
         }
+    }
 
+    private GameCharacter isCollidingWithMonster(float x, float y) {
+        // Ensure that the tile coordinates stay within the array bounds
+        int tileX = (int) (x / baseSizeFactor);
+        int tileY = (int) (y / baseSizeFactor);
+        TilePoint potentialLocation = new TilePoint(tileX, tileY);
+        for (Entry<GameCharacter, TilePoint> entry : gameMonsters.entrySet()) {
+            TilePoint location = entry.getValue();
+            if (potentialLocation.equals(location)) {
+                return entry.getKey(); // Return the monster if there's a collision
+            }
+        }
+        return null; // Return null if no collision
+    }
+
+    private void triggerBattle(GameCharacter currentMonster) {
+        System.out.println("battle triggered");
+        if (currentMonster != null) {
+            // Retrieve the monster's location for reporting or further processing
+            TilePoint monsterLocation = gameMonsters.get(currentMonster);
+            System.out.println("Battle triggered with monster at location: " + monsterLocation);
+
+            game.getScreen().hide();
+            game.setScreen(new BattleScreen(game, currentCharacter, currentMonster, this, baseSizeFactor));
+            
+            // Remove the monster from the game after the battle
+            // gameMonsters.remove(currentMonster);
+            // Additional code for handling the battle (if necessary)
+        } else {
+            System.out.println("No monster to battle.");
+        }
     }
 
     @Override
@@ -315,21 +374,19 @@ public class GameScreen implements Screen {
     public void createGameMonsters() {
         String characterCardPath = "charactors/xiaochuan.png";
         int numberOfMonsters = random.nextInt(5) + 6;
-        for (int i = 0; i < numberOfMonsters; i++) {
-            gameMonsters.add(new GameCharacter(100, 10, 10, 10, 1, "Xiaochuan", characterCardPath));
-        }
         monstersLocations = mapGenerator.returnAccessibleLocations(numberOfMonsters);
 
+        for (int i = 0; i < numberOfMonsters; i++) {
+            GameCharacter monster = new GameCharacter(100, 10, 10, 10, 1, "Xiaochuan", characterCardPath);
+            TilePoint location = monstersLocations.get(i);
+            gameMonsters.put(monster, location);
+        }
     }
 
     public void renderMonsters(SpriteBatch batch) {
-        if (gameMonsters.size != monstersLocations.size()) {
-            throw new IllegalStateException("Monsters and locations lists sizes do not match.");
-        }
-
-        for (int i = 0; i < gameMonsters.size; i++) {
-            GameCharacter monster = gameMonsters.get(i);
-            TilePoint location = monstersLocations.get(i);
+        for (Entry<GameCharacter, TilePoint> entry : gameMonsters.entrySet()) {
+            GameCharacter monster = entry.getKey();
+            TilePoint location = entry.getValue();
 
             // Assuming that the characterCard in GameCharacter is the texture you want to
             // draw

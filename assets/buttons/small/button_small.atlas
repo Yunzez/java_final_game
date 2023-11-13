@@ -1,0 +1,11 @@
+button_small.png
+size:512,64
+repeat:none
+disable-button
+bounds:222,10,100,40
+down-button
+bounds:324,10,100,40
+highlight-button
+bounds:2,2,108,48
+up-button
+bounds:112,2,108,48

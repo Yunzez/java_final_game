@@ -1,0 +1,75 @@
+[
+  {
+    "health": 100,
+    "strength": 10,
+    "defense": 10,
+    "speed": 10,
+    "level": 1,
+    "name": "Mikado Sun",
+    "imagePath": "charactors/xiaochuan.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Relx Ding",
+    "imagePath": "charactors/dingzhen.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Bo Liu",
+    "imagePath": "charactors/Medicine.png"
+  },
+
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Place holder",
+    "imagePath": "charactors/xiaochuan.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Place holder",
+    "imagePath": "charactors/xiaochuan.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Place holder",
+    "imagePath": "charactors/xiaochuan.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Place holder",
+    "imagePath": "charactors/xiaochuan.png"
+  }
+]

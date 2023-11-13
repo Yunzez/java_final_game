@@ -73,7 +73,7 @@ public class Buff {
                 character.setDefence(character.getDefence() + amount);
                 break;
             case HEALTH:
-                character.setHealth(character.getHealth() + amount);
+                character.setHealth(character.getMaxHealth() + amount);
                 break;
         }
     }

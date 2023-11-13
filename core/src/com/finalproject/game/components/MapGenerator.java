@@ -153,8 +153,18 @@ public class MapGenerator {
         // Ensure that the tile coordinates stay within the array bounds
         tileX = MathUtils.clamp(tileX, 0, width - 1);
         tileY = MathUtils.clamp(tileY, 0, height - 1);
-        System.out.println(tileX + " " + tileY);
         return map[tileX][tileY];
+    }
+
+    public TilePoint getTilePoint(int x, int y) {
+        int tileX = (int) (x / tileSize);
+        int tileY = (int) (y / tileSize);
+
+        // Ensure that the tile coordinates stay within the array bounds
+        tileX = MathUtils.clamp(tileX, 0, width - 1);
+        tileY = MathUtils.clamp(tileY, 0, height - 1);
+
+        return new TilePoint(tileX, tileY);
     }
 
     public boolean isWall(int x, int y) {

@@ -6,8 +6,15 @@
       "name": "DesktopLauncher",
       "request": "launch",
       "mainClass": "com.finalproject.game.DesktopLauncher",
+      "projectName": "desktop"
+    },
+    {
+      "type": "java",
+      "name": "DesktopLauncher",
+      "request": "launch",
+      "mainClass": "com.finalproject.game.DesktopLauncher",
       "projectName": "finalProject-desktop",
       "vmArgs": "-XstartOnFirstThread"
-    },
+    }
   ]
 }

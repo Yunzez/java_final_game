@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,11 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -46,6 +53,10 @@ public class ChooseCharacterScreen implements Screen {
 
     private Texture cardSelectedTexture;
 
+    private ArrayList<GameCharacter> characterList;
+
+    private BitmapFont currentFont;
+
     public ChooseCharacterScreen(FinalProjectGame game) {
         this.game = game;
         cardtexture = new Texture(Gdx.files.internal("backgrounds/cardNormal.png"));
@@ -54,33 +65,28 @@ public class ChooseCharacterScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
+        currentFont = fontGenerator.generate(25, Color.WHITE, 0.3f, Color.WHITE);
+        fontGenerator.dispose();
     }
 
     @Override
     public void show() {
-        Label.LabelStyle biggerFont = new Label.LabelStyle(game.font, Color.WHITE);
+
+        addBackground();
+        Label.LabelStyle biggerFont = new Label.LabelStyle(currentFont, Color.WHITE);
         biggerFont.font.getData().setScale(2.0f); // Example to make the font larger
         Label title = new Label("Choose your characters: ", biggerFont);
         title.setPosition(100, stage.getHeight() - 100); // Adjust the position
-        ArrayList<GameCharacter> characterList = new ArrayList<>();
-        // int health, int attack, int defence, int speed, int level, String name,
-        String characterCardPath = "charactors/xiaochuan.png";
-        characterList.add(new GameCharacter(100, 10, 10, 10, 1, "Mikado Sun", characterCardPath));
-        characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Relx Ding", "charactors/dingzhen.png"));
-        characterList.add(new GameCharacter(80, 6, 12, 20, 1, "Mark Zucks", "charactors/mark.png"));
-        characterList.add(new GameCharacter(88,10,10,10,1,"Medicine", "charactors/Medicine.png"));
-        characterList.add(new GameCharacter());
-        characterList.add(new GameCharacter());
-        characterList.add(new GameCharacter());
+        characterList = new ArrayList<>();
 
         characterTable = new Table(); // No fixed height
-
+        loadCharactersFromJson();
         addCharacters(characterList);
 
         // Then add this characterTable to your scrollPane
         ScrollPane scrollPane = new ScrollPane(characterTable);
-        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.6f);
+        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.7f);
 
         addButtons();
         addCharacterDetailsSection();
@@ -90,51 +96,79 @@ public class ChooseCharacterScreen implements Screen {
 
     }
 
+    private void addBackground() {
+        Texture overallBackground = new Texture(Gdx.files.internal("backgrounds/chooseCharacterBackground.png"));
+        Image backgroundImage = new Image(overallBackground);
+        backgroundImage.setScaling(Scaling.stretch);
+        backgroundImage.setFillParent(true); // This will make the background image fill the stage
+
+        // Add the background image to the stage
+        stage.addActor(backgroundImage);
+    }
+
+    private void loadCharactersFromJson() {
+        JsonReader jsonReader = new JsonReader();
+        JsonValue base = jsonReader.parse(Gdx.files.internal("document/characters.json"));
+
+        for (JsonValue characterValue : base.iterator()) {
+            int health = characterValue.getInt("health");
+            int strength = characterValue.getInt("strength");
+            int defense = characterValue.getInt("defense");
+            int speed = characterValue.getInt("speed");
+            int level = characterValue.getInt("level");
+            String name = characterValue.getString("name");
+            String imagePath = characterValue.getString("imagePath");
+
+            GameCharacter character = new GameCharacter(health, strength, defense, speed, level, name, imagePath);
+            characterList.add(character);
+        }
+
+        // Now characterList contains all characters loaded from JSON
+    }
+
     private void addCharacterDetailsSection() {
         characterDetailsTable = new Table();
         characterDetailsTable.bottom().left(); // Align to bottom left
         characterDetailsTable.setWidth(stage.getWidth()); // Take up the whole bottom
-        characterDetailsTable.setHeight(stage.getHeight()* 0.15f); // Set the height
-    
+        characterDetailsTable.setHeight(stage.getHeight() * 0.15f); // Set the height
+
         // Set background
-        Texture bgtexture = new Texture(Gdx.files.internal("backgrounds/darkbg.png"));
+        Texture bgtexture = new Texture(Gdx.files.internal("backgrounds/battleBottomTab.png"));
         TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(bgtexture));
         characterDetailsTable.setBackground(drawable);
-    
+
         // Add to stage
         stage.addActor(characterDetailsTable);
     }
-    
 
     private void updateCharacterDetails(GameCharacter character) {
         characterDetailsTable.clear(); // Clear previous details
-    
+
         Label.LabelStyle normalFont = new Label.LabelStyle(game.font, Color.WHITE);
         normalFont.font.getData().setScale(1.3f);
-    
+
         // Left section: Story
         Label storyLabel = new Label("Story: Placeholder", normalFont);
-    
+
         // Middle section: Stats
         Table statsTable = new Table();
-        Label hpLabel = new Label("HP: " + character.getHealth(), normalFont);
-        Label attackLabel = new Label("Attack: " + character.getAttack(), normalFont);
+        Label hpLabel = new Label("HP: " + character.getMaxHealth(), normalFont);
+        Label attackLabel = new Label("Attack: " + character.getCharacterAttack(), normalFont);
         Label defenseLabel = new Label("Defense: " + character.getDefence(), normalFont);
-    
+
         statsTable.add(hpLabel).row();
         statsTable.add(attackLabel).row();
         statsTable.add(defenseLabel);
-    
+
         // Right section: Buffs
         Label buffsLabel = new Label("Buffs: Placeholder", normalFont);
-    
+
         // Add to table
         characterDetailsTable.add(storyLabel).expandX().pad(10);
         characterDetailsTable.add(statsTable).expandX().pad(10);
         characterDetailsTable.add(buffsLabel).expandX().pad(10);
         characterDetailsTable.row(); // Move to next row
     }
-    
 
     private void addButtons() {
         TextButton backButton = createButton("Back", new ClickListener() {
@@ -143,7 +177,7 @@ public class ChooseCharacterScreen implements Screen {
                 game.setScreen(new WelcomeScreen(game));
             }
         });
-        backButton.setPosition(100, stage.getHeight()* 0.17f);
+        backButton.setPosition(100, stage.getHeight() * 0.17f);
 
         TextButton startButton = GameButton.createButton("Start", game.font);
         startButton.setPosition(200, 50); // You had 'backButton' here, change it to 'startButton'
@@ -151,11 +185,12 @@ public class ChooseCharacterScreen implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                selectedCharacter.assignRandomAttacks(3);
                 game.setScreen(new GameScreen(game, selectedCharacter));
                 dispose();
             }
         });
-        startButton.setPosition(250, stage.getHeight()* 0.17f);
+        startButton.setPosition(250, stage.getHeight() * 0.17f);
 
         stage.addActor(backButton);
         stage.addActor(startButton);
@@ -178,7 +213,7 @@ public class ChooseCharacterScreen implements Screen {
             characterImage.setScaling(Scaling.fit);
 
             // Create Labels for the character's stats or description
-            Label.LabelStyle normalFont = new Label.LabelStyle(game.font, Color.WHITE);
+            Label.LabelStyle normalFont = new Label.LabelStyle(currentFont, Color.WHITE);
             normalFont.font.getData().setScale(1.3f);
             Label nameLabel = new Label(character.getName(), normalFont);
             // ... more labels
@@ -188,9 +223,9 @@ public class ChooseCharacterScreen implements Screen {
             TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(bgtexture));
             characterCard.setBackground(drawable);
             // Add the Image and Labels to the characterCard
-            characterCard.add(characterImage).height(250).expand().fill();
+            characterCard.add(characterImage).height(250).fill();
             characterCard.row(); // Move to next row
-            characterCard.add(nameLabel).pad(2);
+            characterCard.add(nameLabel);
 
             final Table finalCharacterCard = characterCard;
             // Add the characterCard to the main characterTable
@@ -240,6 +275,11 @@ public class ChooseCharacterScreen implements Screen {
 
         game.batch.begin();
         // Add any other rendering here
+        // Clear the screen
+        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Draw the background
         game.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));

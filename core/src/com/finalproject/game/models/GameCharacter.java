@@ -3,8 +3,10 @@ package com.finalproject.game.models;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 
 public class GameCharacter {
+    private int maxHealth;
     private int health;
     private int attack;
     private int defence;
@@ -19,10 +21,13 @@ public class GameCharacter {
     private int id;
     private static int autoId = 0;
 
+    private ArrayList<Attack> attacks;
+
     public GameCharacter(int id, int health, int attack, int defence, int speed, int level, String name,
             String characterCardPath) {
         this.id = id;
         this.health = health;
+        this.maxHealth = health;
         this.attack = attack;
         this.defence = defence;
         this.speed = speed;
@@ -37,6 +42,7 @@ public class GameCharacter {
         // Add validation here if needed
         this.id = autoId++;
         this.health = health;
+        this.maxHealth = health;
         this.attack = attack;
         this.defence = defence;
         this.speed = speed;
@@ -71,11 +77,16 @@ public class GameCharacter {
     }
 
     // create all setters and getters
-    public int getHealth() {
+    public int getCurrentHealth() {
         return health;
     }
 
-    public int getAttack() {
+    public int getMaxHealth() {
+        System.out.println("max health: " + maxHealth);
+        return maxHealth;
+    }
+
+    public int getCharacterAttack() {
         return attack;
     }
 
@@ -93,6 +104,14 @@ public class GameCharacter {
 
     public String getName() {
         return name;
+    }
+
+    public ArrayList<Attack> getAttacks() {
+        return attacks;
+    }
+
+    public void assignRandomAttacks(int numberOfAttacks) {
+        this.attacks = new ArrayList<>(AttackUtils.generateRandomAttacks(numberOfAttacks));
     }
 
     public Texture getImageTexture() {
