@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
@@ -66,20 +67,31 @@ public class BattleScreen implements Screen {
     private float topHeightRatio = 0.25f;
     private float middleHeightRatio = 1 - bottomHeightRatio - topHeightRatio - 0.05f;
 
+    private int currentTurn; // 0 for player, 1 for monster
+    private Label waitingLabel;
+
     public BattleScreen(FinalProjectGame game, GameCharacter playerCharacter, GameCharacter monster,
             GameScreen mapScreen, float baseSizeFactor) {
         this.game = game;
         this.playerCharacter = playerCharacter;
         this.monster = monster;
+        this.monster.assignRandomAttacks(3);
         this.mapScreen = mapScreen;
         this.baseSizeFactor = baseSizeFactor;
-
+        if (playerCharacter.getSpeed() >= monster.getSpeed()) {
+            this.currentTurn = 0;
+        } else {
+            this.currentTurn = 1;
+        }
         // Create an instance of your font generator
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
         battleFont = fontGenerator.generate(25, Color.WHITE, 0.5f, Color.WHITE);
         describeFont = fontGenerator.generate(16, Color.WHITE, 0.5f, Color.WHITE);
         fontGenerator.dispose();
 
+        Label.LabelStyle labelStyle = new Label.LabelStyle(battleFont, Color.WHITE);
+        waitingLabel = new Label("Waiting for opponent...", labelStyle);
+        waitingLabel.setVisible(false); // Initially invisible
     }
 
     private void initializeCamera() {
@@ -141,6 +153,13 @@ public class BattleScreen implements Screen {
         middleContainerWrapper.setActor(middleTable);
         stage.addActor(middleContainerWrapper);
 
+        // set the waiting label here
+        waitingLabel.setDebug(true);
+        waitingLabel.setPosition(
+                Gdx.graphics.getWidth() / 2 - waitingLabel.getWidth() / 2,
+                Gdx.graphics.getHeight() * bottomHeightRatio + middleContainerWrapper.getHeight() / 2
+                        - waitingLabel.getHeight() / 2);
+        stage.addActor(waitingLabel);
     }
 
     @Override
@@ -153,6 +172,7 @@ public class BattleScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
+
         // Add any other rendering here
 
         updateHealthIndicators();
@@ -315,14 +335,42 @@ public class BattleScreen implements Screen {
 
     public void issueAttack(Attack attack) {
         // Check if the attack can be performed (e.g., enough mana, correct turn, etc.)
-
-        monster.setHealth(monster.getCurrentHealth() - attack.getHarm());
-        System.out.println("monster health: " + monster.getCurrentHealth());
-        activityLabel.setText("You have encoutered: " + monster.getName() + " you attack " + monster.getName()
-                + " with " + attack.getName() + " and it does " + attack.getHarm() + " damage");
-        if (monster.getCurrentHealth() <= 0) {
-            returnToGameScreen("Won");
+        if (currentTurn == 0) {
+            System.out.println("player attack");
+            monster.setHealth(monster.getCurrentHealth() - attack.getHarm());
+            System.out.println("monster health: " + monster.getCurrentHealth());
+            activityLabel.setText("You attack " + monster.getName()
+                    + " with " + attack.getName() + " and it does " + attack.getHarm() + " damage");
+            if (monster.getCurrentHealth() <= 0) {
+                returnToGameScreen("Won");
+            } else {
+                // Schedule the monster's attack after a delay
+                waitingLabel.setVisible(true);
+                float delay = 3; // seconds
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        // This block will be executed after the delay
+                        performMonsterAttack();
+                    }
+                }, delay);
+            }
+            currentTurn = 1;
         }
+
+    }
+
+    private void performMonsterAttack() {
+        waitingLabel.setVisible(false);
+        // Logic for the monster to choose and perform an attack
+        Attack monsterAttack = monster.getRandomAttack();// ... logic to select an attack ...
+        playerCharacter.setHealth(playerCharacter.getCurrentHealth() - monsterAttack.getHarm());
+        activityLabel.setText(monster.getName() + " attacks you with " + monsterAttack.getName()
+                + " causing " + monsterAttack.getHarm() + " damage");
+        if (playerCharacter.getCurrentHealth() <= 0) {
+            returnToGameScreen("Lost");
+        }
+        currentTurn = 0; // Player's turn
     }
 
     private void updateHealthIndicators() {
@@ -404,10 +452,35 @@ public class BattleScreen implements Screen {
     // }
 
     private void returnToGameScreen(String result) {
-        // Pass battle result back to game screen and switch screen
-        System.out.println("Battle result: " + result);
-        this.mapScreen.setBattleResult(result);
-        game.setScreen(this.mapScreen); // Switch back to the game screen
+        // Update the waiting label with the result message
+        String message = "You escaped!";
+        if (result.equals("Won")) {
+            playerCharacter.addExperience(100);
+            playerCharacter.levelUp();
+            message = "You won! Gained 100 experience";
+        } else if (result.equals("Lost")) {
+            message = "You lost!";
+        }
+
+        // Show the message immediately
+        waitingLabel.setText(message);
+        waitingLabel.setVisible(true);
+
+        // Delay the switch back to the game screen
+        float delay = 3; // seconds
+        final String currentResult = result;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                // Hide the waiting label
+                waitingLabel.setVisible(false);
+
+                // This block will be executed after the delay
+                // Switch back to the game screen
+                mapScreen.setBattleResult(currentResult);
+                game.setScreen(mapScreen);
+            }
+        }, delay);
     }
 
     // Implement other required methods from Screen interface

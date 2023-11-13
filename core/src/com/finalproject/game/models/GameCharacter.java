@@ -110,6 +110,10 @@ public class GameCharacter {
         return attacks;
     }
 
+    public Attack getRandomAttack() {
+        return attacks.get((int) (Math.random() * attacks.size()));
+    }
+
     public void assignRandomAttacks(int numberOfAttacks) {
         this.attacks = new ArrayList<>(AttackUtils.generateRandomAttacks(numberOfAttacks));
     }
