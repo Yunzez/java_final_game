@@ -61,7 +61,12 @@ public class GameCharacter {
         this.level++;
         setAttack(attack + 5);
         setDefence(defence + 5);
-        setHealth(health + 10);
+        setMaxHealth(maxHealth + 10);
+        setHealth(maxHealth);
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
     public void addExperience(int experience) {
@@ -115,7 +120,9 @@ public class GameCharacter {
     }
 
     public void assignRandomAttacks(int numberOfAttacks) {
-        this.attacks = new ArrayList<>(AttackUtils.generateRandomAttacks(numberOfAttacks));
+
+        this.attacks = new ArrayList<>(AttackUtils.generateRandomAttacks(numberOfAttacks, this.name));
+
     }
 
     public Texture getImageTexture() {

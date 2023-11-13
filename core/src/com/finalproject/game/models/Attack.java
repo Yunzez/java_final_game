@@ -10,8 +10,11 @@ public enum Attack {
     PEPE_SLAM("Pepe Slam", AttackType.MEME_SLAP, 25, "Hits with the force of a thousand internet trolls."),
     AWKWARD_PAUSE("Awkward Pause", AttackType.CRINGE, 5, "Creates an awkward silence, stunning the enemy briefly."),
     LITERAL_LAUNCH("Literal Launch", AttackType.LITERALISM, 15, "Launches the target, because they asked for 'a lift'."),
-    OFF_KEY("Off Key", AttackType.KARAOKE, 10, "Blasts a note so off-key, it disrupts the enemy's focus.");
+    OFF_KEY("Off Key", AttackType.KARAOKE, 10, "Blasts a note so off-key, it disrupts the enemy's focus."),
 
+    // Special attack
+    POWER_OF_LITANG("Litang Power", AttackType.SPECIAL, 30, "Bring out the power of Litang! Ding's special attack! ");
+    
     private final String name;
     private final AttackType type;
     private final int harm;

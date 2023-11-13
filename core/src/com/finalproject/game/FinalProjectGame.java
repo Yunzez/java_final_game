@@ -3,11 +3,13 @@ package com.finalproject.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.views.WelcomeScreen;
 
 public class FinalProjectGame extends Game {
@@ -22,8 +24,13 @@ public class FinalProjectGame extends Game {
 		// skin = new Skin(Gdx.files.internal("uiskin.json"));
 		skin = new Skin();
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+
+
+		FontGenerator fontGenerator = new FontGenerator("fonts/Retro_Gaming.ttf");
+        this.font = fontGenerator.generate(18, Color.WHITE, 0.2f, Color.DARK_GRAY);
+        fontGenerator.dispose();
 		this.setScreen(new WelcomeScreen(this));
+
 	}
 
 	@Override

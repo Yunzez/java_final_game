@@ -11,7 +11,7 @@ public enum AttackType {
     CRINGE("Cringe", "Makes everyone uncomfortable for a moment."),
     LITERALISM("Literalism", "Takes things too literally, leading to unexpected results."),
     KARAOKE("Karaoke", "Assaults the senses with off-key singing and dramatic gestures."),
-    SPECIAL("Special", "A special attack that only this character can use.");
+    SPECIAL("Special", "A special attack that only RELX Ding can use.");
 
     private final String name;
     private final String description;
@@ -29,6 +29,7 @@ public enum AttackType {
         return description;
     }
 
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }
-

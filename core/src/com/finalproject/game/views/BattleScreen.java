@@ -86,8 +86,11 @@ public class BattleScreen implements Screen {
         // Create an instance of your font generator
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
         battleFont = fontGenerator.generate(25, Color.WHITE, 0.5f, Color.WHITE);
-        describeFont = fontGenerator.generate(16, Color.WHITE, 0.5f, Color.WHITE);
         fontGenerator.dispose();
+
+        FontGenerator fontGenerator2 = new FontGenerator("fonts/VCR_OSD_MONO_1.001.ttf");
+        describeFont = fontGenerator2.generate(20, Color.WHITE, 0, Color.WHITE);
+        fontGenerator2.dispose();
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(battleFont, Color.WHITE);
         waitingLabel = new Label("Waiting for opponent...", labelStyle);

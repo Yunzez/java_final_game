@@ -71,5 +71,14 @@
     "level": 1,
     "name": "Place holder",
     "imagePath": "charactors/xiaochuan.png"
+  },
+  {
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Koube Icetea",
+    "imagePath": "charactors/koubeIcetea.png"
   }
 ]
