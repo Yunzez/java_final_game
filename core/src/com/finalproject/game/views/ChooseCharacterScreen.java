@@ -153,7 +153,7 @@ public class ChooseCharacterScreen implements Screen {
         // Middle section: Stats
         Table statsTable = new Table();
         Label hpLabel = new Label("HP: " + character.getMaxHealth(), normalFont);
-        Label attackLabel = new Label("Attack: " + character.getCharacterAttack(), normalFont);
+        Label attackLabel = new Label("Attack: " + character.getAttack(), normalFont);
         Label defenseLabel = new Label("Defense: " + character.getDefence(), normalFont);
 
         statsTable.add(hpLabel).row();
