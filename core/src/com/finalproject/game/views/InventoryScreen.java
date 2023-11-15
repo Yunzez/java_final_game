@@ -90,9 +90,8 @@ public class InventoryScreen implements Screen{
         TextButton backToGame = createButton("Back", new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println(gameScreen);
+                gameScreen.isPaused = false;
                 game.setScreen(gameScreen);
-                System.out.println("Back to game");
                 dispose();
             }
         });
