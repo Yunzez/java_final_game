@@ -4,10 +4,10 @@ package com.finalproject.game.models;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum Item {
-    RELX_V5(ItemType.WEAPON, "Relx V5", 10, "A weapon that can relax you and your enenmy.","icons/relx.png"),
-    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30, "A legendary blade that reveals the truth, cutting through deception.","icons/sword.png"),
-    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 70, "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection.","icons/dragon.png"),
-    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health over time.","icons/elixir.png"),
+    RELX_V5(ItemType.WEAPON, "RELX V5", 10, "A weapon that can relax you and your enenmy.","items/relx.png"),
+    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30, "A legendary blade that reveals the truth, cutting through deception.","items/relx.png"),
+    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 70, "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection.","items/relx.png"),
+    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health over time.","items/relx.png"),
 
     ;
 
