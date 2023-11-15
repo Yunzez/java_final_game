@@ -96,13 +96,15 @@ public class InventoryScreen implements Screen{
         inventory = new ArrayList<>();
 
         inventory.add(Item.RELX_V5);
-        inventory.add(Item.RELX_V5);
-        inventory.add(Item.RELX_V5);
-        inventory.add(Item.RELX_V5);
-        inventory.add(Item.RELX_V5);
+        inventory.add(Item.SWORD_OF_TRUTH);
+        inventory.add(Item.DRAGONSCALE_ARMOR);
+        inventory.add(Item.ELIXIR_OF_HEALTH);
 
         HashMap<Item, Integer> inventoryMap = new HashMap<>();
         inventoryMap.put(Item.RELX_V5, 5);
+        inventoryMap.put(Item.SWORD_OF_TRUTH, 1);
+        inventoryMap.put(Item.DRAGONSCALE_ARMOR, 1);
+        inventoryMap.put(Item.ELIXIR_OF_HEALTH, 10);
 
         // Display Inventory
         inventoryGroup = new HorizontalGroup();
@@ -124,7 +126,7 @@ public class InventoryScreen implements Screen{
             itemTable.center().add(itemImage).size(300,300);
             itemTable.row();
             itemTable.add(new Label(item.getName(), new Label.LabelStyle(currentFont, Color.WHITE)));
-            itemTable.add(new Label("x" + inventoryMap.get(item), new Label.LabelStyle(currentFont, Color.WHITE)));
+            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item,0), new Label.LabelStyle(currentFont, Color.WHITE)));
             itemTable.pad(50);
             inventoryGroup.addActor(itemTable);
         }
