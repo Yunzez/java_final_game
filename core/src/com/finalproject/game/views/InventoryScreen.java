@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -78,9 +81,9 @@ public class InventoryScreen implements Screen{
         // add the background
         addBackground();
         // add the title
-        Label.LabelStyle font = new Label.LabelStyle(currentFont, Color.WHITE);
-        font.font.getData().setScale(2.0f);
-        Label title = new Label("Inventory", font);
+        Label.LabelStyle titleFont = new Label.LabelStyle(currentFont, Color.WHITE);
+        titleFont.font.getData().setScale(2.0f);
+        Label title = new Label("Inventory", titleFont);
         title.setPosition(100, stage.getHeight() - 100);
         stage.addActor(title);
         // add the back to game button
@@ -89,6 +92,7 @@ public class InventoryScreen implements Screen{
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println(gameScreen);
                 game.setScreen(gameScreen);
+                System.out.println("Back to game");
                 dispose();
             }
         });
@@ -114,27 +118,59 @@ public class InventoryScreen implements Screen{
         updateInventoryTable(inventory, inventoryMap);
 
         ScrollPane scrollPane = new ScrollPane(inventoryGroup);
-        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.7f);
+        scrollPane.setBounds(100, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.7f);
+
         stage.addActor(scrollPane);
     }
 
 
     private void updateInventoryTable(List<Item> inventory, HashMap<Item, Integer> inventoryMap) {
+        Label.LabelStyle itemFont = new Label.LabelStyle(currentFont, Color.WHITE);
+        itemFont.font.getData().setScale(1.0f);
         for (Item item : inventory){
             Table itemTable = new Table();
+            itemTable.setSize(1000, 1000);
             Texture itemTexture = item.getIcon();
             Image itemImage = new Image(itemTexture);
             itemImage.setScaling(Scaling.fit);
             itemTable.center().add(itemImage).size(300,300);
             itemTable.row();
-            itemTable.add(new Label(item.getName(), new Label.LabelStyle(currentFont, Color.WHITE)));
+            itemTable.add(new Label(item.getName(), itemFont));
             itemTable.row();
-            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item,0), new Label.LabelStyle(currentFont, Color.WHITE)));
-            itemTable.pad(50);
+            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item,0), itemFont));
             // Add a background to the table
             Texture backgroundTexture = new Texture("backgrounds/cardNormal.png");
             itemTable.setBackground(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
-            inventoryGroup.addActor(itemTable);
+            itemTable.pad(10);
+            Container<Table> itemContainer = new Container<>(itemTable);
+            itemContainer.pad(50);
+            inventoryGroup.addActor(itemContainer);
+
+            // discription
+            final Table itemDescriptionTable = new Table();
+            itemDescriptionTable.setPosition(0.5f * stage.getWidth()-400, 0.2f * stage.getHeight());
+            itemDescriptionTable.setSize(800, 100);
+            final Label itemDescriptionLabel = new Label(item.getDescription(), new Label.LabelStyle(currentFont, Color.WHITE));
+            itemDescriptionLabel.setWrap(true);
+            itemDescriptionTable.add(itemDescriptionLabel).width(600);
+            itemDescriptionTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("backgrounds/battleBottomTab.png"))));
+            itemDescriptionTable.setVisible(false);
+            stage.addActor(itemDescriptionTable);
+
+            // Add a listener to the table
+            itemContainer.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Show the label when the mouse enters the table
+                itemDescriptionTable.setVisible(true);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Hide the label when the mouse leaves the table
+                itemDescriptionTable.setVisible(false);
+            }
+            });
         }
 
     }

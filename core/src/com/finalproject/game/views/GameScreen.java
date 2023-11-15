@@ -417,6 +417,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println("Disposing GameScreen");
         // Dispose your assets here
     }
 
