@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -126,8 +128,12 @@ public class InventoryScreen implements Screen{
             itemTable.center().add(itemImage).size(300,300);
             itemTable.row();
             itemTable.add(new Label(item.getName(), new Label.LabelStyle(currentFont, Color.WHITE)));
+            itemTable.row();
             itemTable.add(new Label("x" + inventoryMap.getOrDefault(item,0), new Label.LabelStyle(currentFont, Color.WHITE)));
             itemTable.pad(50);
+            // Add a background to the table
+            Texture backgroundTexture = new Texture("backgrounds/cardNormal.png");
+            itemTable.setBackground(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
             inventoryGroup.addActor(itemTable);
         }
 
