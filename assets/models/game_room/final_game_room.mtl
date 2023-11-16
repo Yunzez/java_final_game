@@ -1,0 +1,5 @@
+newmtl texture_tiles
+   map_Kd Default/texture_tiles.png
+
+newmtl wall_texture
+   map_Kd Default/wall_texture.png

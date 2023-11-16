@@ -1,0 +1,7 @@
+# Exported from Figuro at https://www.figuro.io
+
+newmtl door_frame
+   map_Kd Default\door_frame.png
+
+newmtl start_game
+   map_Kd Default\start_game.png

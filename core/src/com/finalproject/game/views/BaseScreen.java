@@ -1,0 +1,350 @@
+package com.finalproject.game.views;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cubemap;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
+import com.finalproject.game.FinalProjectGame;
+
+public class BaseScreen implements Screen {
+    private FinalProjectGame game;
+    private PerspectiveCamera camera;
+    private ModelBatch modelBatch;
+    private Environment environment;
+    private ModelInstance environmentModel; // 3D environment model
+    private CameraInputController camController;
+    private Texture characterTexture;
+    private Decal characterDecal;
+    private DecalBatch decalBatch;
+    public AssetManager assets;
+    private ModelInstance roomModel; // 3D room model
+    private ModelInstance characterModel; // 3D character model
+    private ModelInstance battleEntrance;
+    private ModelInstance treasureBox;
+    private BoundingBox roomBounds = new BoundingBox();
+    private boolean assetsLoaded = false;
+    private Model backgroundSphereModel;
+    private ModelInstance backgroundSphereInstance;
+    private AnimationController characterAniController;
+    public Array<ModelInstance> instances = new Array<ModelInstance>();
+    private float lastRotationAngle = 0f; 
+
+    public BaseScreen(FinalProjectGame game) {
+        this.game = game;
+        camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(10f, 10f, 20f);
+        camera.lookAt(0, 0, 0);
+        camera.near = 0.5f;
+        camera.far = 1550f; // Increase if necessary
+        camera.update();
+
+        modelBatch = new ModelBatch();
+        environment = new Environment(); // Set up environment (lights, etc.)
+
+        // Camera controller for testing
+        camController = new CameraInputController(camera);
+        Gdx.input.setInputProcessor(camController);
+
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
+        // Initialize models once they are loaded
+        createBackgroundSphere();
+        // if (!assetsLoaded) {
+        // if (assets.update()) { // Check if all assets are loaded
+        // initializeModels();
+        // } else {
+        // System.out.println("Loading assets...");
+        // return; // Return early if assets are still loading
+        // }
+        // }
+
+    }
+
+    private void initializeModels() {
+        Model character = assets.get("models/Character/Y-Bot.g3db", Model.class);
+        characterModel = new ModelInstance(character);
+         characterModel.transform.scl(0.8f);
+        // characterModel.transform.rotate(Vector3.Y, 180f);
+        // Create an animation controller
+        for (Animation animation : characterModel.animations) {
+            System.out.println("Animation name: " + animation.id);
+        }
+        characterAniController = new AnimationController(characterModel);
+
+        // Start the animation
+        characterAniController.setAnimation("mixamo.com", -1, 1f, null);
+
+        Model room = assets.get("models/game_room/final_game_room.g3db", Model.class);
+        roomModel = new ModelInstance(room);
+        roomModel.calculateBoundingBox(roomBounds);
+        
+
+        Model entrance = assets.get("models/teleport_door/obj.g3db", Model.class);
+        battleEntrance = new ModelInstance(entrance);
+        battleEntrance.transform.scl(1f);
+        battleEntrance.transform.setToTranslation(-100f, 200f, -480f);
+
+        Model model = assets.get("models/Chest_box/obj.g3db", Model.class);
+        treasureBox = new ModelInstance(model);
+        treasureBox.transform.setToTranslation(300f, 10f, -420f);
+        treasureBox.transform.scl(50f);
+
+        instances.add(characterModel, roomModel, battleEntrance, treasureBox);
+
+        assetsLoaded = true;
+
+    }
+
+    public void createBackgroundSphere() {
+        // Load the texture for the background
+        Texture backgroundTexture = new Texture(Gdx.files.internal("skybox/skybox_z.png"));
+
+        // Create a model builder
+        ModelBuilder modelBuilder = new ModelBuilder();
+
+        // Create the sphere model
+        backgroundSphereModel = modelBuilder.createSphere(1800f, 1800f, 1800f, 32, 32,
+                new Material(TextureAttribute.createDiffuse(backgroundTexture)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
+                        | VertexAttributes.Usage.TextureCoordinates);
+
+        // Create a ModelInstance of your sphere model
+        backgroundSphereInstance = new ModelInstance(backgroundSphereModel);
+        backgroundSphereInstance.transform.scale(-1f, 1f, 1f);
+
+        // Set the position of the sphere if needed
+        // backgroundSphereInstance.transform.setToTranslation(x, y, z);
+    }
+
+    @Override
+    public void show() {
+        // Implement if needed
+        assets = new AssetManager();
+        assets.load("models/Character/Y-Bot.g3db", Model.class);
+        // assets.load("models/cone/obj.obj", Model.class);
+        assets.load("models/game_room/final_game_room.g3db", Model.class);
+        assets.load("models/teleport_door/obj.g3db", Model.class);
+        assets.load("models/Chest_box/obj.g3db", Model.class);
+        // createSkybox();
+        System.out.println("Loading assets...");
+    }
+
+    @Override
+    public void render(float delta) {
+        // Update models if not initialized
+
+        if (!assetsLoaded) {
+            if (assets.update()) { // Check if all assets are loaded
+                initializeModels();
+            } else {
+                System.out.println("Loading assets...");
+                return; // Return early if assets are still loading
+            }
+        }
+
+        characterAniController.update(delta);
+        // Handle character movement
+        handleCharacterMovement(delta);
+
+        // Update camera position to follow the character
+        updateCameraPosition();
+
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        // Render models
+        modelBatch.begin(camera);
+        // Disable depth writing to ensure the sphere is always rendered in the
+        // background
+        if (backgroundSphereInstance != null)
+            modelBatch.render(backgroundSphereInstance);
+
+        modelBatch.render(instances, environment);
+
+        modelBatch.end();
+    }
+
+    private void handleCharacterMovement(float delta) {
+        float characterSpeed = 100.0f;
+        float animationSpeedFactor = 1f;
+        Vector3 newPosition = characterModel.transform.getTranslation(new Vector3());
+    
+        // Use the bounding box to set boundaries
+        float minX = roomBounds.min.x, maxX = roomBounds.max.x;
+        float minZ = roomBounds.min.z, maxZ = roomBounds.max.z;
+    
+        boolean isMoving = false;
+        float desiredRotationAngle = lastRotationAngle;
+    
+        boolean movingLeft = Gdx.input.isKeyPressed(Input.Keys.LEFT) && newPosition.x - characterSpeed * delta > minX;
+        boolean movingRight = Gdx.input.isKeyPressed(Input.Keys.RIGHT) && newPosition.x + characterSpeed * delta < maxX;
+        boolean movingUp = Gdx.input.isKeyPressed(Input.Keys.UP) && newPosition.z - characterSpeed * delta > minZ;
+        boolean movingDown = Gdx.input.isKeyPressed(Input.Keys.DOWN) && newPosition.z + characterSpeed * delta < maxZ;
+    
+        if (movingLeft) {
+            newPosition.x -= characterSpeed * delta;
+            desiredRotationAngle = -90;
+            isMoving = true;
+        }
+        if (movingRight) {
+            newPosition.x += characterSpeed * delta;
+            desiredRotationAngle = 90;
+            isMoving = true;
+        }
+        if (movingUp) {
+            newPosition.z -= characterSpeed * delta;
+            desiredRotationAngle = 180;
+            isMoving = true;
+        }
+        if (movingDown) {
+            newPosition.z += characterSpeed * delta;
+            desiredRotationAngle = 0;
+            isMoving = true;
+        }
+    
+        // Adjust rotation for diagonal movement
+        if (movingUp && movingLeft) {
+            desiredRotationAngle = -135;
+        } else if (movingUp && movingRight) {
+            desiredRotationAngle = 135;
+        } else if (movingDown && movingLeft) {
+            desiredRotationAngle = -45;
+        } else if (movingDown && movingRight) {
+            desiredRotationAngle = 45;
+        }
+    
+        // Rotate character only if there's a change in the rotation angle
+        if (desiredRotationAngle != lastRotationAngle) {
+            rotateCharacter(desiredRotationAngle - lastRotationAngle); // Adjust the rotation based on the difference
+            lastRotationAngle = desiredRotationAngle; // Update the last rotation angle
+        }
+    
+        characterModel.transform.setTranslation(newPosition);
+    
+        // Control the walking animation
+        if (isMoving) {
+            if (characterAniController.current != null) {
+                characterAniController.setAnimation("mixamo.com", -1, animationSpeedFactor, null);
+            }
+        } else {
+            if (characterAniController.current != null) {
+                characterAniController.animate("mixamo.com", -1, 0f, null, 0f); // Stop the animation
+            }
+        }
+    }
+    
+    
+
+    private void rotateCharacter(float angle) {
+        System.out.println("Angle: " + angle);
+        characterModel.transform.rotate(Vector3.Y, angle);
+    }
+
+    private void updateCameraPosition() {
+        // Assuming roomCenter is the center of your room model
+        Vector3 roomCenter = new Vector3();
+        roomModel.calculateBoundingBox(roomBounds).getCenter(roomCenter);
+
+        // Height and distance from the center for the camera
+        float cameraHeight = 450f; // Adjust this value as necessary
+        float distanceFromCenter = 450f; // Adjust this value as necessary
+
+        // Calculate the camera position for a 45-degree angle
+        Vector3 cameraPosition = new Vector3(
+                roomCenter.x,
+                roomCenter.y + cameraHeight,
+                roomCenter.z + distanceFromCenter);
+
+        // Set camera position
+        camera.position.set(cameraPosition);
+
+        // Calculate a point behind the character model to look at
+        Vector3 characterPosition = new Vector3();
+        characterModel.transform.getTranslation(characterPosition);
+        Vector3 lookAtPoint = new Vector3(characterPosition.x, characterPosition.y, characterPosition.z - 1); // Adjust
+                                                                                                              // '1' to
+                                                                                                              // increase/decrease
+                                                                                                              // the
+                                                                                                              // offset
+
+        // Look at the point behind the character model
+        camera.lookAt(lookAtPoint);
+        camera.up.set(Vector3.Y); // Ensure the camera's 'up' is Y-axis aligned
+        camera.update();
+    }
+
+    @Override
+    public void pause() {
+        // Implement if needed
+    }
+
+    @Override
+    public void resume() {
+        // Implement if needed
+    }
+
+    @Override
+    public void hide() {
+        // Implement if needed
+    }
+
+    @Override
+    public void dispose() {
+        if (modelBatch != null) {
+            modelBatch.dispose();
+        }
+        if (decalBatch != null) {
+            decalBatch.dispose();
+        }
+        if (environmentModel != null && environmentModel.model != null) {
+            environmentModel.model.dispose();
+            environmentModel = null;
+        }
+        if (characterTexture != null) {
+            characterTexture.dispose();
+            characterTexture = null;
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        camera.viewportWidth = width;
+        camera.viewportHeight = height;
+        camera.update();
+    }
+
+    // Implement other required methods...
+}
