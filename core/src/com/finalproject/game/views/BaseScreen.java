@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -49,13 +51,16 @@ public class BaseScreen implements Screen {
     private ModelInstance environmentModel; // 3D environment model
     private CameraInputController camController;
     private Texture characterTexture;
-    private Decal characterDecal;
+
     private DecalBatch decalBatch;
     public AssetManager assets;
     private ModelInstance roomModel; // 3D room model
     private ModelInstance characterModel; // 3D character model
     private ModelInstance battleEntrance;
     private ModelInstance treasureBox;
+    private Decal entrancePlateDecal;
+     private Decal characterImageDecal;
+
     private BoundingBox roomBounds = new BoundingBox();
     private boolean assetsLoaded = false;
     private Model backgroundSphereModel;
@@ -93,6 +98,8 @@ public class BaseScreen implements Screen {
 
         // Initialize models once they are loaded
         createBackgroundSphere();
+
+        decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
         // if (!assetsLoaded) {
         // if (assets.update()) { // Check if all assets are loaded
         // initializeModels();
@@ -124,11 +131,10 @@ public class BaseScreen implements Screen {
 
         Model entrance = assets.get("models/teleport_door/obj.g3db", Model.class);
         battleEntrance = new ModelInstance(entrance);
-        battleEntrance.transform.scl(1f);
+        battleEntrance.transform.scl(0.8f);
         battleEntrance.transform.setToTranslation(-100f, 200f, -480f);
-      
 
-        // * 
+        // *
 
         Model model = assets.get("models/Chest_box/obj.g3db", Model.class);
         treasureBox = new ModelInstance(model);
@@ -137,7 +143,19 @@ public class BaseScreen implements Screen {
 
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
         treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
-        
+
+        Texture entranceImage = new Texture(Gdx.files.internal("models/start.png"));
+        entrancePlateDecal = Decal.newDecal(entranceImage.getWidth(), entranceImage.getHeight(),
+                new TextureRegion(entranceImage), true);
+        entrancePlateDecal.setPosition(-75f, 360f, -450f);
+        entrancePlateDecal.setScale(0.1f);
+
+        Texture characterImage = this.selectedCharacter.getImageTexture();
+        characterImageDecal = Decal.newDecal(characterImage.getWidth(), characterImage.getHeight(),
+                new TextureRegion(characterImage), true);
+        characterImageDecal.setPosition(-185f, 380f, -450f);
+        characterImageDecal.setScale(0.3f);
+
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
 
         assetsLoaded = true;
@@ -148,16 +166,15 @@ public class BaseScreen implements Screen {
         // Calculate the original bounding box
         BoundingBox originalBounds = new BoundingBox();
         modelInstance.calculateBoundingBox(originalBounds);
-    
+
         // Create a new bounding box for transformed bounds
         BoundingBox transformedBounds = new BoundingBox(originalBounds);
-    
+
         // Apply the transformation of the model instance to the bounding box
         transformedBounds.mul(modelInstance.transform);
-    
+
         return transformedBounds;
     }
-    
 
     public void createBackgroundSphere() {
         // Load the texture for the background
@@ -216,7 +233,6 @@ public class BaseScreen implements Screen {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        // Render models
         modelBatch.begin(camera);
         // Disable depth writing to ensure the sphere is always rendered in the
         // background
@@ -226,6 +242,12 @@ public class BaseScreen implements Screen {
         modelBatch.render(instances, environment);
 
         modelBatch.end();
+
+        // Render models
+        decalBatch.add(entrancePlateDecal);
+        decalBatch.add(characterImageDecal);
+        decalBatch.flush();
+
         // ! ---
         // Disable depth test for shape rendering
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
@@ -349,8 +371,8 @@ public class BaseScreen implements Screen {
         roomModel.calculateBoundingBox(roomBounds).getCenter(roomCenter);
 
         // Height and distance from the center for the camera
-        float cameraHeight = 450f; // Adjust this value as necessary
-        float distanceFromCenter = 450f; // Adjust this value as necessary
+        float cameraHeight = 320f; // Adjust this value as necessary
+        float distanceFromCenter = 520f; // Adjust this value as necessary
 
         // Calculate the camera position for a 45-degree angle
         Vector3 cameraPosition = new Vector3(
