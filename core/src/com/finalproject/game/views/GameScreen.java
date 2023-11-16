@@ -128,6 +128,7 @@ public class GameScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = true;
                 // Open inventory here
+                game.setScreen(new InventoryScreen(game, GameScreen.this));
             }
         });
 
@@ -355,7 +356,7 @@ public class GameScreen implements Screen {
 
             game.getScreen().hide();
             game.setScreen(new BattleScreen(game, currentCharacter, currentMonster, this, baseSizeFactor));
-            
+
             // Remove the monster from the game after the battle
             // gameMonsters.remove(currentMonster);
             // Additional code for handling the battle (if necessary)
@@ -416,6 +417,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println("Disposing GameScreen");
         // Dispose your assets here
     }
 

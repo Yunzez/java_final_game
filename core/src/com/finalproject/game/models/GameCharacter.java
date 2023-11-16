@@ -91,7 +91,7 @@ public class GameCharacter {
         return maxHealth;
     }
 
-    public int getCharacterAttack() {
+    public int getAttack() {
         return attack;
     }
 
