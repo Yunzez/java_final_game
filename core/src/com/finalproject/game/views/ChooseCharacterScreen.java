@@ -186,7 +186,8 @@ public class ChooseCharacterScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selectedCharacter.assignRandomAttacks(3);
-                game.setScreen(new GameScreen(game, selectedCharacter));
+                game.setScreen(new BaseScreen(game,  selectedCharacter));
+               
                 dispose();
             }
         });

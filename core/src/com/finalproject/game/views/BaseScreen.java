@@ -32,14 +32,18 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.finalproject.game.FinalProjectGame;
+import com.finalproject.game.models.GameCharacter;
 
 public class BaseScreen implements Screen {
     private FinalProjectGame game;
     private PerspectiveCamera camera;
+    private GameCharacter selectedCharacter;
     private ModelBatch modelBatch;
     private Environment environment;
     private ModelInstance environmentModel; // 3D environment model
@@ -58,10 +62,17 @@ public class BaseScreen implements Screen {
     private ModelInstance backgroundSphereInstance;
     private AnimationController characterAniController;
     public Array<ModelInstance> instances = new Array<ModelInstance>();
-    private float lastRotationAngle = 0f; 
+    private float lastRotationAngle = 0f;
 
-    public BaseScreen(FinalProjectGame game) {
+    BoundingBox battleEntranceBounds = new BoundingBox();
+    BoundingBox treasureBoxBounds = new BoundingBox();
+    BoundingBox characterBounds = new BoundingBox();
+
+    ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+    public BaseScreen(FinalProjectGame game, GameCharacter selectedCharacter) {
         this.game = game;
+        this.selectedCharacter = selectedCharacter;
         camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 20f);
         camera.lookAt(0, 0, 0);
@@ -96,7 +107,7 @@ public class BaseScreen implements Screen {
     private void initializeModels() {
         Model character = assets.get("models/Character/Y-Bot.g3db", Model.class);
         characterModel = new ModelInstance(character);
-         characterModel.transform.scl(0.8f);
+        characterModel.transform.scl(0.8f);
         // characterModel.transform.rotate(Vector3.Y, 180f);
         // Create an animation controller
         for (Animation animation : characterModel.animations) {
@@ -110,23 +121,43 @@ public class BaseScreen implements Screen {
         Model room = assets.get("models/game_room/final_game_room.g3db", Model.class);
         roomModel = new ModelInstance(room);
         roomModel.calculateBoundingBox(roomBounds);
-        
 
         Model entrance = assets.get("models/teleport_door/obj.g3db", Model.class);
         battleEntrance = new ModelInstance(entrance);
         battleEntrance.transform.scl(1f);
         battleEntrance.transform.setToTranslation(-100f, 200f, -480f);
+      
+
+        // * 
 
         Model model = assets.get("models/Chest_box/obj.g3db", Model.class);
         treasureBox = new ModelInstance(model);
         treasureBox.transform.setToTranslation(300f, 10f, -420f);
         treasureBox.transform.scl(50f);
 
+        battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
+        treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
+        
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
 
         assetsLoaded = true;
 
     }
+
+    private BoundingBox calculateTransformedBoundingBox(ModelInstance modelInstance) {
+        // Calculate the original bounding box
+        BoundingBox originalBounds = new BoundingBox();
+        modelInstance.calculateBoundingBox(originalBounds);
+    
+        // Create a new bounding box for transformed bounds
+        BoundingBox transformedBounds = new BoundingBox(originalBounds);
+    
+        // Apply the transformation of the model instance to the bounding box
+        transformedBounds.mul(modelInstance.transform);
+    
+        return transformedBounds;
+    }
+    
 
     public void createBackgroundSphere() {
         // Load the texture for the background
@@ -195,25 +226,50 @@ public class BaseScreen implements Screen {
         modelBatch.render(instances, environment);
 
         modelBatch.end();
+        // ! ---
+        // Disable depth test for shape rendering
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+
+        // Draw bounding boxes
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        // Draw character bounding box
+        drawBoundingBox(shapeRenderer, characterBounds, Color.RED);
+
+        // Draw battle entrance bounding box
+        drawBoundingBox(shapeRenderer, battleEntranceBounds, Color.BLUE);
+
+        shapeRenderer.end();
+
+        // Re-enable depth test if needed elsewhere
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+    }
+
+    private void drawBoundingBox(ShapeRenderer shapeRenderer, BoundingBox box, Color color) {
+        shapeRenderer.setColor(color);
+        shapeRenderer.box(box.min.x, box.min.y, box.min.z,
+                box.getWidth(), box.getHeight(), box.getDepth());
     }
 
     private void handleCharacterMovement(float delta) {
         float characterSpeed = 100.0f;
         float animationSpeedFactor = 1f;
         Vector3 newPosition = characterModel.transform.getTranslation(new Vector3());
-    
+
         // Use the bounding box to set boundaries
-        float minX = roomBounds.min.x, maxX = roomBounds.max.x;
-        float minZ = roomBounds.min.z, maxZ = roomBounds.max.z;
-    
+        float offset = 10f;
+        float minX = roomBounds.min.x - offset, maxX = roomBounds.max.x - offset;
+        float minZ = roomBounds.min.z - offset, maxZ = roomBounds.max.z - offset;
+
         boolean isMoving = false;
         float desiredRotationAngle = lastRotationAngle;
-    
+
         boolean movingLeft = Gdx.input.isKeyPressed(Input.Keys.LEFT) && newPosition.x - characterSpeed * delta > minX;
         boolean movingRight = Gdx.input.isKeyPressed(Input.Keys.RIGHT) && newPosition.x + characterSpeed * delta < maxX;
         boolean movingUp = Gdx.input.isKeyPressed(Input.Keys.UP) && newPosition.z - characterSpeed * delta > minZ;
         boolean movingDown = Gdx.input.isKeyPressed(Input.Keys.DOWN) && newPosition.z + characterSpeed * delta < maxZ;
-    
+
         if (movingLeft) {
             newPosition.x -= characterSpeed * delta;
             desiredRotationAngle = -90;
@@ -234,7 +290,7 @@ public class BaseScreen implements Screen {
             desiredRotationAngle = 0;
             isMoving = true;
         }
-    
+
         // Adjust rotation for diagonal movement
         if (movingUp && movingLeft) {
             desiredRotationAngle = -135;
@@ -245,15 +301,15 @@ public class BaseScreen implements Screen {
         } else if (movingDown && movingRight) {
             desiredRotationAngle = 45;
         }
-    
+
         // Rotate character only if there's a change in the rotation angle
         if (desiredRotationAngle != lastRotationAngle) {
             rotateCharacter(desiredRotationAngle - lastRotationAngle); // Adjust the rotation based on the difference
             lastRotationAngle = desiredRotationAngle; // Update the last rotation angle
         }
-    
+
         characterModel.transform.setTranslation(newPosition);
-    
+
         // Control the walking animation
         if (isMoving) {
             if (characterAniController.current != null) {
@@ -264,9 +320,23 @@ public class BaseScreen implements Screen {
                 characterAniController.animate("mixamo.com", -1, 0f, null, 0f); // Stop the animation
             }
         }
+
+        // battleEntrance.calculateBoundingBox(battleEntranceBounds);
+        // treasureBox.calculateBoundingBox(treasureBoxBounds);
+        characterBounds = calculateTransformedBoundingBox(characterModel);
+        // characterModel.calculateBoundingBox(characterBounds);
+        System.out.println("Character Bounds: " + characterBounds);
+        System.out.println("Battle Entrance Bounds: " + battleEntranceBounds);
+        if (characterBounds.intersects(battleEntranceBounds)) {
+            // Trigger action for battle soy entrance
+            System.out.println("Battle entrance");
+            game.setScreen(new GameScreen(game, selectedCharacter));
+        }
+
+        if (characterBounds.intersects(treasureBoxBounds)) {
+            // Trigger action for treasure box
+        }
     }
-    
-    
 
     private void rotateCharacter(float angle) {
         System.out.println("Angle: " + angle);
@@ -337,6 +407,7 @@ public class BaseScreen implements Screen {
             characterTexture.dispose();
             characterTexture = null;
         }
+        shapeRenderer.dispose();
     }
 
     @Override

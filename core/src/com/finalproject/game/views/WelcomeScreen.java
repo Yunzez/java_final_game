@@ -59,8 +59,7 @@ public class WelcomeScreen implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Clicked: " + finalLabel);
                     if ("Start".equals(finalLabel)) {
-                        // game.setScreen(new ChooseCharacterScreen(game));
-                        game.setScreen(new BaseScreen(game));
+                        game.setScreen(new ChooseCharacterScreen(game));
                         dispose();
                     }
 
