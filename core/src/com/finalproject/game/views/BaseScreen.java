@@ -59,7 +59,7 @@ public class BaseScreen implements Screen {
     private ModelInstance battleEntrance;
     private ModelInstance treasureBox;
     private Decal entrancePlateDecal;
-     private Decal characterImageDecal;
+    private Decal characterImageDecal;
 
     private BoundingBox roomBounds = new BoundingBox();
     private boolean assetsLoaded = false;
@@ -141,6 +141,10 @@ public class BaseScreen implements Screen {
         treasureBox.transform.setToTranslation(300f, 10f, -420f);
         treasureBox.transform.scl(50f);
 
+        Model campfire = assets.get("models/campfire/campfire.g3db", Model.class);
+        ModelInstance campfireInstance = new ModelInstance(campfire);
+        campfireInstance.transform.scl(2f);
+
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
         treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
 
@@ -157,7 +161,7 @@ public class BaseScreen implements Screen {
         characterImageDecal.setScale(0.3f);
 
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
-
+        instances.add(campfireInstance);
         assetsLoaded = true;
 
     }
@@ -206,6 +210,7 @@ public class BaseScreen implements Screen {
         assets.load("models/game_room/final_game_room.g3db", Model.class);
         assets.load("models/teleport_door/obj.g3db", Model.class);
         assets.load("models/Chest_box/obj.g3db", Model.class);
+        assets.load("models/campfire/campfire.g3db", Model.class);
         // createSkybox();
         System.out.println("Loading assets...");
     }
