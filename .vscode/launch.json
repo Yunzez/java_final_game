@@ -14,7 +14,6 @@
       "request": "launch",
       "mainClass": "com.finalproject.game.DesktopLauncher",
       "projectName": "finalProject-desktop",
-      "vmArgs": "-XstartOnFirstThread"
     }
   ]
 }
