@@ -42,8 +42,8 @@
     "defense": 12,
     "speed": 20,
     "level": 1,
-    "name": "Place holder",
-    "imagePath": "charactors/xiaochuan.png"
+    "name": "Beff Jezos",
+    "imagePath": "charactors/beffs.png"
   },
   {
     "health": 80,
@@ -51,8 +51,8 @@
     "defense": 12,
     "speed": 20,
     "level": 1,
-    "name": "Place holder",
-    "imagePath": "charactors/xiaochuan.png"
+    "name": "Jezos Beffs",
+    "imagePath": "charactors/jezos.png"
   },
   {
     "health": 80,
@@ -60,8 +60,8 @@
     "defense": 12,
     "speed": 20,
     "level": 1,
-    "name": "Place holder",
-    "imagePath": "charactors/xiaochuan.png"
+    "name": "Meme Man",
+    "imagePath": "charactors/Meme_man.png"
   },
   {
     "health": 80,

@@ -13,7 +13,10 @@ public enum Attack {
     OFF_KEY("Off Key", AttackType.KARAOKE, 10, "Blasts a note so off-key, it disrupts the enemy's focus."),
 
     // Special attack
-    POWER_OF_LITANG("Litang Power", AttackType.SPECIAL, 30, "Bring out the power of Litang! Ding's special attack! ");
+
+    POWER_OF_LITANG("Litang Power", AttackType.SPECIAL, 30, "Bring out the power of Litang! Ding's special attack! "),
+    
+    PRIVACY_INVASION("Privacy Invasion", AttackType.SPECIAL, 33, "Use collected data on ButtBook to invade the enemy's privacy!, Zuck's special attack!");
     
     private final String name;
     private final AttackType type;
