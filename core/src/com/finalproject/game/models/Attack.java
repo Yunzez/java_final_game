@@ -1,5 +1,9 @@
 package com.finalproject.game.models;
 
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.utils.Array;
+import java.util.ArrayList;
+
 public enum Attack {
     BACKHANDED_COMPLIMENT("Backhanded Compliment", AttackType.SARCASM, 15, "A compliment that's actually an insult. Leaves the target questioning their self-worth."),
     SCOPE_CREEP("Scope Creep", AttackType.ANGULAR, 20, "Slowly increases the complexity until the target is overwhelmed."),
@@ -13,11 +17,19 @@ public enum Attack {
     OFF_KEY("Off Key", AttackType.KARAOKE, 10, "Blasts a note so off-key, it disrupts the enemy's focus."),
 
     // Special attack
+    
+    POWER_OF_LITANG("Litang Power", AttackType.SPECIAL_RELX, 30, "Bring out the power of Litang! Ding's special attack! "),
+    
+    PRIVACY_INVASION("Privacy Invasion", AttackType.SPECIAL_ZUCK, 33, "Use collected data on ButtBook to invade the enemy's privacy!, Zuck's special attack!"),
+    
+    SPACE_WINER("Space Winer", AttackType.SPECIAL_JEZO, 35, "Use the Space Origin Rocket that looks like a sausage to hit the enemy!"),
+    
+    NO_TIME_TO_PEE("No Time To Pee", AttackType.SPECIAL_BEFF, 35, "Use the super short break interval to make the enemy have no time to pee!"),
+    
+    HELICOPTER("Helicopter", AttackType.SPECIAL_KOUBEI, 35, "Use the helicopter to hit the enemy!"),
 
-    POWER_OF_LITANG("Litang Power", AttackType.SPECIAL, 30, "Bring out the power of Litang! Ding's special attack! "),
-    
-    PRIVACY_INVASION("Privacy Invasion", AttackType.SPECIAL, 33, "Use collected data on ButtBook to invade the enemy's privacy!, Zuck's special attack!");
-    
+    PORRIGE_PUNCH("Porridge Punch", AttackType.SPECIAL_SUN, 35, "Use the porridge to hit the enemy!");
+
     private final String name;
     private final AttackType type;
     private final int harm;
@@ -48,5 +60,27 @@ public enum Attack {
 
     public String toString() {
         return name + " (" + type.toString() + "): " + harm + " damage";
+    }
+
+     // Method to get attacks by type
+    public static ArrayList<Attack> getAttacksByType(AttackType type) {
+        ArrayList<Attack> attacksOfType = new ArrayList<Attack>();
+        for (Attack attack : Attack.values()) {
+            if (attack.getType() == type) {
+                attacksOfType.add(attack);
+            }
+        }
+        return attacksOfType;
+    }
+
+    // Method to get attacks excluding types starting with SPECIAL
+    public static ArrayList<Attack> getAttacksExcludingSpecial() {
+        ArrayList<Attack> nonSpecialAttacks = new ArrayList<>();
+        for (Attack attack : Attack.values()) {
+            if (!attack.getType().name().startsWith("SPECIAL")) {
+                nonSpecialAttacks.add(attack);
+            }
+        }
+        return nonSpecialAttacks;
     }
 }

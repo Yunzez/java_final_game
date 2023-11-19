@@ -11,7 +11,13 @@ public enum AttackType {
     CRINGE("Cringe", "Makes everyone uncomfortable for a moment."),
     LITERALISM("Literalism", "Takes things too literally, leading to unexpected results."),
     KARAOKE("Karaoke", "Assaults the senses with off-key singing and dramatic gestures."),
-    SPECIAL("Special", "A special attack that only RELX Ding can use.");
+    SPECIAL_RELX("Special", "A special attack that only RELX Ding can use."),
+    SPECIAL_SUN("Special", "A special attack that only RELX Ding can use."),
+    SPECIAL_ZUCK("Special", "A special attack that only Mark Zuck can use."),
+    SPECIAL_BO("Special", "A special attack that only Bob can use."),
+    SPECIAL_BEFF("Special", "A special attack that only Beff can use."),
+    SPECIAL_JEZO("Special", "A special attack that only Jezo can use."),
+    SPECIAL_KOUBEI("Special", "A special attack that only Koubei can use.");
 
     private final String name;
     private final String description;
