@@ -330,6 +330,8 @@ public class BattleScreen implements Screen {
         Label tooltipLabel = new Label("Test", tooltipStyle);
         tooltipLabel.setVisible(true);
         tooltipLabel.setWrap(true); // Enable word wrapping
+        tooltipLabel.setAlignment(Align.center); // Align the text to the top left corner
+
 
         // Create the tooltip table with a background
         Table tooltipTable = new Table();
@@ -337,7 +339,7 @@ public class BattleScreen implements Screen {
         tooltipTable.pad(10);
 
         // Add the label to the tooltip table
-        tooltipTable.add(tooltipLabel).width(tableMaxWidth).expand().fill();
+        tooltipTable.add(tooltipLabel).width(tableMaxWidth * 0.9f).expand().fill().padLeft(10).padRight(10);
 
         // Set the initial size of the tooltip table
         tooltipTable.setSize(tableMaxWidth, tableMaxHeight);
