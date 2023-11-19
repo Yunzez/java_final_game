@@ -48,14 +48,15 @@ public class GameScreen implements Screen {
     float speedX = 0.15f; // speed as a percentage of screen width
     float speedY = 0.2f; // speed as a percentage of screen height
 
+    // ! game setting:
+    private int maxGameLevel;
+    private int currentGameLevel;
     // New variables for health, attack, and defense
-    int health = 100;
-    int attack = 50;
-    int defense = 40;
+    int health;
+    int level;
 
     Label healthLabel;
-    Label attackLabel;
-    Label defenseLabel;
+    Label levelLabel;
 
     boolean isPaused = false;
 
@@ -86,11 +87,15 @@ public class GameScreen implements Screen {
 
     private GameCharacter currentMonster;
 
-    public GameScreen(FinalProjectGame game, GameCharacter currentCharacter) {
+    public GameScreen(FinalProjectGame game, GameCharacter currentCharacter, int maxGameLevel, int currentGameLevel) {
         this.currentCharacter = currentCharacter;
         characterX = 0;
         characterY = 0;
         this.game = game;
+        this.health = currentCharacter.getCurrentHealth();
+        this.level = currentCharacter.getLevel();
+        this.maxGameLevel = maxGameLevel;
+        this.currentGameLevel = currentGameLevel;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
@@ -116,13 +121,14 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // Create labels
-        Label.LabelStyle gameFont = new Label.LabelStyle(game.font, Color.WHITE);
-        healthLabel = new Label("Health: " + health, gameFont);
-        attackLabel = new Label("Attack: " + attack, gameFont);
-        defenseLabel = new Label("Defense: " + defense, gameFont);
+        Label.LabelStyle gameFont = new Label.LabelStyle(game.font, Color.DARK_GRAY);
+
+        healthLabel = new Label("Health: " + health + "/" + currentCharacter.getMaxHealth(), gameFont);
+        levelLabel = new Label("Level: " + level, gameFont);
 
         // Create and add the Inventory button
         TextButton inventoryButton = GameButton.createButton("Inventory", game.font);
+        inventoryButton.setSize(240, 50);
         inventoryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -133,6 +139,7 @@ public class GameScreen implements Screen {
         });
 
         TextButton pauseButton = GameButton.createButton("Pause", game.font);
+        pauseButton.setSize(240, 50);
         pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -141,6 +148,7 @@ public class GameScreen implements Screen {
         });
 
         TextButton settingsButton = GameButton.createButton("Settings", game.font);
+        settingsButton.setSize(240, 50);
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -158,10 +166,9 @@ public class GameScreen implements Screen {
         statusBarTable.top().left();
         statusBarTable.setBackground(new Image(statusBarBackground).getDrawable());
         statusBarTable.add(healthLabel).pad(11);
-        statusBarTable.add(attackLabel).pad(11);
-        statusBarTable.add(defenseLabel).pad(11);
+        statusBarTable.add(levelLabel).pad(11);
 
-        statusBarTable.setBounds(0, Gdx.graphics.getHeight() - 80, Gdx.graphics.getWidth(), 80);
+        statusBarTable.setBounds(0, Gdx.graphics.getHeight() - 90, Gdx.graphics.getWidth(), 90);
 
         Table buttonTable = new Table();
         buttonTable.add(inventoryButton).pad(11);
@@ -250,8 +257,8 @@ public class GameScreen implements Screen {
         this.battleResult = result;
 
         // Remove the monster from the game after the battle
-        if(this.battleResult != null) {
-              gameMonsters.remove(currentMonster);
+        if (this.battleResult != null) {
+            gameMonsters.remove(currentMonster);
         }
     }
 
@@ -296,7 +303,13 @@ public class GameScreen implements Screen {
 
             // Create a new GameScreen with a new character or the current character
             // Ensure that the constructor of GameScreen creates a new map
-            game.setScreen(new GameScreen(game, currentCharacter));
+            if (this.currentGameLevel == this.maxGameLevel) {
+                game.setScreen(new BaseScreen(game, currentCharacter));
+                return;
+            } else {
+                game.setScreen(new GameScreen(game, currentCharacter, this.maxGameLevel, this.currentGameLevel + 1));
+            }
+
             return;
             // No need to call dispose() here, as setScreen() should handle the old screen
         }
@@ -318,7 +331,7 @@ public class GameScreen implements Screen {
             // Additional check for boundaries
             if (potentialX >= 0 && potentialX <= mapWidthPixels - charactorDesiredWidth &&
                     potentialY >= 0 && potentialY <= mapHeightPixels - charactorDesiredHeight) {
-                 currentMonster = isCollidingWithMonster(potentialX, potentialY);
+                currentMonster = isCollidingWithMonster(potentialX, potentialY);
                 // Check for collision with monsters before actually moving
                 if (currentMonster == null) {
                     // No collision with monster, update character position

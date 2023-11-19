@@ -54,7 +54,7 @@ public class BattleScreen implements Screen {
     private Texture battleBottomTabTexture;
     private BitmapFont battleFont;
     private BitmapFont describeFont;
-
+    
     private Label activityLabel;
     private Label testHPUser;
     private Label testHPMonster;
@@ -130,6 +130,22 @@ public class BattleScreen implements Screen {
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage.addActor(backgroundImage);
+
+        // Create a Pixmap with the desired color and alpha
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
+        pixmap.setColor(0, 0, 0, 0.5f); // Black with 50% opacity
+        pixmap.fill(); // Fill the pixmap with the set color
+
+        // Create a Texture from Pixmap
+        Texture overlayTexture = new Texture(pixmap);
+        pixmap.dispose(); // Dispose of the pixmap to free memory
+
+        // Create an Image actor with the overlay texture
+        Image overlayImage = new Image(overlayTexture);
+        overlayImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Add the overlay image to the stage
+        stage.addActor(overlayImage);
     }
 
     private void initializeCamera() {
@@ -331,7 +347,6 @@ public class BattleScreen implements Screen {
         tooltipLabel.setVisible(true);
         tooltipLabel.setWrap(true); // Enable word wrapping
         tooltipLabel.setAlignment(Align.center); // Align the text to the top left corner
-
 
         // Create the tooltip table with a background
         Table tooltipTable = new Table();

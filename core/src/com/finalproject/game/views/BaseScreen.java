@@ -101,14 +101,7 @@ public class BaseScreen implements Screen {
         createBackgroundSphere();
 
         decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
-        // if (!assetsLoaded) {
-        // if (assets.update()) { // Check if all assets are loaded
-        // initializeModels();
-        // } else {
-        // System.out.println("Loading assets...");
-        // return; // Return early if assets are still loading
-        // }
-        // }
+       
 
     }
 
@@ -359,7 +352,7 @@ public class BaseScreen implements Screen {
         if (characterBounds.intersects(battleEntranceBounds)) {
             // Trigger action for battle soy entrance
             System.out.println("Battle entrance");
-            game.setScreen(new GameScreen(game, selectedCharacter));
+            game.setScreen(new GameScreen(game, selectedCharacter, 2, 1));
         }
 
         if (characterBounds.intersects(treasureBoxBounds)) {
