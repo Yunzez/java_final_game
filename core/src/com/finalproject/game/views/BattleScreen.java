@@ -68,7 +68,11 @@ public class BattleScreen implements Screen {
     private float middleHeightRatio = 1 - bottomHeightRatio - topHeightRatio - 0.05f;
 
     private int currentTurn; // 0 for player, 1 for monster
-    private Label waitingLabel;
+    private Label centerLabel;
+    private Table centerTable;
+
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     public BattleScreen(FinalProjectGame game, GameCharacter playerCharacter, GameCharacter monster,
             GameScreen mapScreen, float baseSizeFactor) {
@@ -78,6 +82,7 @@ public class BattleScreen implements Screen {
         this.monster.assignRandomAttacks(3);
         this.mapScreen = mapScreen;
         this.baseSizeFactor = baseSizeFactor;
+
         if (playerCharacter.getSpeed() >= monster.getSpeed()) {
             this.currentTurn = 0;
         } else {
@@ -91,10 +96,40 @@ public class BattleScreen implements Screen {
         FontGenerator fontGenerator2 = new FontGenerator("fonts/VCR_OSD_MONO_1.001.ttf");
         describeFont = fontGenerator2.generate(20, Color.WHITE, 0, Color.WHITE);
         fontGenerator2.dispose();
+        createCenterTable();
+    }
+
+    public void createCenterTable() {
+        centerTable = new Table();
+        float tableWidth = Gdx.graphics.getWidth() * 0.2f;
+        float tableHeight = Gdx.graphics.getHeight() * 0.2f;
+        centerTable.setSize(tableWidth, tableHeight);
+
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/infotable_bg.png"));
+        TextureRegion region = new TextureRegion(backgroundTexture);
+        Drawable backgroundDrawable = new TextureRegionDrawable(region);
+        backgroundDrawable.setMinWidth(tableWidth);
+        backgroundDrawable.setMinHeight(tableHeight);
+        centerTable.setBackground(backgroundDrawable);
+
+        centerTable.pad(10); // Add padding around the label
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(battleFont, Color.WHITE);
-        waitingLabel = new Label("Waiting for opponent...", labelStyle);
-        waitingLabel.setVisible(false); // Initially invisible
+        centerLabel = new Label("Waiting for opponent...", labelStyle);
+        centerLabel.setVisible(true); // Make sure this is initialized
+        centerTable.add(centerLabel).center();
+
+        centerTable.setVisible(false); // Initially invisible, set to true when needed
+    }
+
+    public void setRandomBackground() {
+        int bgNumber = (int) (Math.random() * 3) + 1;
+        System.out.println("bgNumber: " + bgNumber);
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/battle_bg" + bgNumber + ".png"));
+
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        stage.addActor(backgroundImage);
     }
 
     private void initializeCamera() {
@@ -108,6 +143,7 @@ public class BattleScreen implements Screen {
         multiplexer.addProcessor(stage);
         // Add other input processors if needed
         Gdx.input.setInputProcessor(multiplexer);
+
     }
 
     private void loadTextures() {
@@ -156,13 +192,22 @@ public class BattleScreen implements Screen {
         middleContainerWrapper.setActor(middleTable);
         stage.addActor(middleContainerWrapper);
 
-        // set the waiting label here
-        waitingLabel.setDebug(true);
-        waitingLabel.setPosition(
-                Gdx.graphics.getWidth() / 2 - waitingLabel.getWidth() / 2,
-                Gdx.graphics.getHeight() * bottomHeightRatio + middleContainerWrapper.getHeight() / 2
-                        - waitingLabel.getHeight() / 2);
-        stage.addActor(waitingLabel);
+        // * Create the table to hold the center label
+        float tableWidth = Gdx.graphics.getWidth() * 0.2f;
+        float tableHeight = Gdx.graphics.getHeight() * 0.2f;
+        centerTable.setSize(tableWidth, tableHeight);
+
+        // Position the table in the middle of the screen
+        float posX = Gdx.graphics.getWidth() / 2 - tableWidth / 2;
+        float posY = Gdx.graphics.getHeight() * bottomHeightRatio + middleContainerWrapper.getHeight() / 2
+                - tableHeight / 2;
+        centerTable.setPosition(posX, posY);
+
+        // Add the table to the stage
+        stage.addActor(centerTable);
+
+        // Optional: Enable debug lines to visualize the layout during development
+        centerTable.setDebug(true);
     }
 
     @Override
@@ -262,7 +307,7 @@ public class BattleScreen implements Screen {
         // This is the main table that holds all bottom UI elements
         Table bottomTable = new Table();
         bottomTable.setBackground(new TextureRegionDrawable(new TextureRegion(battleBottomTabTexture)));
-        bottomTable.padBottom(35);
+        bottomTable.padBottom(15);
 
         // Create attack and item containers and add them to the bottomTable
         Table attackContainer = new Table();
@@ -272,37 +317,99 @@ public class BattleScreen implements Screen {
         Label.LabelStyle tooltipStyle = new Label.LabelStyle(game.font, Color.WHITE);
 
         // Create the tooltip label and initially set it to invisible
+
+        // Set a maximum size for the tooltip table
+
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/infotable_bg.png"));
+        TextureRegion region = new TextureRegion(backgroundTexture);
+        Drawable backgroundDrawable = new TextureRegionDrawable(region);
+        float tableMaxWidth = Gdx.graphics.getWidth() * 0.4f;
+        float tableMaxHeight = Gdx.graphics.getHeight() * 0.1f;
+
+        // Create the tooltip label
         Label tooltipLabel = new Label("Test", tooltipStyle);
-        tooltipLabel.setVisible(false);
-        stage.setDebugAll(false);
-        // Add the tooltip label to the stage
-        stage.addActor(tooltipLabel);
+        tooltipLabel.setVisible(true);
+        tooltipLabel.setWrap(true); // Enable word wrapping
 
-        tooltipLabel.toFront(); // Brings the tooltip to the front
+        // Create the tooltip table with a background
+        Table tooltipTable = new Table();
+        tooltipTable.setBackground(backgroundDrawable);
+        tooltipTable.pad(10);
+
+        // Add the label to the tooltip table
+        tooltipTable.add(tooltipLabel).width(tableMaxWidth).expand().fill();
+
+        // Set the initial size of the tooltip table
+        tooltipTable.setSize(tableMaxWidth, tableMaxHeight);
+
+        // Add the tooltip table to the stage and initially set it to invisible
+        tooltipTable.setVisible(false);
+        stage.addActor(tooltipTable);
         ArrayList<Attack> attacks = playerCharacter.getAttacks();
-
+        int attackCount = 0;
         for (Attack attack : attacks) {
+            final boolean[] tooltipVisible = new boolean[] { false };
+
+            final float tableMaxWidthFinal = tableMaxWidth;
+            final float tableMaxHeightFinal = tableMaxHeight;
             final Attack currentAttack = attack;
             final String attackDescription = attack.getDescription(); // Get the description for the tooltip
             final int attackHarm = attack.getHarm();
+            final Table currentTooltipTable = tooltipTable;
             final Label currentTooltipLabel = tooltipLabel;
-            final TextButton button = GameButton.createButton(attack.getName(), game.font, "small");
+            final TextButton button = GameButton.createButton(attack.getName(), game.font, "normal");
+            attackCount++;
+            // After every two buttons, start a new row
+            if ((attackCount + 1) % 2 == 0) {
+                attackContainer.row();
+            }
+
             button.addListener(new InputListener() {
+                private long lastEnterTime = 0;
+                private long lastExitTime = 0;
+
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    currentTooltipLabel.setDebug(true); // button
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastEnterTime > 50) { // 200 milliseconds delay
+                        // Show tooltip
+                        currentTooltipTable.setVisible(true);
+                        lastEnterTime = currentTime;
+                        currentTooltipTable.setDebug(true); // button
 
-                    currentTooltipLabel.setText(attackDescription + "harm: " + attackHarm);
-                    currentTooltipLabel.pack(); // This will update the size of the label to fit the text
-                    currentTooltipLabel.setPosition(button.getX() + x, button.getY() + y);
-                    currentTooltipLabel.toFront(); // Ensure tooltip is in front
-                    currentTooltipLabel.setVisible(true);
+                        // Set the text of the tooltip label
+                        currentTooltipLabel.setText(attackDescription + " Harm: " + attackHarm);
+
+                        // Update the tooltip table size to match the label (after setting the text)
+                        currentTooltipTable.setSize(tableMaxWidthFinal, tableMaxHeightFinal); // Keep the tooltip table
+                                                                                              // size
+                        // consistent
+
+                        // Update the tooltip table position relative to the button
+                        currentTooltipTable.setPosition(button.getX() + x, button.getY() + y + 40);
+
+                    }
+
+                    // Make the tooltip visible
+
+                    // currentTooltipTable.toFront(); // Brings the tooltip table to the front
+                    // currentTooltipLabel.toFront(); // Brings the tooltip to the front
+
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    // When the mouse exits the button, hide the tooltip
-                    currentTooltipLabel.setVisible(false);
+                    long currentTime = System.currentTimeMillis();
+                    lastExitTime = currentTime;
+                    new Timer().scheduleTask(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            if (System.currentTimeMillis() - lastExitTime >= 50) {
+                                // Hide tooltip
+                                currentTooltipTable.setVisible(false);
+                            }
+                        }
+                    }, 0.05f);
                 }
 
                 @Override
@@ -315,7 +422,7 @@ public class BattleScreen implements Screen {
 
             });
 
-            attackContainer.add(button).size(150, 60).pad(10);
+            attackContainer.add(button).size(250, 80).pad(10);
         }
 
         String[] itemLabels = { "item1", "item2", "item3", "item4" };
@@ -334,6 +441,9 @@ public class BattleScreen implements Screen {
 
         // Finally, add the bottomContainerWrapper to the stage
         stage.addActor(bottomContainerWrapper);
+        tooltipTable.toFront(); // Brings the tooltip table to the front
+        tooltipLabel.toFront(); // Brings the tooltip to the front
+
     }
 
     public void issueAttack(Attack attack) {
@@ -348,7 +458,7 @@ public class BattleScreen implements Screen {
                 returnToGameScreen("Won");
             } else {
                 // Schedule the monster's attack after a delay
-                waitingLabel.setVisible(true);
+                centerTable.setVisible(true);
                 float delay = 3; // seconds
                 Timer.schedule(new Timer.Task() {
                     @Override
@@ -364,7 +474,7 @@ public class BattleScreen implements Screen {
     }
 
     private void performMonsterAttack() {
-        waitingLabel.setVisible(false);
+        centerTable.setVisible(false);
         // Logic for the monster to choose and perform an attack
         Attack monsterAttack = monster.getRandomAttack();// ... logic to select an attack ...
         playerCharacter.setHealth(playerCharacter.getCurrentHealth() - monsterAttack.getHarm());
@@ -404,6 +514,8 @@ public class BattleScreen implements Screen {
     public void show() {
         initializeCamera();
         initializeStage();
+        // ! we set background the moment we create the stage
+        setRandomBackground();
         loadTextures();
         createUI();
     }
@@ -466,8 +578,8 @@ public class BattleScreen implements Screen {
         }
 
         // Show the message immediately
-        waitingLabel.setText(message);
-        waitingLabel.setVisible(true);
+        centerLabel.setText(message);
+        centerTable.setVisible(true);
 
         // Delay the switch back to the game screen
         float delay = 3; // seconds
@@ -476,7 +588,7 @@ public class BattleScreen implements Screen {
             @Override
             public void run() {
                 // Hide the waiting label
-                waitingLabel.setVisible(false);
+                centerTable.setVisible(false);
 
                 // This block will be executed after the delay
                 // Switch back to the game screen
@@ -506,6 +618,7 @@ public class BattleScreen implements Screen {
     public void dispose() {
         stage.dispose();
         battleBottomTabTexture.dispose();
+        backgroundTexture.dispose();
     }
 
 }

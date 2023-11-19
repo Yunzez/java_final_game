@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
@@ -138,11 +139,12 @@ public class BaseScreen implements Screen {
 
         Model model = assets.get("models/Chest_box/obj.g3db", Model.class);
         treasureBox = new ModelInstance(model);
-        treasureBox.transform.setToTranslation(300f, 10f, -420f);
+        treasureBox.transform.setToTranslation(200f, 10f, -420f);
         treasureBox.transform.scl(50f);
 
         Model campfire = assets.get("models/campfire/campfire.g3db", Model.class);
         ModelInstance campfireInstance = new ModelInstance(campfire);
+        campfireInstance.transform.setToTranslation(350f, 10f, -420f);
         campfireInstance.transform.scl(2f);
 
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
