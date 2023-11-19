@@ -1,0 +1,11 @@
+square_button.png
+size:512,64
+repeat:none
+disable-button
+bounds:2,2,120,60
+down-button
+bounds:124,2,120,60
+highlight-button
+bounds:246,2,120,60
+up-button
+bounds:368,2,120,60

@@ -52,11 +52,10 @@ public class GameScreen implements Screen {
     private int maxGameLevel;
     private int currentGameLevel;
     // New variables for health, attack, and defense
-    int health;
-    int level;
 
     Label healthLabel;
     Label levelLabel;
+    Label gameLevelLabel;
 
     boolean isPaused = false;
 
@@ -92,14 +91,13 @@ public class GameScreen implements Screen {
         characterX = 0;
         characterY = 0;
         this.game = game;
-        this.health = currentCharacter.getCurrentHealth();
-        this.level = currentCharacter.getLevel();
+
         this.maxGameLevel = maxGameLevel;
         this.currentGameLevel = currentGameLevel;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+
         characterTexture = currentCharacter.getImageTexture();
         float aspectRatio = (float) this.characterTexture.getWidth() / (float) this.characterTexture.getHeight();
         charactorDesiredWidth = charactorDesiredHeight * aspectRatio; // width to maintain aspect ratio
@@ -121,11 +119,13 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // Create labels
+        Gdx.input.setInputProcessor(stage);
         Label.LabelStyle gameFont = new Label.LabelStyle(game.font, Color.DARK_GRAY);
 
-        healthLabel = new Label("Health: " + health + "/" + currentCharacter.getMaxHealth(), gameFont);
-        levelLabel = new Label("Level: " + level, gameFont);
-
+        healthLabel = new Label(
+                "Health: " + currentCharacter.getCurrentHealth() + "/" + currentCharacter.getMaxHealth(), gameFont);
+        levelLabel = new Label("Level: " + currentCharacter.getLevel(), gameFont);
+        gameLevelLabel = new Label("Game Level: " + currentGameLevel + "/" + maxGameLevel, gameFont);
         // Create and add the Inventory button
         TextButton inventoryButton = GameButton.createButton("Inventory", game.font);
         inventoryButton.setSize(240, 50);
@@ -165,8 +165,9 @@ public class GameScreen implements Screen {
         Table statusBarTable = new Table();
         statusBarTable.top().left();
         statusBarTable.setBackground(new Image(statusBarBackground).getDrawable());
-        statusBarTable.add(healthLabel).pad(11);
-        statusBarTable.add(levelLabel).pad(11);
+        statusBarTable.add(healthLabel).pad(12);
+        statusBarTable.add(levelLabel).pad(12);
+        statusBarTable.add(gameLevelLabel).pad(12);
 
         statusBarTable.setBounds(0, Gdx.graphics.getHeight() - 90, Gdx.graphics.getWidth(), 90);
 

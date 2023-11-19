@@ -54,7 +54,7 @@ public class BattleScreen implements Screen {
     private Texture battleBottomTabTexture;
     private BitmapFont battleFont;
     private BitmapFont describeFont;
-    
+
     private Label activityLabel;
     private Label testHPUser;
     private Label testHPMonster;
@@ -323,7 +323,7 @@ public class BattleScreen implements Screen {
         // This is the main table that holds all bottom UI elements
         Table bottomTable = new Table();
         bottomTable.setBackground(new TextureRegionDrawable(new TextureRegion(battleBottomTabTexture)));
-        bottomTable.padBottom(15);
+        bottomTable.padBottom(5);
 
         // Create attack and item containers and add them to the bottomTable
         Table attackContainer = new Table();
@@ -374,7 +374,7 @@ public class BattleScreen implements Screen {
             final int attackHarm = attack.getHarm();
             final Table currentTooltipTable = tooltipTable;
             final Label currentTooltipLabel = tooltipLabel;
-            final TextButton button = GameButton.createButton(attack.getName(), game.font, "normal");
+            final TextButton button = GameButton.createButton(attack.getName(), game.font, "square");
             attackCount++;
             // After every two buttons, start a new row
             if ((attackCount + 1) % 2 == 0) {
@@ -439,13 +439,13 @@ public class BattleScreen implements Screen {
 
             });
 
-            attackContainer.add(button).size(250, 80).pad(10);
+            attackContainer.add(button).size(350, 85).pad(8);
         }
 
         String[] itemLabels = { "item1", "item2", "item3", "item4" };
         for (String label : itemLabels) {
             TextButton button = GameButton.createButton(label, game.font, "small");
-            itemContainer.add(button).size(75, 75).pad(10);
+            itemContainer.add(button).size(75, 75).pad(8);
         }
         // Define item container, even though we're not adding items yet
 

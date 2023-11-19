@@ -16,6 +16,8 @@ public class GameButton {
     private static TextureAtlas defaultButtonAtlas;
     private static Skin smallSkin;
     private static TextureAtlas smallButtonAtlas;
+    private static Skin squareSkin;
+    private static TextureAtlas squareButtonAtlas;
 
     // Initialize the default skin and buttonAtlas
     static {
@@ -26,6 +28,10 @@ public class GameButton {
         smallButtonAtlas = new TextureAtlas(Gdx.files.internal("buttons/small/button_small.atlas"));
         smallSkin = new Skin();
         smallSkin.addRegions(smallButtonAtlas);
+
+        squareButtonAtlas = new TextureAtlas(Gdx.files.internal("buttons/square/square_button.atlas"));
+        squareSkin = new Skin();
+        squareSkin.addRegions(squareButtonAtlas);
     }
 
     public static TextButton createButton(String buttonText, BitmapFont font) {
@@ -49,6 +55,9 @@ public class GameButton {
                         break;
                     case "small":
                         effectiveSkin = smallSkin;
+                        break;
+                    case "square":
+                        effectiveSkin = squareSkin;
                         break;
                 }
                 
