@@ -7,7 +7,9 @@ sourceSets.main.resources.srcDirs = ["../assets"]
 project.ext.assetsDir = new File("../assets")
 
 eclipse.project.name = appName + "-core"
+apply plugin: 'java-library'
 dependencies {
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation "com.google.code.gson:gson:2.8.6"
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 }

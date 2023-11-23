@@ -39,7 +39,14 @@ public class AttackUtils {
             case "Mikado Sun":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_SUN).get(0));
                 break;
-                
+            
+            case "Beff Jezos":
+                assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_BEFF).get(0));
+                break;
+            
+            case "Jezos Beffs": 
+                assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_JEZO).get(0));
+                break;
             default:
                 break;
         }

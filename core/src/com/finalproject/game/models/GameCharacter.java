@@ -23,12 +23,12 @@ public class GameCharacter {
 
     private ArrayList<Attack> attacks;
 
-    public GameCharacter(int id, int health, int attack, int defence, int speed, int level, String name,
+    public GameCharacter(int id, int health, int strength, int defence, int speed, int level, String name,
             String characterCardPath) {
         this.id = id;
         this.health = health;
         this.maxHealth = health;
-        this.attack = attack;
+        this.attack = strength;
         this.defence = defence;
         this.speed = speed;
         this.level = level;
@@ -37,13 +37,13 @@ public class GameCharacter {
         this.characterCard = new Texture(characterCardPath);
     }
 
-    public GameCharacter(int health, int attack, int defence, int speed, int level, String name,
+    public GameCharacter(int health, int strength, int defence, int speed, int level, String name,
             String characterCardPath) {
         // Add validation here if needed
         this.id = autoId++;
         this.health = health;
         this.maxHealth = health;
-        this.attack = attack;
+        this.attack = strength;
         this.defence = defence;
         this.speed = speed;
         this.level = level;
@@ -60,9 +60,14 @@ public class GameCharacter {
     public void levelUp() {
         this.level++;
         setAttack(attack + 5);
-        setDefence(defence + 5);
+        setDefense(defence + 5);
         setMaxHealth(maxHealth + 10);
         setHealth(maxHealth);
+    }
+
+    public void setImagePath(String imagePath) {
+        this.characterCardPath = imagePath;
+        this.characterCard = new Texture(imagePath);
     }
 
     public void setMaxHealth(int maxHealth) {
@@ -98,6 +103,7 @@ public class GameCharacter {
     public int getDefence() {
         return defence;
     }
+
 
     public int getSpeed() {
         return speed;
@@ -137,7 +143,7 @@ public class GameCharacter {
         this.attack = attack;
     }
 
-    public void setDefence(int defence) {
+    public void setDefense(int defence) {
         this.defence = defence;
     }
 

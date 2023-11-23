@@ -25,7 +25,6 @@ public class FinalProjectGame extends Game {
 		skin = new Skin();
 		batch = new SpriteBatch();
 
-
 		FontGenerator fontGenerator = new FontGenerator("fonts/Retro_Gaming.ttf");
         this.font = fontGenerator.generate(18, Color.WHITE, 0.2f, Color.DARK_GRAY);
         fontGenerator.dispose();

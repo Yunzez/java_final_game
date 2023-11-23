@@ -1,11 +1,11 @@
 button.png
-size:512,128
+size:512,64
 repeat:none
 disable-button
-bounds:262,10,120,60
+bounds:2,2,120,60
 down-button
-bounds:384,10,120,60
+bounds:124,2,120,60
 highlight-button
-bounds:2,2,128,68
+bounds:246,2,120,60
 up-button
-bounds:132,2,128,68
+bounds:368,2,120,60

@@ -42,6 +42,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.models.GameCharacter;
+import com.finalproject.game.views.LoadFromPreviousSavingScreen;
 
 public class BaseScreen implements Screen {
     private FinalProjectGame game;
@@ -71,6 +72,7 @@ public class BaseScreen implements Screen {
     private float lastRotationAngle = 0f;
 
     BoundingBox battleEntranceBounds = new BoundingBox();
+    BoundingBox savingEntranceBounds = new BoundingBox();
     BoundingBox treasureBoxBounds = new BoundingBox();
     BoundingBox characterBounds = new BoundingBox();
 
@@ -101,7 +103,6 @@ public class BaseScreen implements Screen {
         createBackgroundSphere();
 
         decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
-       
 
     }
 
@@ -109,6 +110,8 @@ public class BaseScreen implements Screen {
         Model character = assets.get("models/Character/Y-Bot.g3db", Model.class);
         characterModel = new ModelInstance(character);
         characterModel.transform.scl(0.8f);
+        characterModel.transform.setToTranslation(-100f, 10f, 0f);
+
         // characterModel.transform.rotate(Vector3.Y, 180f);
         // Create an animation controller
         for (Animation animation : characterModel.animations) {
@@ -140,8 +143,23 @@ public class BaseScreen implements Screen {
         campfireInstance.transform.setToTranslation(350f, 10f, -420f);
         campfireInstance.transform.scl(2f);
 
+        Model drive = assets.get("models/drive/drive.g3db", Model.class);
+        ModelInstance driveInstance = new ModelInstance(drive);
+        driveInstance.transform.setToTranslation(350f, 50f, -100f);
+        driveInstance.transform.scl(20f);
+        driveInstance.transform.rotate(Vector3.Y, 45f);
+        driveInstance.transform.rotate(Vector3.Z, -100f);
+
+        Model monitor = assets.get("models/monitor/monitor.g3db", Model.class);
+        ModelInstance monitorInstance = new ModelInstance(monitor);
+        monitorInstance.transform.setToTranslation(-330f, 10f, -380f);
+        monitorInstance.transform.scl(1f);
+        // monitorInstance.transform.rotate(Vector3.Y, 125f);
+
+
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
         treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
+        savingEntranceBounds = calculateTransformedBoundingBox(driveInstance);
 
         Texture entranceImage = new Texture(Gdx.files.internal("models/start.png"));
         entrancePlateDecal = Decal.newDecal(entranceImage.getWidth(), entranceImage.getHeight(),
@@ -156,7 +174,7 @@ public class BaseScreen implements Screen {
         characterImageDecal.setScale(0.3f);
 
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
-        instances.add(campfireInstance);
+        instances.add(campfireInstance, driveInstance, monitorInstance);
         assetsLoaded = true;
 
     }
@@ -206,6 +224,8 @@ public class BaseScreen implements Screen {
         assets.load("models/teleport_door/obj.g3db", Model.class);
         assets.load("models/Chest_box/obj.g3db", Model.class);
         assets.load("models/campfire/campfire.g3db", Model.class);
+        assets.load("models/drive/drive.g3db", Model.class);
+        assets.load("models/monitor/monitor.g3db", Model.class);
         // createSkybox();
         System.out.println("Loading assets...");
     }
@@ -357,6 +377,12 @@ public class BaseScreen implements Screen {
 
         if (characterBounds.intersects(treasureBoxBounds)) {
             // Trigger action for treasure box
+        }
+
+        if (characterBounds.intersects(savingEntranceBounds)) {
+            // Trigger action for saving entrance
+            System.out.println("Saving entrance");
+            game.setScreen(new LoadFromPreviousSavingScreen(game, selectedCharacter));
         }
     }
 

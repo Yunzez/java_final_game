@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -63,16 +64,19 @@ public class ChooseCharacterScreen implements Screen {
         cardSelectedTexture = new Texture(Gdx.files.internal("backgrounds/cardSelected.png"));
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+        stage = new Stage(new ScreenViewport(camera));
+
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
         currentFont = fontGenerator.generate(25, Color.WHITE, 0.3f, Color.WHITE);
         fontGenerator.dispose();
+        // stage.setDebugAll(true); // This will enable debug lines around all actors in
+        // the stage
+
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
         addBackground();
         Label.LabelStyle biggerFont = new Label.LabelStyle(currentFont, Color.WHITE);
         biggerFont.font.getData().setScale(2.0f); // Example to make the font larger
@@ -86,8 +90,8 @@ public class ChooseCharacterScreen implements Screen {
 
         // Then add this characterTable to your scrollPane
         ScrollPane scrollPane = new ScrollPane(characterTable);
-        scrollPane.setBounds(25, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.7f);
-
+        scrollPane.setBounds(25, stage.getHeight() * 0.3f, stage.getWidth() - 50, stage.getHeight() * 0.5f);
+        scrollPane.toBack();
         addButtons();
         addCharacterDetailsSection();
 
@@ -186,13 +190,27 @@ public class ChooseCharacterScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selectedCharacter.assignRandomAttacks(3);
-                game.setScreen(new BaseScreen(game,  selectedCharacter));
-               
+                game.setScreen(new BaseScreen(game, selectedCharacter));
+
                 dispose();
             }
         });
         startButton.setPosition(250, stage.getHeight() * 0.17f);
 
+        TextButton loadFromSavingButton = GameButton.createButton("Load From Saving", game.font);
+        loadFromSavingButton.setSize(300, 60);
+        loadFromSavingButton.setPosition(stage.getWidth() * 0.1f, stage.getHeight() * 0.8f);
+        loadFromSavingButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LoadFromPreviousSavingScreen(game));
+                dispose();
+            }
+        });
+        loadFromSavingButton.toFront();
+        backButton.toFront();
+        startButton.toFront();
+        stage.addActor(loadFromSavingButton);
         stage.addActor(backButton);
         stage.addActor(startButton);
     }
@@ -227,8 +245,10 @@ public class ChooseCharacterScreen implements Screen {
             characterCard.add(characterImage).height(250).fill();
             characterCard.row(); // Move to next row
             characterCard.add(nameLabel);
+            characterCard.setTouchable(Touchable.enabled);
 
             final Table finalCharacterCard = characterCard;
+
             // Add the characterCard to the main characterTable
             characterTable.add(finalCharacterCard).width(stage.getWidth() * 0.2f).pad(40).expand();
 
@@ -264,7 +284,8 @@ public class ChooseCharacterScreen implements Screen {
 
     @Override
     public void hide() {
-        game.font.getData().setScale(1.0f);
+        Gdx.input.setInputProcessor(null);
+        // Also, dispose of any resources specific to this screen
     }
 
     @Override

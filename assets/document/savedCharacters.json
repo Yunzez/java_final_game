@@ -1,0 +1,54 @@
+[
+  { 
+    "savingName": "test mark",
+    "id": 0,
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png",
+    "monsterKilled": 0,
+    "points": 0
+  },
+  { 
+    "savingName": "test meta",
+    "id": 0,
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png",
+    "monsterKilled": 0,
+    "points": 0
+  },
+  { 
+    "savingName": "instagram mark",
+    "id": 0,
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png",
+    "monsterKilled": 0,
+    "points": 0
+  },
+  { 
+    "savingName": "dumb mark",
+    "id": 0,
+    "health": 80,
+    "strength": 6,
+    "defense": 12,
+    "speed": 20,
+    "level": 1,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png",
+    "monsterKilled": 0,
+    "points": 0
+  }
+]
