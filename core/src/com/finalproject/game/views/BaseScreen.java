@@ -131,8 +131,6 @@ public class BaseScreen implements Screen {
         battleEntrance.transform.scl(0.8f);
         battleEntrance.transform.setToTranslation(-100f, 200f, -480f);
 
-        // *
-
         Model model = assets.get("models/Chest_box/obj.g3db", Model.class);
         treasureBox = new ModelInstance(model);
         treasureBox.transform.setToTranslation(200f, 10f, -420f);

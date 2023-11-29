@@ -4,11 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -25,6 +28,30 @@ public class SettingScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+
+        // Load or create a Skin for the checkbox
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); // Adjust the path to your skin file
+
+        // Create a checkbox for music toggle
+        final CheckBox musicCheckbox = new CheckBox(" Music", skin);
+        // Center the checkbox
+        float checkBoxWidth = musicCheckbox.getWidth();
+        float checkBoxHeight = musicCheckbox.getHeight();
+        float centerX = (stage.getWidth() - checkBoxWidth) / 2;
+        float centerY = (stage.getHeight() - checkBoxHeight) / 2;
+        musicCheckbox.setPosition(centerX, centerY);
+
+        musicCheckbox.setChecked(game.isMusicEnabled()); // Set initial state based on game setting
+
+        musicCheckbox.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                boolean isMusicOn = musicCheckbox.isChecked();
+                game.toggleMusic(isMusicOn);
+            }
+        });
+
+        stage.addActor(musicCheckbox);
     }
 
     @Override

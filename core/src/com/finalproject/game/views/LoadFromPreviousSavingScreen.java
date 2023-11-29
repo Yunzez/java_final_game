@@ -7,10 +7,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -23,12 +26,15 @@ import com.finalproject.game.models.UserGameCharacters;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -127,8 +133,81 @@ public class LoadFromPreviousSavingScreen implements Screen {
         // Finally, load the saved game data
         loadSavedGame();
         displaySavedCharacters();
+        if (currentCharacter != null) {
+            addSaveButton();
+        }
 
     }
+
+    private void addSaveButton() {
+        TextButton saveButton = GameButton.createButton("Save This Game", game.font);
+        saveButton.setPosition(500, 100);
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                Gdx.app.log("TestButton", "Button clicked");
+                showSaveDialog();
+            }
+        });
+        saveButton.toFront();
+        stage.addActor(saveButton);
+    }
+    
+    private void showSaveDialog() {
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        final Dialog dialog = new Dialog("Save Game", skin);
+    
+        dialog.setSize(400, 200); // Set the size of the dialog
+    
+        final Label messageLabel = new Label("Enter the name for your save:", skin);
+        dialog.getContentTable().add(messageLabel).padTop(10);
+    
+        // Add a text field for input
+        final TextField saveNameField = new TextField("", skin);
+        dialog.getContentTable().row(); // Ensure the TextField is on a new line
+        dialog.getContentTable().add(saveNameField).padTop(10);
+    
+        // Create "Okay" button
+        TextButton okayButton = new TextButton("Okay", skin);
+        okayButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dialog.hide();
+            }
+        });
+    
+        // Create and add a "Save" button
+        TextButton saveButton = new TextButton("Save", skin);
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String saveName = saveNameField.getText();
+                saveGame(saveName);
+    
+                // Clear the content table and show the success message
+                dialog.getContentTable().clear();
+                messageLabel.setText("Success!");
+                dialog.getContentTable().add(messageLabel).padTop(10);
+                
+                dialog.getButtonTable().clear(); // Clear the button table
+                dialog.getButtonTable().add(okayButton).padTop(10); // Add the "Okay" button
+                dialog.setSize(300, 150); // Adjust the size as needed
+            }
+        });
+    
+        dialog.getButtonTable().add(saveButton).padTop(10);
+    
+        // Show the dialog
+        dialog.show(stage);
+    }
+    
+    private void saveGame(String saveName) {
+        // Implement game saving logic here
+        Gdx.app.log("SaveGame", "Game saved as: " + saveName);
+    }
+    
+    
 
     private void loadSavedGame() {
         JsonReader jsonReader = new JsonReader();

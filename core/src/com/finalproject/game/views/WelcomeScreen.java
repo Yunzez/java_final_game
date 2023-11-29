@@ -41,11 +41,12 @@ public class WelcomeScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+       
     }
 
     @Override
     public void show() {
+         Gdx.input.setInputProcessor(stage);
         String[] buttonLabels = { "Start", "Settings", "Quit" };
         background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
 
