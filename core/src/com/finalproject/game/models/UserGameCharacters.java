@@ -4,6 +4,8 @@ public class UserGameCharacters extends GameCharacter{
     private int monsterKilled;
     private int points;
     private String savingName;
+    private int level;
+    private String imagePath;
     // Constructor
     public UserGameCharacters() {
         super();
@@ -17,6 +19,8 @@ public class UserGameCharacters extends GameCharacter{
     public UserGameCharacters(int health, int strength, int defense, int speed, int level, String name, String imagePath, int monsterKilled, int points, String savingName) {
         super(health, strength, defense, speed, level, name, imagePath); // Assuming these are the fields of GameCharacter
         this.monsterKilled = monsterKilled;
+        this.level = level;
+        this.imagePath = imagePath;
         this.points = points;
         this.savingName = savingName;
     }

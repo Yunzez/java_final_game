@@ -1,9 +1,12 @@
 package com.finalproject.game.views;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,8 +26,10 @@ import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.UserGameCharacters;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -54,6 +59,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
     private UserGameCharacters selectedSaveCharacter;
     private GameCharacter currentCharacter;
     private TextureRegionDrawable savingBg;
+    private Table parentTable;
 
     public LoadFromPreviousSavingScreen(FinalProjectGame finalProjectGame, GameCharacter character) {
         this.game = finalProjectGame;
@@ -153,63 +159,142 @@ public class LoadFromPreviousSavingScreen implements Screen {
         saveButton.toFront();
         stage.addActor(saveButton);
     }
-    
+
     private void showSaveDialog() {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         final Dialog dialog = new Dialog("Save Game", skin);
-    
-        dialog.setSize(400, 200); // Set the size of the dialog
-    
+
         final Label messageLabel = new Label("Enter the name for your save:", skin);
+        if (selectedSaveCharacter != null) {
+            messageLabel.setText("Enter the a name for your save, this will cover the previous save named:  "
+                    + selectedSaveCharacter.getSavingName());
+        }
+
         dialog.getContentTable().add(messageLabel).padTop(10);
-    
+
         // Add a text field for input
         final TextField saveNameField = new TextField("", skin);
         dialog.getContentTable().row(); // Ensure the TextField is on a new line
         dialog.getContentTable().add(saveNameField).padTop(10);
-    
+
         // Create "Okay" button
         TextButton okayButton = new TextButton("Okay", skin);
         okayButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dialog.hide();
+                System.out.println("Okay button clicked");
+                loadSavedGame();
+                displaySavedCharacters();
             }
         });
-    
+        dialog.setSize(600, 300); // Set the size of the dialog
+
         // Create and add a "Save" button
         TextButton saveButton = new TextButton("Save", skin);
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String saveName = saveNameField.getText();
-                saveGame(saveName);
-    
+
+                if (checkSaveNameValid(saveName)) {
+                    saveGame(saveName);
+                    dialog.getContentTable().clear();
+                    messageLabel.setText("Success!");
+                    dialog.getContentTable().add(messageLabel).padTop(10);
+
+                    dialog.getButtonTable().clear(); // Clear the button table
+                    dialog.getButtonTable().add(okayButton).padTop(10); // Add the "Okay" button
+                } else {
+                    messageLabel
+                            .setText("There is already a saving named: " + saveName + ", please choose another name");
+                    dialog.setSize(600, 300);
+                }
                 // Clear the content table and show the success message
-                dialog.getContentTable().clear();
-                messageLabel.setText("Success!");
-                dialog.getContentTable().add(messageLabel).padTop(10);
-                
-                dialog.getButtonTable().clear(); // Clear the button table
-                dialog.getButtonTable().add(okayButton).padTop(10); // Add the "Okay" button
-                dialog.setSize(300, 150); // Adjust the size as needed
+
             }
         });
-    
+
         dialog.getButtonTable().add(saveButton).padTop(10);
-    
+
         // Show the dialog
         dialog.show(stage);
     }
-    
-    private void saveGame(String saveName) {
-        // Implement game saving logic here
-        Gdx.app.log("SaveGame", "Game saved as: " + saveName);
+
+    private boolean checkSaveNameValid(String saveName) {
+        for (UserGameCharacters character : savedCharacters) {
+            System.out.println(character.getSavingName() + "   " + saveName);
+            if (character.getSavingName().trim().equals(saveName.trim())) {
+                return false;
+            }
+        }
+        return true;
     }
-    
-    
+
+    private void saveGame(String saveName) {
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+
+        // Exclude complex fields from serialization
+        json.setSerializer(UserGameCharacters.class, new Json.Serializer<UserGameCharacters>() {
+            @Override
+            public void write(Json json, UserGameCharacters character, Class knownType) {
+
+                json.writeObjectStart();
+                json.writeValue("savingName", character.getSavingName());
+                json.writeValue("id", character.getId());
+                json.writeValue("health", character.getCurrentHealth());
+                json.writeValue("maxHealth", character.getMaxHealth());
+                json.writeValue("attack", character.getAttack());
+                json.writeValue("defense", character.getDefense());
+                json.writeValue("speed", character.getSpeed());
+                json.writeValue("level", character.getLevel());
+                json.writeValue("name", character.getName());
+                json.writeValue("imagePath", character.getImagePath());
+                json.writeValue("monsterKilled", character.getMonsterKilled());
+                json.writeValue("points", character.getPoints());
+                // ... other primitive fields
+                json.writeObjectEnd();
+            }
+
+            @Override
+            public UserGameCharacters read(Json json, JsonValue jsonData, Class type) {
+                // Implement if needed for deserialization
+                return null;
+            }
+        });
+
+        UserGameCharacters newCharacter = new UserGameCharacters(
+                currentCharacter.getCurrentHealth(),
+                currentCharacter.getAttack(),
+                currentCharacter.getDefense(),
+                currentCharacter.getSpeed(),
+                currentCharacter.getLevel(),
+                currentCharacter.getName(),
+                currentCharacter.getImagePath(),
+                0, // monsterKilled
+                0, // points
+                saveName);
+        savedCharacters.add(newCharacter);
+
+        // Serialize the list of characters
+        String jsonString = json.toJson(savedCharacters);
+
+        // Write to file
+        try {
+            FileWriter writer = new FileWriter(Gdx.files.local("assets/document/savedCharacters.json").file());
+            writer.write(jsonString);
+            writer.close();
+            Gdx.app.log("SaveGame", "Game saved as: " + saveName);
+
+        } catch (IOException e) {
+            Gdx.app.error("SaveGame", "Error saving game: ", e);
+        }
+    }
 
     private void loadSavedGame() {
+        System.out.println("Loading saved game");
+        savedCharacters.clear();
         JsonReader jsonReader = new JsonReader();
         JsonValue base;
 
@@ -227,7 +312,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
             // Iterate through the array of characters in the JSON file
             for (JsonValue characterJson : base) {
                 int health = characterJson.getInt("health");
-                int strength = characterJson.getInt("strength");
+                int attack = characterJson.getInt("attack");
                 int defense = characterJson.getInt("defense");
                 int speed = characterJson.getInt("speed");
                 int level = characterJson.getInt("level");
@@ -238,7 +323,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 int points = characterJson.getInt("points"); // if needed
 
                 // Create an instance of UserGameCharacters
-                UserGameCharacters character = new UserGameCharacters(health, strength, defense, speed, level, name,
+                UserGameCharacters character = new UserGameCharacters(health, attack, defense, speed, level, name,
                         imagePath, monsterKilled, points, savingName);
 
                 savedCharacters.add(character);
@@ -283,8 +368,11 @@ public class LoadFromPreviousSavingScreen implements Screen {
         float padding = 30f;
         float tableWidth = Gdx.graphics.getWidth() * 0.7f;
         float tableHeight = Gdx.graphics.getHeight() * 0.13f;
+        if (parentTable != null) {
+            parentTable.clear();
+        }
 
-        Table parentTable = new Table();
+        parentTable = new Table();
 
         // ! add scroll panel first so it stays bottom
         ScrollPane scrollPane = new ScrollPane(parentTable);

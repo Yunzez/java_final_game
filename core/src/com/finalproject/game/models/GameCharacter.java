@@ -9,7 +9,7 @@ public class GameCharacter {
     private int maxHealth;
     private int health;
     private int attack;
-    private int defence;
+    private int defense;
     private int speed;
     private int level;
     private String name;
@@ -23,13 +23,13 @@ public class GameCharacter {
 
     private ArrayList<Attack> attacks;
 
-    public GameCharacter(int id, int health, int strength, int defence, int speed, int level, String name,
+    public GameCharacter(int id, int health, int strength, int defense, int speed, int level, String name,
             String characterCardPath) {
         this.id = id;
         this.health = health;
         this.maxHealth = health;
         this.attack = strength;
-        this.defence = defence;
+        this.defense = defense;
         this.speed = speed;
         this.level = level;
         this.name = name;
@@ -37,14 +37,14 @@ public class GameCharacter {
         this.characterCard = new Texture(characterCardPath);
     }
 
-    public GameCharacter(int health, int strength, int defence, int speed, int level, String name,
+    public GameCharacter(int health, int strength, int defense, int speed, int level, String name,
             String characterCardPath) {
         // Add validation here if needed
         this.id = autoId++;
         this.health = health;
         this.maxHealth = health;
         this.attack = strength;
-        this.defence = defence;
+        this.defense = defense;
         this.speed = speed;
         this.level = level;
         this.name = name;
@@ -60,7 +60,7 @@ public class GameCharacter {
     public void levelUp() {
         this.level++;
         setAttack(attack + 5);
-        setDefense(defence + 5);
+        setDefense(defense + 5);
         setMaxHealth(maxHealth + 10);
         setHealth(maxHealth);
     }
@@ -68,6 +68,10 @@ public class GameCharacter {
     public void setImagePath(String imagePath) {
         this.characterCardPath = imagePath;
         this.characterCard = new Texture(imagePath);
+    }
+
+    public String getImagePath() {
+        return characterCardPath;
     }
 
     public void setMaxHealth(int maxHealth) {
@@ -100,8 +104,8 @@ public class GameCharacter {
         return attack;
     }
 
-    public int getDefence() {
-        return defence;
+    public int getDefense() {
+        return defense;
     }
 
 
@@ -143,8 +147,8 @@ public class GameCharacter {
         this.attack = attack;
     }
 
-    public void setDefense(int defence) {
-        this.defence = defence;
+    public void setDefense(int defense) {
+        this.defense = defense;
     }
 
     public void setSpeed(int speed) {

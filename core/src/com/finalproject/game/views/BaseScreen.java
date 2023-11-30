@@ -365,8 +365,8 @@ public class BaseScreen implements Screen {
         // treasureBox.calculateBoundingBox(treasureBoxBounds);
         characterBounds = calculateTransformedBoundingBox(characterModel);
         // characterModel.calculateBoundingBox(characterBounds);
-        System.out.println("Character Bounds: " + characterBounds);
-        System.out.println("Battle Entrance Bounds: " + battleEntranceBounds);
+        // System.out.println("Character Bounds: " + characterBounds);
+        // System.out.println("Battle Entrance Bounds: " + battleEntranceBounds);
         if (characterBounds.intersects(battleEntranceBounds)) {
             // Trigger action for battle soy entrance
             System.out.println("Battle entrance");
