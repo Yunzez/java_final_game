@@ -4,11 +4,13 @@ package com.finalproject.game.models;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum Item {
-    RELX_V5(ItemType.WEAPON, "RELX V5", 10, "A weapon that can relax you and your enenmy.","items/relx.png"),
-    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30, "A legendary blade that reveals the truth, cutting through deception.","items/sword.png"),
-    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 70, "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection.","items/armor.png"),
-    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health over time.","items/potion.png"),
-
+    RELX_V5(ItemType.WEAPON, "RELX V5", 10, "A weapon that can relax you and your enenmy, enenmy attacks drop by 10 next round.","items/relx.png"),
+    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30, "A legendary blade that reveals the truth, cutting through deception. Give enenmy 30 damange","items/sword.png"),
+    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 20, "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection, plus 20 HP.","items/armor.png"),
+    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health of 20 hp.","items/potion.png"),
+    BUTTBOOK(ItemType.WEAPON, "Buttbook", 40, "A weapon that can make you lost all your personal data, give opponent 40 damanges.","items/buttbook.png"),
+    BANANA_CAT(ItemType.POTION, "Banana Cat", 50, "A potion that heal 50 points of your hp with the cuteness of banana cat.","items/banana_cat.png"),
+    GIGITTY_GUN(ItemType.WEAPON, "Gigity Gun", 100, "A weapon that can make you lost all your personal data, give opponent 40 damanges.","items/Gigitty.png"),
     ;
 
     private final ItemType type;
@@ -17,6 +19,8 @@ public enum Item {
     private final String description;
     private final String iconPath;
     private final Texture icon;
+    private final int id;
+    private static int idCounter = 0;
 
     private Item(ItemType type, String name, int value, String description, String iconPath) {
         this.type = type;
@@ -25,6 +29,11 @@ public enum Item {
         this.description = description;
         this.iconPath = iconPath;
         this.icon = new Texture(iconPath);
+        this.id = generateId();
+    }
+
+    private static int generateId() {
+        return idCounter++;
     }
 
     public ItemType getType() {
@@ -50,9 +59,13 @@ public enum Item {
     public Texture getIcon() {
         return icon;
     }
+  
+    public int getId() {
+        return id;
+    }
 
     public String toString() {
-        return name;
+        return name + " (" + type.toString() + "): " + value + " effects";
     }
 
 }

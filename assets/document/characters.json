@@ -6,7 +6,8 @@
     "speed": 10,
     "level": 1,
     "name": "Mikado Sun",
-    "imagePath": "charactors/xiaochuan.png"
+    "imagePath": "charactors/xiaochuan.png",
+    "lostImagePath": "charactors/xiaochuanLost.png"
   },
   {
     "health": 80,
@@ -15,7 +16,8 @@
     "speed": 20,
     "level": 1,
     "name": "Relx Ding",
-    "imagePath": "charactors/dingzhen.png"
+    "imagePath": "charactors/dingzhen.png",
+    "lostImagePath": "charactors/dingzhenLost.png"
   },
   {
     "health": 80,
@@ -24,7 +26,8 @@
     "speed": 20,
     "level": 1,
     "name": "Mark Zucks",
-    "imagePath": "charactors/mark.png"
+    "imagePath": "charactors/mark.png",
+    "lostImagePath": "charactors/markLost.png"
   },
   {
     "health": 80,
@@ -33,7 +36,8 @@
     "speed": 20,
     "level": 1,
     "name": "Bo Liu",
-    "imagePath": "charactors/Medicine.png"
+    "imagePath": "charactors/Medicine.png",
+    "lostImagePath": "charactors/MedicineLost.png"
   },
 
   {
@@ -43,7 +47,8 @@
     "speed": 20,
     "level": 1,
     "name": "Beff Jezos",
-    "imagePath": "charactors/beffs.png"
+    "imagePath": "charactors/beffs.png",
+    "lostImagePath": "charactors/beffs.png"
   },
   {
     "health": 80,
@@ -52,7 +57,8 @@
     "speed": 20,
     "level": 1,
     "name": "Jezos Beffs",
-    "imagePath": "charactors/jezos.png"
+    "imagePath": "charactors/jezos.png",
+    "lostImagePath": "charactors/beffs.png"
   },
   {
     "health": 80,
@@ -61,7 +67,8 @@
     "speed": 20,
     "level": 1,
     "name": "Meme Man",
-    "imagePath": "charactors/Meme_man.png"
+    "imagePath": "charactors/Meme_man.png",
+    "lostImagePath": "charactors/beffs.png"
   },
   {
     "health": 80,
@@ -70,7 +77,8 @@
     "speed": 20,
     "level": 1,
     "name": "Place holder",
-    "imagePath": "charactors/xiaochuan.png"
+    "imagePath": "charactors/xiaochuan.png",
+    "lostImagePath": "charactors/beffs.png"
   },
   {
     "health": 80,
@@ -79,6 +87,7 @@
     "speed": 20,
     "level": 1,
     "name": "Koube Icetea",
-    "imagePath": "charactors/koubeIcetea.png"
+    "imagePath": "charactors/koubeIcetea.png",
+    "lostImagePath": "charactors/beffs.png"
   }
 ]

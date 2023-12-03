@@ -67,6 +67,7 @@ public enum Attack {
         ArrayList<Attack> attacksOfType = new ArrayList<Attack>();
         for (Attack attack : Attack.values()) {
             if (attack.getType() == type) {
+                System.out.println("add attack "+ attack.getType().name());
                 attacksOfType.add(attack);
             }
         }
@@ -78,6 +79,7 @@ public enum Attack {
         ArrayList<Attack> nonSpecialAttacks = new ArrayList<>();
         for (Attack attack : Attack.values()) {
             if (!attack.getType().name().startsWith("SPECIAL")) {
+                System.out.println(attack.getType().name() + " add to non special");
                 nonSpecialAttacks.add(attack);
             }
         }

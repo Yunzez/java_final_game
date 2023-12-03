@@ -96,7 +96,7 @@ public class WelcomeScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Draw the background
-        game.batch.draw(background, 0, 0);
+        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw your text here
         GlyphLayout layout = new GlyphLayout();

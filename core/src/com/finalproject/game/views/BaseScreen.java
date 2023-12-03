@@ -136,10 +136,10 @@ public class BaseScreen implements Screen {
         treasureBox.transform.setToTranslation(200f, 10f, -420f);
         treasureBox.transform.scl(50f);
 
-        Model campfire = assets.get("models/campfire/campfire.g3db", Model.class);
-        ModelInstance campfireInstance = new ModelInstance(campfire);
-        campfireInstance.transform.setToTranslation(350f, 10f, -420f);
-        campfireInstance.transform.scl(2f);
+        // Model campfire = assets.get("models/campfire/campfire.g3db", Model.class);
+        // ModelInstance campfireInstance = new ModelInstance(campfire);
+        // campfireInstance.transform.setToTranslation(350f, 10f, -420f);
+        // campfireInstance.transform.scl(2f);
 
         Model drive = assets.get("models/drive/drive.g3db", Model.class);
         ModelInstance driveInstance = new ModelInstance(drive);
@@ -172,7 +172,7 @@ public class BaseScreen implements Screen {
         characterImageDecal.setScale(0.3f);
 
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
-        instances.add(campfireInstance, driveInstance, monitorInstance);
+        instances.add(driveInstance, monitorInstance);
         assetsLoaded = true;
 
     }
@@ -221,11 +221,9 @@ public class BaseScreen implements Screen {
         assets.load("models/game_room/final_game_room.g3db", Model.class);
         assets.load("models/teleport_door/obj.g3db", Model.class);
         assets.load("models/Chest_box/obj.g3db", Model.class);
-        assets.load("models/campfire/campfire.g3db", Model.class);
+        // assets.load("models/campfire/campfire.g3db", Model.class);
         assets.load("models/drive/drive.g3db", Model.class);
         assets.load("models/monitor/monitor.g3db", Model.class);
-        // createSkybox();
-        System.out.println("Loading assets...");
     }
 
     @Override
@@ -374,7 +372,7 @@ public class BaseScreen implements Screen {
         }
 
         if (characterBounds.intersects(treasureBoxBounds)) {
-            // Trigger action for treasure box
+            game.setScreen(new InventoryScreen(game, this));
         }
 
         if (characterBounds.intersects(savingEntranceBounds)) {
@@ -385,7 +383,6 @@ public class BaseScreen implements Screen {
     }
 
     private void rotateCharacter(float angle) {
-        System.out.println("Angle: " + angle);
         characterModel.transform.rotate(Vector3.Y, angle);
     }
 

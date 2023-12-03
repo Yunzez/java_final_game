@@ -60,6 +60,7 @@ public class ChooseCharacterScreen implements Screen {
 
     public ChooseCharacterScreen(FinalProjectGame game) {
         this.game = game;
+        characterList = game.getCharacterList();
         cardtexture = new Texture(Gdx.files.internal("backgrounds/cardNormal.png"));
         cardSelectedTexture = new Texture(Gdx.files.internal("backgrounds/cardSelected.png"));
         camera = new OrthographicCamera();
@@ -82,10 +83,10 @@ public class ChooseCharacterScreen implements Screen {
         biggerFont.font.getData().setScale(2.0f); // Example to make the font larger
         Label title = new Label("Choose your characters: ", biggerFont);
         title.setPosition(100, stage.getHeight() - 100); // Adjust the position
-        characterList = new ArrayList<>();
+
 
         characterTable = new Table(); // No fixed height
-        loadCharactersFromJson();
+
         addCharacters(characterList);
 
         // Then add this characterTable to your scrollPane
@@ -110,26 +111,6 @@ public class ChooseCharacterScreen implements Screen {
         stage.addActor(backgroundImage);
     }
 
-    private void loadCharactersFromJson() {
-        JsonReader jsonReader = new JsonReader();
-        JsonValue base = jsonReader.parse(Gdx.files.internal("document/characters.json"));
-
-        for (JsonValue characterValue : base.iterator()) {
-            int health = characterValue.getInt("health");
-            int strength = characterValue.getInt("strength");
-            int defense = characterValue.getInt("defense");
-            int speed = characterValue.getInt("speed");
-            int level = characterValue.getInt("level");
-            String name = characterValue.getString("name");
-            String imagePath = characterValue.getString("imagePath");
-
-            GameCharacter character = new GameCharacter(health, strength, defense, speed, level, name, imagePath);
-            characterList.add(character);
-        }
-
-        // Now characterList contains all characters loaded from JSON
-    }
-
     private void addCharacterDetailsSection() {
         characterDetailsTable = new Table();
         characterDetailsTable.bottom().left(); // Align to bottom left
@@ -152,7 +133,7 @@ public class ChooseCharacterScreen implements Screen {
         normalFont.font.getData().setScale(1.3f);
 
         // Left section: Story
-        Label storyLabel = new Label("Story: Placeholder", normalFont);
+        Label storyLabel = new Label("Story: this is a stroy of the character", normalFont);
 
         // Middle section: Stats
         Table statsTable = new Table();
@@ -164,13 +145,9 @@ public class ChooseCharacterScreen implements Screen {
         statsTable.add(attackLabel).row();
         statsTable.add(defenseLabel);
 
-        // Right section: Buffs
-        Label buffsLabel = new Label("Buffs: Placeholder", normalFont);
-
         // Add to table
         characterDetailsTable.add(storyLabel).expandX().pad(10);
         characterDetailsTable.add(statsTable).expandX().pad(10);
-        characterDetailsTable.add(buffsLabel).expandX().pad(10);
         characterDetailsTable.row(); // Move to next row
     }
 

@@ -17,7 +17,7 @@ public class UserGameCharacters extends GameCharacter{
 
     // Additional constructor to initialize all fields
     public UserGameCharacters(int health, int strength, int defense, int speed, int level, String name, String imagePath, int monsterKilled, int points, String savingName) {
-        super(health, strength, defense, speed, level, name, imagePath); // Assuming these are the fields of GameCharacter
+        super(health, strength, defense, speed, level, name, imagePath, imagePath); // Assuming these are the fields of GameCharacter
         this.monsterKilled = monsterKilled;
         this.level = level;
         this.imagePath = imagePath;

@@ -1,6 +1,8 @@
 package com.finalproject.game.views;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.math.Rectangle;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -73,6 +75,7 @@ public class GameScreen implements Screen {
 
     private float charactorDesiredHeight = baseSizeFactor * 0.8f; // 10% of the screen height
     private float charactorDesiredWidth = 0; // 10% of the screen width
+    private float monsterDesiredWidth = 0;
     private int mapWidthInTiles = 43;
     private int mapHeightInTiles = 23;
     private MapGenerator mapGenerator;
@@ -83,7 +86,7 @@ public class GameScreen implements Screen {
     private ArrayList<TilePoint> monstersLocations;
 
     private String battleResult;
-
+    private ArrayList<GameCharacter> charactersList = new ArrayList<>();
     private GameCharacter currentMonster;
 
     public GameScreen(FinalProjectGame game, GameCharacter currentCharacter, int maxGameLevel, int currentGameLevel) {
@@ -94,6 +97,7 @@ public class GameScreen implements Screen {
 
         this.maxGameLevel = maxGameLevel;
         this.currentGameLevel = currentGameLevel;
+        charactersList = game.getCharacterList();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
@@ -348,13 +352,16 @@ public class GameScreen implements Screen {
     }
 
     private GameCharacter isCollidingWithMonster(float x, float y) {
-        // Ensure that the tile coordinates stay within the array bounds
-        int tileX = (int) (x / baseSizeFactor);
-        int tileY = (int) (y / baseSizeFactor);
-        TilePoint potentialLocation = new TilePoint(tileX, tileY);
+        Rectangle characterBounds = new Rectangle(x, y, charactorDesiredWidth, charactorDesiredHeight);
+
         for (Entry<GameCharacter, TilePoint> entry : gameMonsters.entrySet()) {
+
             TilePoint location = entry.getValue();
-            if (potentialLocation.equals(location)) {
+            float monsterX = location.x * baseSizeFactor;
+            float monsterY = location.y * baseSizeFactor;
+            Rectangle monsterBounds = new Rectangle(monsterX,
+                    monsterY, monsterDesiredWidth, charactorDesiredHeight);
+            if (characterBounds.overlaps(monsterBounds)) {
                 return entry.getKey(); // Return the monster if there's a collision
             }
         }
@@ -369,11 +376,15 @@ public class GameScreen implements Screen {
             System.out.println("Battle triggered with monster at location: " + monsterLocation);
 
             game.getScreen().hide();
+
+            // Increase the monster's health by a random amount if the game level is above 1
+            if (currentGameLevel > 1) {
+                int healthIncrease = (currentGameLevel - 1) * (currentMonster.getMaxHealth() + random.nextInt(50) - 25);
+                currentMonster.setHealth(currentMonster.getMaxHealth() + healthIncrease);
+            }
+
             game.setScreen(new BattleScreen(game, currentCharacter, currentMonster, this, baseSizeFactor));
 
-            // Remove the monster from the game after the battle
-            // gameMonsters.remove(currentMonster);
-            // Additional code for handling the battle (if necessary)
         } else {
             System.out.println("No monster to battle.");
         }
@@ -387,14 +398,18 @@ public class GameScreen implements Screen {
     }
 
     public void createGameMonsters() {
-        String characterCardPath = "charactors/xiaochuan.png";
         int numberOfMonsters = random.nextInt(5) + 6;
         monstersLocations = mapGenerator.returnAccessibleLocations(numberOfMonsters);
 
         for (int i = 0; i < numberOfMonsters; i++) {
-            GameCharacter monster = new GameCharacter(100, 10, 10, 10, 1, "Xiaochuan", characterCardPath);
+            int index = random.nextInt(charactersList.size() - 1);
+            GameCharacter monster = charactersList.get(index);
+            while (monster.getName().equals(currentCharacter.getName())) {
+                index = random.nextInt(charactersList.size() - 1);
+                monster = charactersList.get(index);
+            }
             TilePoint location = monstersLocations.get(i);
-            gameMonsters.put(monster, location);
+            gameMonsters.put(monster.clone(), location);
         }
     }
 
@@ -410,7 +425,9 @@ public class GameScreen implements Screen {
             int drawY = (int) (location.y * baseSizeFactor); // Calculate the actual y position in pixels
 
             // Draw the monster texture at its location
-            batch.draw(monsterTexture, drawX, drawY, charactorDesiredWidth, charactorDesiredHeight);
+            float aspectRatio = (float) monsterTexture.getWidth() / (float) monsterTexture.getHeight();
+            monsterDesiredWidth = charactorDesiredHeight * aspectRatio; // width to maintain aspect ratio
+            batch.draw(monsterTexture, drawX, drawY, monsterDesiredWidth, charactorDesiredHeight);
         }
     }
 

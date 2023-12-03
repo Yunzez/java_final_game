@@ -14,10 +14,11 @@ public class GameCharacter {
     private int level;
     private String name;
     private int experience = 0;
-    private ArrayList<Item> inventory = new ArrayList<Item>();
-    private ArrayList<Buff> buffs = new ArrayList<Buff>();
+    private ArrayList<CharacterItem> inventory = new ArrayList<CharacterItem>();
     private Texture characterCard;
     private String characterCardPath;
+    private String characterLostCardPath;
+    private Texture characterLostCard;
     private int id;
     private static int autoId = 0;
 
@@ -35,10 +36,12 @@ public class GameCharacter {
         this.name = name;
         this.characterCardPath = characterCardPath;
         this.characterCard = new Texture(characterCardPath);
+        this.inventory = new ArrayList<CharacterItem>();
+        initializeInventory();
     }
 
     public GameCharacter(int health, int strength, int defense, int speed, int level, String name,
-            String characterCardPath) {
+            String characterCardPath, String characterLostCardPath) {
         // Add validation here if needed
         this.id = autoId++;
         this.health = health;
@@ -50,11 +53,26 @@ public class GameCharacter {
         this.name = name;
         this.characterCardPath = characterCardPath;
         this.characterCard = new Texture(characterCardPath);
+
+        this.characterLostCardPath = characterLostCardPath;
+        this.characterLostCard = new Texture(characterLostCardPath);
+        this.inventory = new ArrayList<CharacterItem>();
+        initializeInventory();
     }
 
     public GameCharacter() {
         // Default values
-        this(100, 10, 10, 10, 1, "Unknown Character", "charactors/xiaochuan.png");
+        this(100, 10, 10, 10, 1, "Unknown Character", "charactors/xiaochuan.png", "charactors/xiaochuanLost.png");
+    }
+
+    public void initializeInventory() {
+        inventory.add(new CharacterItem(Item.RELX_V5, 0));
+        inventory.add(new CharacterItem(Item.SWORD_OF_TRUTH, 0));
+        inventory.add(new CharacterItem(Item.DRAGONSCALE_ARMOR, 0));
+        inventory.add(new CharacterItem(Item.ELIXIR_OF_HEALTH, 0));
+        inventory.add(new CharacterItem(Item.BUTTBOOK, 0));
+        inventory.add(new CharacterItem(Item.GIGITTY_GUN, 0));
+        inventory.add(new CharacterItem(Item.BANANA_CAT, 0));
     }
 
     public void levelUp() {
@@ -96,7 +114,6 @@ public class GameCharacter {
     }
 
     public int getMaxHealth() {
-        System.out.println("max health: " + maxHealth);
         return maxHealth;
     }
 
@@ -107,7 +124,6 @@ public class GameCharacter {
     public int getDefense() {
         return defense;
     }
-
 
     public int getSpeed() {
         return speed;
@@ -139,6 +155,10 @@ public class GameCharacter {
         return characterCard;
     }
 
+    public Texture getLostImageTexture() {
+        return characterLostCard;
+    }
+
     public void setHealth(int health) {
         this.health = health;
     }
@@ -161,5 +181,35 @@ public class GameCharacter {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<CharacterItem> getInventory() {
+        return inventory;
+    }
+
+    public void addInventory(Item item, int count) {
+
+        inventory.forEach((characterItem) -> {
+            if (characterItem.getItem() == item) {
+                characterItem.setCount(characterItem.getCount() + count);
+            }
+        });
+    }
+
+    public void removeInventory(CharacterItem item, int count) {
+        inventory.forEach((characterItem) -> {
+            if (characterItem.getItem() == item.getItem()) {
+                characterItem.setCount(characterItem.getCount() - count == 0 ? 0 : characterItem.getCount() - count);
+            }
+        });
+
+    }
+
+    // retunr the character as a new instance
+    public GameCharacter clone() {
+        GameCharacter clone = new GameCharacter(this.health, this.attack, this.defense, this.speed, this.level,
+                this.name, this.characterCardPath, this.characterLostCardPath);
+        clone.attacks = this.attacks;
+        return clone;
     }
 }

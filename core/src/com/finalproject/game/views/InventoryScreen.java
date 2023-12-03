@@ -31,12 +31,12 @@ import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.Item;
 
-public class InventoryScreen implements Screen{
+public class InventoryScreen implements Screen {
 
     private FinalProjectGame game;
     private OrthographicCamera camera;
     private Stage stage;
-    private GameScreen gameScreen;
+    private Screen gameScreen;
 
     private BitmapFont currentFont;
 
@@ -44,7 +44,7 @@ public class InventoryScreen implements Screen{
     private HorizontalGroup inventoryGroup;
 
     // constructor
-    public InventoryScreen(FinalProjectGame game, GameScreen gameScreen){
+    public InventoryScreen(FinalProjectGame game, Screen gameScreen) {
         this.game = game;
         this.gameScreen = gameScreen;
         camera = new OrthographicCamera();
@@ -54,13 +54,12 @@ public class InventoryScreen implements Screen{
 
         // for font
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
-        currentFont = fontGenerator.generate(25,Color.WHITE,0.3f, Color.WHITE);
+        currentFont = fontGenerator.generate(25, Color.WHITE, 0.3f, Color.WHITE);
         fontGenerator.dispose();
     }
 
-
     // add the back ground image for the inventory screen
-    private void addBackground(){
+    private void addBackground() {
         Texture background = new Texture(Gdx.files.internal("backgrounds/inventoryBackground.png"));
         Image backgroundImg = new Image(background);
         backgroundImg.setScaling(Scaling.stretch);
@@ -74,7 +73,6 @@ public class InventoryScreen implements Screen{
         button.addListener(listener);
         return button;
     }
-
 
     @Override
     public void show() {
@@ -90,12 +88,16 @@ public class InventoryScreen implements Screen{
         TextButton backToGame = createButton("Back", new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameScreen.isPaused = false;
+                if (gameScreen instanceof GameScreen) {
+                    // Cast the Screen to a GameScreen
+                    GameScreen gameScreenInstance = (GameScreen) gameScreen;
+                    gameScreenInstance.isPaused = false;
+                }
                 game.setScreen(gameScreen);
                 dispose();
             }
         });
-        backToGame.setPosition(stage.getWidth()-300, stage.getHeight()-100);
+        backToGame.setPosition(stage.getWidth() - 300, stage.getHeight() - 100);
         stage.addActor(backToGame);
         // Load Inventory (Maybe fetch from database)
         inventory = new ArrayList<>();
@@ -122,21 +124,20 @@ public class InventoryScreen implements Screen{
         stage.addActor(scrollPane);
     }
 
-
     private void updateInventoryTable(List<Item> inventory, HashMap<Item, Integer> inventoryMap) {
         Label.LabelStyle itemFont = new Label.LabelStyle(currentFont, Color.WHITE);
         itemFont.font.getData().setScale(1.0f);
-        for (Item item : inventory){
+        for (Item item : inventory) {
             Table itemTable = new Table();
             itemTable.setSize(1000, 1000);
             Texture itemTexture = item.getIcon();
             Image itemImage = new Image(itemTexture);
             itemImage.setScaling(Scaling.fit);
-            itemTable.center().add(itemImage).size(300,300);
+            itemTable.center().add(itemImage).size(300, 300);
             itemTable.row();
             itemTable.add(new Label(item.getName(), itemFont));
             itemTable.row();
-            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item,0), itemFont));
+            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item, 0), itemFont));
             // Add a background to the table
             Texture backgroundTexture = new Texture("backgrounds/cardNormal.png");
             itemTable.setBackground(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
@@ -147,28 +148,30 @@ public class InventoryScreen implements Screen{
 
             // discription
             final Table itemDescriptionTable = new Table();
-            itemDescriptionTable.setPosition(0.5f * stage.getWidth()-400, 0.2f * stage.getHeight());
+            itemDescriptionTable.setPosition(0.5f * stage.getWidth() - 400, 0.2f * stage.getHeight());
             itemDescriptionTable.setSize(800, 100);
-            final Label itemDescriptionLabel = new Label(item.getDescription(), new Label.LabelStyle(currentFont, Color.WHITE));
+            final Label itemDescriptionLabel = new Label(item.getDescription(),
+                    new Label.LabelStyle(currentFont, Color.WHITE));
             itemDescriptionLabel.setWrap(true);
             itemDescriptionTable.add(itemDescriptionLabel).width(600);
-            itemDescriptionTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("backgrounds/battleBottomTab.png"))));
+            itemDescriptionTable.setBackground(
+                    new TextureRegionDrawable(new TextureRegion(new Texture("backgrounds/battleBottomTab.png"))));
             itemDescriptionTable.setVisible(false);
             stage.addActor(itemDescriptionTable);
 
             // Add a listener to the table
             itemContainer.addListener(new InputListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Show the label when the mouse enters the table
-                itemDescriptionTable.setVisible(true);
-            }
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    // Show the label when the mouse enters the table
+                    itemDescriptionTable.setVisible(true);
+                }
 
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Hide the label when the mouse leaves the table
-                itemDescriptionTable.setVisible(false);
-            }
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    // Hide the label when the mouse leaves the table
+                    itemDescriptionTable.setVisible(false);
+                }
             });
         }
 
@@ -199,7 +202,6 @@ public class InventoryScreen implements Screen{
         game.font.getData().setScale(1.0f);
     }
 
-
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false, width, height);
@@ -218,7 +220,7 @@ public class InventoryScreen implements Screen{
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         stage.dispose();
     }
 

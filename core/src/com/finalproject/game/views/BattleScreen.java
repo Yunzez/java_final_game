@@ -1,6 +1,7 @@
 package com.finalproject.game.views;
 
 import com.badlogic.gdx.Game;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,8 +38,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.Attack;
+import com.finalproject.game.models.CharacterItem;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
+import com.finalproject.game.models.Item;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -73,6 +77,8 @@ public class BattleScreen implements Screen {
 
     private Texture backgroundTexture;
     private Image backgroundImage;
+    private Image characterImage;
+    private Image monsterImage;
 
     public BattleScreen(FinalProjectGame game, GameCharacter playerCharacter, GameCharacter monster,
             GameScreen mapScreen, float baseSizeFactor) {
@@ -116,8 +122,10 @@ public class BattleScreen implements Screen {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(battleFont, Color.WHITE);
         centerLabel = new Label("Waiting for opponent...", labelStyle);
+
         centerLabel.setVisible(true); // Make sure this is initialized
-        centerTable.add(centerLabel).center();
+        centerTable.add(centerLabel).pad(5).align(Align.center).fill().expand();
+        centerLabel.setWrap(true); // Enable word wrapping
 
         centerTable.setVisible(false); // Initially invisible, set to true when needed
     }
@@ -192,8 +200,8 @@ public class BattleScreen implements Screen {
         float monsterAspectRatio = (float) monsterTexture.getWidth() / (float) monsterTexture.getHeight();
         float monsterDesiredWidth = desiredHeight * monsterAspectRatio;
         // Create images from the textures
-        Image characterImage = new Image(characterTexture);
-        Image monsterImage = new Image(monsterTexture);
+        characterImage = new Image(characterTexture);
+        monsterImage = new Image(monsterTexture);
 
         // Set the size of the images to maintain the aspect ratio
         characterImage.setSize(characterDesiredWidth, desiredHeight);
@@ -221,9 +229,6 @@ public class BattleScreen implements Screen {
 
         // Add the table to the stage
         stage.addActor(centerTable);
-
-        // Optional: Enable debug lines to visualize the layout during development
-        centerTable.setDebug(true);
     }
 
     @Override
@@ -328,7 +333,7 @@ public class BattleScreen implements Screen {
         // Create attack and item containers and add them to the bottomTable
         Table attackContainer = new Table();
         Table itemContainer = new Table();
-
+        attackContainer.setWidth(Gdx.graphics.getWidth() / 2);
         // Create a label style for the tooltip
         Label.LabelStyle tooltipStyle = new Label.LabelStyle(game.font, Color.WHITE);
 
@@ -392,25 +397,14 @@ public class BattleScreen implements Screen {
                         // Show tooltip
                         currentTooltipTable.setVisible(true);
                         lastEnterTime = currentTime;
-                        currentTooltipTable.setDebug(true); // button
-
-                        // Set the text of the tooltip label
                         currentTooltipLabel.setText(attackDescription + " Harm: " + attackHarm);
-
-                        // Update the tooltip table size to match the label (after setting the text)
                         currentTooltipTable.setSize(tableMaxWidthFinal, tableMaxHeightFinal); // Keep the tooltip table
-                                                                                              // size
+                                                                                              // // size
                         // consistent
-
                         // Update the tooltip table position relative to the button
                         currentTooltipTable.setPosition(button.getX() + x, button.getY() + y + 40);
 
                     }
-
-                    // Make the tooltip visible
-
-                    // currentTooltipTable.toFront(); // Brings the tooltip table to the front
-                    // currentTooltipLabel.toFront(); // Brings the tooltip to the front
 
                 }
 
@@ -442,16 +436,47 @@ public class BattleScreen implements Screen {
             attackContainer.add(button).size(350, 85).pad(8);
         }
 
-        String[] itemLabels = { "item1", "item2", "item3", "item4" };
-        for (String label : itemLabels) {
-            TextButton button = GameButton.createButton(label, game.font, "small");
-            itemContainer.add(button).size(75, 75).pad(8);
+        ArrayList<CharacterItem> itemLabels = playerCharacter.getInventory();
+        Table itemTable = new Table();
+
+        ScrollPane itemScrollPane = new ScrollPane(itemTable);
+
+        float scrollPaneWidth = Gdx.graphics.getWidth() / 2 - 20;
+        itemContainer.add(itemScrollPane).align(Align.right).width(scrollPaneWidth);
+        itemScrollPane.setSize(scrollPaneWidth, itemContainer.getHeight());
+        itemScrollPane.setScrollingDisabled(false, true);
+
+        Label itemDescription = new Label("Item Description", new Label.LabelStyle(describeFont, Color.WHITE));
+        itemDescription.setWrap(true); // Enable word wrap
+        itemDescription.setWidth(scrollPaneWidth);
+        itemDescription.setAlignment(Align.center);
+        itemDescription.setVisible(false);
+        for (CharacterItem item : itemLabels) {
+            TextButton button = GameButton.createButtonWithIcon(item, describeFont, "item");
+            itemTable.add(button).size(130, 130).pad(4);
+
+            // Add a listener to the button
+            button.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    itemDescription.setText(item.getItem().getDescription());
+                    // button
+                    itemDescription.setVisible(true);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    tooltipLabel.setVisible(true);
+                }
+            });
         }
+        itemContainer.row();
+        itemContainer.add(itemDescription).width(Gdx.graphics.getWidth() / 2 - 80).colspan(itemLabels.size()).pad(5);
         // Define item container, even though we're not adding items yet
 
         // Add the attack and item containers to the bottomTable
         bottomTable.add(attackContainer).expandX().fillX();
-        bottomTable.add(itemContainer).expandX().fillX();
+        bottomTable.add(itemContainer);
 
         // Set the bottomTable as the actor for bottomContainerWrapper
         bottomContainerWrapper.setActor(bottomTable);
@@ -472,6 +497,7 @@ public class BattleScreen implements Screen {
             activityLabel.setText("You attack " + monster.getName()
                     + " with " + attack.getName() + " and it does " + attack.getHarm() + " damage");
             if (monster.getCurrentHealth() <= 0) {
+                monsterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(monster.getLostImageTexture())));
                 returnToGameScreen("Won");
             } else {
                 // Schedule the monster's attack after a delay
@@ -498,6 +524,8 @@ public class BattleScreen implements Screen {
         activityLabel.setText(monster.getName() + " attacks you with " + monsterAttack.getName()
                 + " causing " + monsterAttack.getHarm() + " damage");
         if (playerCharacter.getCurrentHealth() <= 0) {
+            characterImage
+                    .setDrawable(new TextureRegionDrawable(new TextureRegion(playerCharacter.getLostImageTexture())));
             returnToGameScreen("Lost");
         }
         currentTurn = 0; // Player's turn
@@ -523,7 +551,12 @@ public class BattleScreen implements Screen {
             // Monster's health bar decreases from left to right, so we adjust the X
             // position as well as the width
             hpFill.setSize(hpFillWidth, 30);
-            hpFill.setPosition(fullWidth - hpFillWidth, hpFill.getY());
+            if (fullWidth < 0) {
+                hpFill.setPosition(0, hpFill.getY());
+            } else {
+                hpFill.setPosition(fullWidth - hpFillWidth, hpFill.getY());
+            }
+
         }
     }
 
@@ -586,10 +619,26 @@ public class BattleScreen implements Screen {
     private void returnToGameScreen(String result) {
         // Update the waiting label with the result message
         String message = "You escaped!";
+        Random random = new Random();
         if (result.equals("Won")) {
             playerCharacter.addExperience(100);
             playerCharacter.levelUp();
-            message = "You won! Gained 100 experience";
+            
+            message = "You won! Gained 100 experience, level up!";
+
+            if (random.nextFloat() < 0.4) { // 50% chance to receive an item
+                // Select a random item
+                Item[] possibleItems = Item.values();
+                int randomItemIndex = random.nextInt(possibleItems.length);
+                Item randomItem = possibleItems[randomItemIndex];
+                int numberOfItem = random.nextInt(2) + 1;
+                playerCharacter.addInventory(randomItem, numberOfItem);
+
+                message = "You won! Gained 100 experience " + " and " + numberOfItem + " " + randomItem.getName() + " , level up!";
+            }
+
+            
+            
         } else if (result.equals("Lost")) {
             message = "You lost!";
         }
@@ -599,7 +648,7 @@ public class BattleScreen implements Screen {
         centerTable.setVisible(true);
 
         // Delay the switch back to the game screen
-        float delay = 3; // seconds
+        float delay = 5; // seconds
         final String currentResult = result;
         Timer.schedule(new Timer.Task() {
             @Override
