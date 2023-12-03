@@ -40,6 +40,14 @@ public class CharacterItem {
     public String toString() {
         return item.getName() + " x" + count;
     }
+
+    public Buff useItem() {
+        if (this.count > 0) {
+            this.count--;
+            return item.getBuff();
+        }
+        return null;
+    }
 }
 
 

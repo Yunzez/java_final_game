@@ -2,6 +2,7 @@ package com.finalproject.game.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
@@ -39,7 +40,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.compression.lzma.Base;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.views.LoadFromPreviousSavingScreen;
@@ -47,6 +51,7 @@ import com.finalproject.game.views.LoadFromPreviousSavingScreen;
 public class BaseScreen implements Screen {
     private FinalProjectGame game;
     private PerspectiveCamera camera;
+    private Stage stage;
     private GameCharacter selectedCharacter;
     private ModelBatch modelBatch;
     private Environment environment;
@@ -71,6 +76,8 @@ public class BaseScreen implements Screen {
     public Array<ModelInstance> instances = new Array<ModelInstance>();
     private float lastRotationAngle = 0f;
 
+    private boolean resetCharacterPosition = false;
+    
     BoundingBox battleEntranceBounds = new BoundingBox();
     BoundingBox savingEntranceBounds = new BoundingBox();
     BoundingBox treasureBoxBounds = new BoundingBox();
@@ -81,6 +88,7 @@ public class BaseScreen implements Screen {
     public BaseScreen(FinalProjectGame game, GameCharacter selectedCharacter) {
         this.game = game;
         this.selectedCharacter = selectedCharacter;
+        this.stage = new Stage(new ScreenViewport());
         camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 20f);
         camera.lookAt(0, 0, 0);
@@ -154,7 +162,6 @@ public class BaseScreen implements Screen {
         monitorInstance.transform.scl(1f);
         // monitorInstance.transform.rotate(Vector3.Y, 125f);
 
-
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
         treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
         savingEntranceBounds = calculateTransformedBoundingBox(driveInstance);
@@ -214,6 +221,8 @@ public class BaseScreen implements Screen {
 
     @Override
     public void show() {
+
+        Gdx.input.setInputProcessor(stage);
         // Implement if needed
         assets = new AssetManager();
         assets.load("models/Character/Y-Bot.g3db", Model.class);
@@ -291,10 +300,15 @@ public class BaseScreen implements Screen {
     }
 
     private void handleCharacterMovement(float delta) {
+
         float characterSpeed = 100.0f;
         float animationSpeedFactor = 1f;
         Vector3 newPosition = characterModel.transform.getTranslation(new Vector3());
 
+        if (resetCharacterPosition) {
+            newPosition.z = newPosition.z + 30f;
+            resetCharacterPosition = false;
+        }
         // Use the bounding box to set boundaries
         float offset = 10f;
         float minX = roomBounds.min.x - offset, maxX = roomBounds.max.x - offset;
@@ -368,11 +382,13 @@ public class BaseScreen implements Screen {
         if (characterBounds.intersects(battleEntranceBounds)) {
             // Trigger action for battle soy entrance
             System.out.println("Battle entrance");
+
             game.setScreen(new GameScreen(game, selectedCharacter, 2, 1));
         }
 
         if (characterBounds.intersects(treasureBoxBounds)) {
-            game.setScreen(new InventoryScreen(game, this));
+            resetCharacterPosition = true;
+            game.setScreen(new InventoryScreen(game, BaseScreen.this));
         }
 
         if (characterBounds.intersects(savingEntranceBounds)) {

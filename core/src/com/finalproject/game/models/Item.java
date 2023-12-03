@@ -1,17 +1,30 @@
 package com.finalproject.game.models;
 
-
 import com.badlogic.gdx.graphics.Texture;
+import com.finalproject.game.models.Buff;
 
 public enum Item {
-    RELX_V5(ItemType.WEAPON, "RELX V5", 10, "A weapon that can relax you and your enenmy, enenmy attacks drop by 10 next round.","items/relx.png"),
-    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30, "A legendary blade that reveals the truth, cutting through deception. Give enenmy 30 damange","items/sword.png"),
-    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 20, "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection, plus 20 HP.","items/armor.png"),
-    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health of 20 hp.","items/potion.png"),
-    BUTTBOOK(ItemType.WEAPON, "Buttbook", 40, "A weapon that can make you lost all your personal data, give opponent 40 damanges.","items/buttbook.png"),
-    BANANA_CAT(ItemType.POTION, "Banana Cat", 50, "A potion that heal 50 points of your hp with the cuteness of banana cat.","items/banana_cat.png"),
-    GIGITTY_GUN(ItemType.WEAPON, "Gigity Gun", 100, "A weapon that can make you lost all your personal data, give opponent 40 damanges.","items/Gigitty.png"),
-    ;
+    RELX_V5(ItemType.WEAPON, "RELX V5", 10,
+            "A weapon that can relax you and your enenmy, enenmy attacks drop by 10 next 2 rounds.", "items/relx.png",
+            new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30,
+            "A legendary blade that reveals the truth, cutting through deception. Give enenmy 30 damange",
+            "items/sword.png", new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    DRAGONSCALE_ARMOR(ItemType.ARMOR, "Dragonscale Armor", 20,
+            "Near-impenetrable armor crafted from the scales of a dragon. Offers immense protection, plus 20 HP.",
+            "items/armor.png", new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health of 20 hp.",
+            "items/potion.png", new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    BUTTBOOK(ItemType.WEAPON, "Buttbook", 40,
+            "A weapon that can make you lost all your personal data, give opponent 40 damanges.", "items/buttbook.png",
+            new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    BANANA_CAT(ItemType.POTION, "Banana Cat", 50,
+            "A potion that heal 50 points of your hp with the cuteness of banana cat.", "items/banana_cat.png",
+            new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+    GIGITTY_GUN(ItemType.WEAPON, "Gigity Gun", 100,
+            "A weapon that can make you lost all your personal data, give opponent 40 damanges.", "items/Gigitty.png",
+            new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+            ;
 
     private final ItemType type;
     private final String name;
@@ -21,8 +34,9 @@ public enum Item {
     private final Texture icon;
     private final int id;
     private static int idCounter = 0;
+    private final Buff buff;
 
-    private Item(ItemType type, String name, int value, String description, String iconPath) {
+    private Item(ItemType type, String name, int value, String description, String iconPath, Buff buff) {
         this.type = type;
         this.name = name;
         this.value = value;
@@ -30,6 +44,7 @@ public enum Item {
         this.iconPath = iconPath;
         this.icon = new Texture(iconPath);
         this.id = generateId();
+        this.buff = buff;
     }
 
     private static int generateId() {
@@ -59,13 +74,17 @@ public enum Item {
     public Texture getIcon() {
         return icon;
     }
-  
+
     public int getId() {
         return id;
     }
 
     public String toString() {
         return name + " (" + type.toString() + "): " + value + " effects";
+    }
+
+    public Buff getBuff() {
+        return buff;
     }
 
 }

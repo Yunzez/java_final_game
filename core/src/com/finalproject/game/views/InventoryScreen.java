@@ -50,7 +50,7 @@ public class InventoryScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+       
 
         // for font
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
@@ -76,6 +76,7 @@ public class InventoryScreen implements Screen {
 
     @Override
     public void show() {
+         Gdx.input.setInputProcessor(stage);
         // add the background
         addBackground();
         // add the title
@@ -149,7 +150,7 @@ public class InventoryScreen implements Screen {
             // discription
             final Table itemDescriptionTable = new Table();
             itemDescriptionTable.setPosition(0.5f * stage.getWidth() - 400, 0.2f * stage.getHeight());
-            itemDescriptionTable.setSize(800, 100);
+            itemDescriptionTable.setSize(700, 100);
             final Label itemDescriptionLabel = new Label(item.getDescription(),
                     new Label.LabelStyle(currentFont, Color.WHITE));
             itemDescriptionLabel.setWrap(true);

@@ -67,18 +67,8 @@
     "speed": 20,
     "level": 1,
     "name": "Meme Man",
-    "imagePath": "charactors/Meme_man.png",
-    "lostImagePath": "charactors/beffs.png"
-  },
-  {
-    "health": 80,
-    "strength": 6,
-    "defense": 12,
-    "speed": 20,
-    "level": 1,
-    "name": "Place holder",
-    "imagePath": "charactors/xiaochuan.png",
-    "lostImagePath": "charactors/beffs.png"
+    "imagePath": "charactors/Meme_Man.png",
+    "lostImagePath": "charactors/Meme_ManLost.png"
   },
   {
     "health": 80,

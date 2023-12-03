@@ -38,6 +38,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.Attack;
+import com.finalproject.game.models.Buff;
 import com.finalproject.game.models.CharacterItem;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
@@ -66,6 +67,9 @@ public class BattleScreen implements Screen {
     private Table hpBarMonster;
     private Image hpFillPlayer;
     private Image hpFillMonster;
+    
+    private ArrayList<Buff> playerBuff;
+    private ArrayList<Buff> monsterBuff;
 
     private float bottomHeightRatio = 0.25f;
     private float topHeightRatio = 0.25f;
@@ -88,6 +92,8 @@ public class BattleScreen implements Screen {
         this.monster.assignRandomAttacks(3);
         this.mapScreen = mapScreen;
         this.baseSizeFactor = baseSizeFactor;
+        this.playerBuff = new ArrayList<Buff>();
+        this.monsterBuff = new ArrayList<Buff>();
 
         if (playerCharacter.getSpeed() >= monster.getSpeed()) {
             this.currentTurn = 0;
@@ -263,7 +269,7 @@ public class BattleScreen implements Screen {
         topTable.top().left().padTop(50);
 
         topContainerWrapper.setDebug(false);
-        topTable.setDebug(false);
+        topTable.setDebug(true);
         // Enable debugging to see the outlines of the table and cells
         // topTable.setDebug(true);
 
@@ -313,6 +319,31 @@ public class BattleScreen implements Screen {
         topTable.row();
         topTable.add(hpBarUser).width(hpBarWidth).left().padLeft(10).padTop(50); // Add some padding on top for spacing
         topTable.add(hpBarMonster).width(hpBarWidth).right().padRight(10).padTop(50); // Same
+
+        Table userBuffContainer = new Table().align(Align.left).padLeft(5);
+        Table monsterBuffContainer = new Table().align(Align.right).padRight(5);
+        for (Buff userBuff : playerBuff) {
+            Label buffLabel = new Label(userBuff.getName(), labelStyle); // Use appropriate label or icon
+            userBuffContainer.add(buffLabel); // Add buff to container
+        }
+        
+        userBuffContainer.add(new Label("test", labelStyle));
+        userBuffContainer.add(new Label("test", labelStyle));
+        for (Buff monsterBuff : monsterBuff) {
+            Label buffLabel = new Label(monsterBuff.getName(), labelStyle); // Use appropriate label or icon
+            monsterBuffContainer.add(buffLabel); // Add buff to container
+        }
+        monsterBuffContainer.add(new Label("test", labelStyle));
+        monsterBuffContainer.add(new Label("test", labelStyle));
+
+        monsterBuffContainer.setDebug(true);
+        userBuffContainer.setDebug(true);
+
+        topTable.row();
+        topTable.add(userBuffContainer).left().width(hpBarWidth).padTop(10); // Use expand() and left() for alignment
+        topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10); // Use expand() and right() for alignment
+        
+
         topContainerWrapper.setActor(topTable);
         stage.addActor(topContainerWrapper);
     }
@@ -453,6 +484,11 @@ public class BattleScreen implements Screen {
         itemDescription.setVisible(false);
         for (CharacterItem item : itemLabels) {
             TextButton button = GameButton.createButtonWithIcon(item, describeFont, "item");
+
+            if (item.getCount() == 0) {
+                button.setDisabled(true);
+            }
+
             itemTable.add(button).size(130, 130).pad(4);
 
             // Add a listener to the button
@@ -467,6 +503,18 @@ public class BattleScreen implements Screen {
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                     tooltipLabel.setVisible(true);
+                }
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    // This will get executed when the button is pressed down
+                    // Here, you can issue the item:
+
+                    if (item.getCount() > 0) {
+                        System.out.println("item used");
+                        item.useItem();
+                    }
+                    return true; // Return true to indicate the event was handled
                 }
             });
         }
@@ -623,7 +671,7 @@ public class BattleScreen implements Screen {
         if (result.equals("Won")) {
             playerCharacter.addExperience(100);
             playerCharacter.levelUp();
-            
+
             message = "You won! Gained 100 experience, level up!";
 
             if (random.nextFloat() < 0.4) { // 50% chance to receive an item
@@ -634,11 +682,10 @@ public class BattleScreen implements Screen {
                 int numberOfItem = random.nextInt(2) + 1;
                 playerCharacter.addInventory(randomItem, numberOfItem);
 
-                message = "You won! Gained 100 experience " + " and " + numberOfItem + " " + randomItem.getName() + " , level up!";
+                message = "You won! Gained 100 experience " + " and " + numberOfItem + " " + randomItem.getName()
+                        + " , level up!";
             }
 
-            
-            
         } else if (result.equals("Lost")) {
             message = "You lost!";
         }
