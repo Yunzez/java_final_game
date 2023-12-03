@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -57,6 +58,7 @@ public class ChooseCharacterScreen implements Screen {
     private ArrayList<GameCharacter> characterList;
 
     private BitmapFont currentFont;
+    private BitmapFont describeFont;
 
     public ChooseCharacterScreen(FinalProjectGame game) {
         this.game = game;
@@ -70,6 +72,10 @@ public class ChooseCharacterScreen implements Screen {
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
         currentFont = fontGenerator.generate(25, Color.WHITE, 0.3f, Color.WHITE);
         fontGenerator.dispose();
+
+        FontGenerator fontGenerator2 = new FontGenerator("fonts/VCR_OSD_MONO_1.001.ttf");
+        describeFont = fontGenerator2.generate(20, Color.WHITE, 0, Color.WHITE);
+        fontGenerator2.dispose();
         // stage.setDebugAll(true); // This will enable debug lines around all actors in
         // the stage
 
@@ -115,7 +121,7 @@ public class ChooseCharacterScreen implements Screen {
         characterDetailsTable = new Table();
         characterDetailsTable.bottom().left(); // Align to bottom left
         characterDetailsTable.setWidth(stage.getWidth()); // Take up the whole bottom
-        characterDetailsTable.setHeight(stage.getHeight() * 0.15f); // Set the height
+        characterDetailsTable.setHeight(stage.getHeight() * 0.16f); // Set the height
 
         // Set background
         Texture bgtexture = new Texture(Gdx.files.internal("backgrounds/battleBottomTab.png"));
@@ -129,26 +135,32 @@ public class ChooseCharacterScreen implements Screen {
     private void updateCharacterDetails(GameCharacter character) {
         characterDetailsTable.clear(); // Clear previous details
 
-        Label.LabelStyle normalFont = new Label.LabelStyle(game.font, Color.WHITE);
-        normalFont.font.getData().setScale(1.3f);
+        Label.LabelStyle normalFont = new Label.LabelStyle(describeFont, Color.WHITE);
+
+        normalFont.font.getData().setScale(1.1f);
 
         // Left section: Story
-        Label storyLabel = new Label("Story: this is a stroy of the character", normalFont);
-
+        Label storyLabel = new Label(character.getDescription(), normalFont);
+        storyLabel.setWrap(true); 
+        storyLabel.setAlignment(Align.left);
+        
         // Middle section: Stats
         Table statsTable = new Table();
         Label hpLabel = new Label("HP: " + character.getMaxHealth(), normalFont);
         Label attackLabel = new Label("Attack: " + character.getAttack(), normalFont);
         Label defenseLabel = new Label("Defense: " + character.getDefense(), normalFont);
+         Label speedLabel = new Label("Defense: " + character.getSpeed(), normalFont);
 
         statsTable.add(hpLabel).row();
         statsTable.add(attackLabel).row();
-        statsTable.add(defenseLabel);
+        statsTable.add(defenseLabel).row();
+        statsTable.add(speedLabel).row();
 
         // Add to table
-        characterDetailsTable.add(storyLabel).expandX().pad(10);
-        characterDetailsTable.add(statsTable).expandX().pad(10);
-        characterDetailsTable.row(); // Move to next row
+        float widgetHeight = characterDetailsTable.getHeight();
+        characterDetailsTable.add(storyLabel).width( (Gdx.graphics.getWidth() * 0.7f)).height(widgetHeight).pad(10).padLeft(5).top().left();
+        characterDetailsTable.add(statsTable).height(widgetHeight).expandX().pad(10);
+
     }
 
     private void addButtons() {

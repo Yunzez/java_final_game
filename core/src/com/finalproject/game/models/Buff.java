@@ -46,6 +46,10 @@ public class Buff {
         public void setDuration(float duration) {
             this.duration = duration;
         }
+
+        public String toString() {
+            return name + " (" + type.toString() + "): " + magnitude + " for " + duration + " seconds";
+        }
     
         // Additional methods to handle the buff logic
     

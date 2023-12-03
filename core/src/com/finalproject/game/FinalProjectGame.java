@@ -58,9 +58,10 @@ public class FinalProjectGame extends Game {
             String name = characterValue.getString("name");
             String imagePath = characterValue.getString("imagePath");
             String lostImagePath = characterValue.getString("lostImagePath");
-
+			String description = characterValue.getString("description");
             GameCharacter character = new GameCharacter(health, strength, defense, speed, level, name, imagePath, lostImagePath);
-            characterList.add(character);
+			character.setDescription(description);
+			characterList.add(character);
         }
 
         // Now characterList contains all characters loaded from JSON

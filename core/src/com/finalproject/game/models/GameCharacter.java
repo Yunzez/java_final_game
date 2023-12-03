@@ -21,6 +21,7 @@ public class GameCharacter {
     private Texture characterLostCard;
     private int id;
     private static int autoId = 0;
+    private String description = "This is a character";
 
     private ArrayList<Attack> attacks;
 
@@ -203,6 +204,14 @@ public class GameCharacter {
             }
         });
 
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     // retunr the character as a new instance

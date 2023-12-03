@@ -7,7 +7,8 @@
     "level": 1,
     "name": "Mikado Sun",
     "imagePath": "charactors/xiaochuan.png",
-    "lostImagePath": "charactors/xiaochuanLost.png"
+    "lostImagePath": "charactors/xiaochuanLost.png",
+    "description": "One of Tenno's candidates. While he failed in the competition of powers, Sun got another kind of success on the Internet: as an influencer after he revealed that he has immeasurable power that inherited from previous Tenno."
   },
   {
     "health": 80,
@@ -17,7 +18,8 @@
     "level": 1,
     "name": "Relx Ding",
     "imagePath": "charactors/dingzhen.png",
-    "lostImagePath": "charactors/dingzhenLost.png"
+    "lostImagePath": "charactors/dingzhenLost.png",
+    "description": "The youngest king in Litang history. He grew up in snowy mountains in Litang territory with his best friend, Snow Leopard the Cheese. After combining traditional skills with the advanced weapon RELX V, he is famous as a strong warrior now."
   },
   {
     "health": 80,
@@ -27,7 +29,8 @@
     "level": 1,
     "name": "Mark Zucks",
     "imagePath": "charactors/mark.png",
-    "lostImagePath": "charactors/markLost.png"
+    "lostImagePath": "charactors/markLost.png",
+    "description":  "Mark seems to be one of the most successful entrepreneurs on this planet. But only a few people know his true color is reptilian. He spends money he made on Earth to try to build an army to fight back to his hometown. He may destroy the Earth in an emergency situation."
   },
   {
     "health": 80,
@@ -37,7 +40,8 @@
     "level": 1,
     "name": "Bo Liu",
     "imagePath": "charactors/Medicine.png",
-    "lostImagePath": "charactors/MedicineLost.png"
+    "lostImagePath": "charactors/MedicineLost.png",
+    "description": "As known as The Potion Brother. He has a special formula of a kind of potion inherited from his ancestors. He acts dumb to hind the myth of him posessing the powerful potion. He is a good friend of Mikado Sun."
   },
 
   {
@@ -48,7 +52,8 @@
     "level": 1,
     "name": "Beff Jezos",
     "imagePath": "charactors/beffs.png",
-    "lostImagePath": "charactors/beffs.png"
+    "lostImagePath": "charactors/beffs.png",
+    "description": "Beff is the twin of Jezos, they combined to be Jef Bezo, the richest man in the world. They split in the darkness when no one notices."
   },
   {
     "health": 80,
@@ -58,7 +63,8 @@
     "level": 1,
     "name": "Jezos Beffs",
     "imagePath": "charactors/jezos.png",
-    "lostImagePath": "charactors/beffs.png"
+    "lostImagePath": "charactors/beffs.png",
+    "description": "Jezos is the twin of Beff, they combined to be Jef Bezo, the richest man in the world, They split in the darkness when no one notices."
   },
   {
     "health": 80,
@@ -68,7 +74,8 @@
     "level": 1,
     "name": "Meme Man",
     "imagePath": "charactors/Meme_Man.png",
-    "lostImagePath": "charactors/Meme_ManLost.png"
+    "lostImagePath": "charactors/Meme_ManLost.png",
+    "description": "Meme man is an entity, not a creature, which resides in the unspace between this world and the next, trapped within twisting prisms of meta concepts each more complex than the last of which we may catch only a glimpse. Anyway, when you meet it, you better pray it is not your enemy."
   },
   {
     "health": 80,
@@ -76,8 +83,9 @@
     "defense": 12,
     "speed": 20,
     "level": 1,
-    "name": "Koube Icetea",
+    "name": "Keube Icetea",
     "imagePath": "charactors/koubeIcetea.png",
-    "lostImagePath": "charactors/beffs.png"
+    "lostImagePath": "charactors/beffs.png",
+    "description": "Keube was the best helicopter pilot, until he crashed on a mountain since one of his passengers elbowed him. A mysterious man revivied him with the cost that he will lost his head and forever wear the ice tea shirt he was wearing when he died."
   }
 ]

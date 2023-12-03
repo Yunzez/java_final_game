@@ -77,7 +77,7 @@ public class BaseScreen implements Screen {
     private float lastRotationAngle = 0f;
 
     private boolean resetCharacterPosition = false;
-    
+
     BoundingBox battleEntranceBounds = new BoundingBox();
     BoundingBox savingEntranceBounds = new BoundingBox();
     BoundingBox treasureBoxBounds = new BoundingBox();
@@ -467,6 +467,9 @@ public class BaseScreen implements Screen {
             characterTexture = null;
         }
         shapeRenderer.dispose();
+        stage.dispose();
+        assets.dispose();
+
     }
 
     @Override

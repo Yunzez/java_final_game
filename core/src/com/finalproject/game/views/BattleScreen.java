@@ -67,7 +67,7 @@ public class BattleScreen implements Screen {
     private Table hpBarMonster;
     private Image hpFillPlayer;
     private Image hpFillMonster;
-    
+
     private ArrayList<Buff> playerBuff;
     private ArrayList<Buff> monsterBuff;
 
@@ -326,7 +326,7 @@ public class BattleScreen implements Screen {
             Label buffLabel = new Label(userBuff.getName(), labelStyle); // Use appropriate label or icon
             userBuffContainer.add(buffLabel); // Add buff to container
         }
-        
+
         userBuffContainer.add(new Label("test", labelStyle));
         userBuffContainer.add(new Label("test", labelStyle));
         for (Buff monsterBuff : monsterBuff) {
@@ -341,8 +341,8 @@ public class BattleScreen implements Screen {
 
         topTable.row();
         topTable.add(userBuffContainer).left().width(hpBarWidth).padTop(10); // Use expand() and left() for alignment
-        topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10); // Use expand() and right() for alignment
-        
+        topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10); // Use expand() and right() for
+                                                                                 // alignment
 
         topContainerWrapper.setActor(topTable);
         stage.addActor(topContainerWrapper);
@@ -459,6 +459,7 @@ public class BattleScreen implements Screen {
                     // This will get executed when the button is pressed down
                     // Here, you can issue the attack:
                     issueAttack(currentAttack);
+                    System.out.println("attack used");
                     return true; // Return true to indicate the event was handled
                 }
 
@@ -487,6 +488,7 @@ public class BattleScreen implements Screen {
 
             if (item.getCount() == 0) {
                 button.setDisabled(true);
+                button.setVisible(false);
             }
 
             itemTable.add(button).size(130, 130).pad(4);
@@ -512,7 +514,8 @@ public class BattleScreen implements Screen {
 
                     if (item.getCount() > 0) {
                         System.out.println("item used");
-                        item.useItem();
+                        Buff itemBuff = item.useItem();
+                        System.out.println("item buff: " + itemBuff.toString());
                     }
                     return true; // Return true to indicate the event was handled
                 }
@@ -537,6 +540,7 @@ public class BattleScreen implements Screen {
     }
 
     public void issueAttack(Attack attack) {
+        System.out.println("issue attack" + attack.getName() + currentTurn);
         // Check if the attack can be performed (e.g., enough mana, correct turn, etc.)
         if (currentTurn == 0) {
             System.out.println("player attack");
@@ -560,6 +564,8 @@ public class BattleScreen implements Screen {
                 }, delay);
             }
             currentTurn = 1;
+        } else {
+            performMonsterAttack();
         }
 
     }
@@ -732,6 +738,9 @@ public class BattleScreen implements Screen {
         stage.dispose();
         battleBottomTabTexture.dispose();
         backgroundTexture.dispose();
+        battleFont.dispose();
+        describeFont.dispose();
+    
     }
 
 }
