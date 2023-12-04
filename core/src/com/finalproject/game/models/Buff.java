@@ -27,6 +27,10 @@ public class Buff {
             return type;
         }
 
+        public String getTypeIconPath(){
+            return type.getIconPath();
+        }
+
         public void setType(BuffType type) {
             this.type = type;
         }

@@ -39,6 +39,7 @@ import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.Attack;
 import com.finalproject.game.models.Buff;
+import com.finalproject.game.models.BuffType;
 import com.finalproject.game.models.CharacterItem;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
@@ -78,6 +79,9 @@ public class BattleScreen implements Screen {
     private int currentTurn; // 0 for player, 1 for monster
     private Label centerLabel;
     private Table centerTable;
+
+    private Table userBuffContainer;
+    private Table monsterBuffContainer;
 
     private Texture backgroundTexture;
     private Image backgroundImage;
@@ -269,9 +273,6 @@ public class BattleScreen implements Screen {
         topTable.top().left().padTop(50);
 
         topContainerWrapper.setDebug(false);
-        topTable.setDebug(true);
-        // Enable debugging to see the outlines of the table and cells
-        // topTable.setDebug(true);
 
         TextButton escapeButton = GameButton.createButton("Escape", describeFont, "small");
 
@@ -305,7 +306,6 @@ public class BattleScreen implements Screen {
         topTable.add(escapeAndActivity).left().padLeft(10);
 
         topTable.setFillParent(true);
-        topTable.setDebug(false);
         // Add the character and monster names and stats
         topTable.row();
         topTable.add(characterNameLabel).expandX().left().padLeft(30);
@@ -320,24 +320,11 @@ public class BattleScreen implements Screen {
         topTable.add(hpBarUser).width(hpBarWidth).left().padLeft(10).padTop(50); // Add some padding on top for spacing
         topTable.add(hpBarMonster).width(hpBarWidth).right().padRight(10).padTop(50); // Same
 
-        Table userBuffContainer = new Table().align(Align.left).padLeft(5);
-        Table monsterBuffContainer = new Table().align(Align.right).padRight(5);
-        for (Buff userBuff : playerBuff) {
-            Label buffLabel = new Label(userBuff.getName(), labelStyle); // Use appropriate label or icon
-            userBuffContainer.add(buffLabel); // Add buff to container
-        }
+        userBuffContainer = new Table().align(Align.left).padLeft(5);
+        monsterBuffContainer = new Table().align(Align.right).padRight(5);
 
-        userBuffContainer.add(new Label("test", labelStyle));
-        userBuffContainer.add(new Label("test", labelStyle));
-        for (Buff monsterBuff : monsterBuff) {
-            Label buffLabel = new Label(monsterBuff.getName(), labelStyle); // Use appropriate label or icon
-            monsterBuffContainer.add(buffLabel); // Add buff to container
-        }
-        monsterBuffContainer.add(new Label("test", labelStyle));
-        monsterBuffContainer.add(new Label("test", labelStyle));
-
-        monsterBuffContainer.setDebug(true);
-        userBuffContainer.setDebug(true);
+        updateBuff(playerBuff, userBuffContainer);
+        updateBuff(monsterBuff, monsterBuffContainer);
 
         topTable.row();
         topTable.add(userBuffContainer).left().width(hpBarWidth).padTop(10); // Use expand() and left() for alignment
@@ -346,6 +333,18 @@ public class BattleScreen implements Screen {
 
         topContainerWrapper.setActor(topTable);
         stage.addActor(topContainerWrapper);
+    }
+
+    private void updateBuff(ArrayList<Buff> buffList, Table buffContainer) {
+        buffContainer.clear();
+        for (Buff buff : buffList) {
+            String iconPath = buff.getTypeIconPath();
+            TextureRegionDrawable iconDrawable = new TextureRegionDrawable(
+                    new TextureRegion(new Texture(Gdx.files.internal(iconPath))));
+            Image buffIcon = new Image(iconDrawable);
+            buffContainer.add(buffIcon).size(60, 60).pad(10); // Set your desired size for the
+                                                              // icon
+        }
     }
 
     private void createBottomUI() {
@@ -483,44 +482,10 @@ public class BattleScreen implements Screen {
         itemDescription.setWidth(scrollPaneWidth);
         itemDescription.setAlignment(Align.center);
         itemDescription.setVisible(false);
-        for (CharacterItem item : itemLabels) {
-            TextButton button = GameButton.createButtonWithIcon(item, describeFont, "item");
 
-            if (item.getCount() == 0) {
-                button.setDisabled(true);
-                button.setVisible(false);
-            }
+        //
+        updateItemTable(itemTable, itemDescription);
 
-            itemTable.add(button).size(130, 130).pad(4);
-
-            // Add a listener to the button
-            button.addListener(new InputListener() {
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    itemDescription.setText(item.getItem().getDescription());
-                    // button
-                    itemDescription.setVisible(true);
-                }
-
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    tooltipLabel.setVisible(true);
-                }
-
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    // This will get executed when the button is pressed down
-                    // Here, you can issue the item:
-
-                    if (item.getCount() > 0) {
-                        System.out.println("item used");
-                        Buff itemBuff = item.useItem();
-                        System.out.println("item buff: " + itemBuff.toString());
-                    }
-                    return true; // Return true to indicate the event was handled
-                }
-            });
-        }
         itemContainer.row();
         itemContainer.add(itemDescription).width(Gdx.graphics.getWidth() / 2 - 80).colspan(itemLabels.size()).pad(5);
         // Define item container, even though we're not adding items yet
@@ -539,6 +504,67 @@ public class BattleScreen implements Screen {
 
     }
 
+    private void updateItemTable(Table itemTable, Label itemDescription) {
+        itemTable.clear(); // Clear the existing items
+        ArrayList<CharacterItem> itemLabels = playerCharacter.getInventory();
+        for (CharacterItem item : itemLabels) {
+            TextButton button = GameButton.createButtonWithIcon(item, describeFont, "item");
+
+            if (item.getCount() == 0) {
+                button.setDisabled(true);
+                button.setVisible(false);
+            } else {
+                itemTable.add(button).size(130, 130).pad(4);
+                // Add a listener to the button
+                button.addListener(new InputListener() {
+                    @Override
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                        itemDescription.setText(item.getItem().getDescription());
+                        // button
+                        itemDescription.setVisible(true);
+                    }
+
+                    @Override
+                    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                        itemDescription.setVisible(false);
+                    }
+
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        // This will get executed when the button is pressed down
+                        // Here, you can issue the item:
+
+                        if (item.getCount() > 0) {
+                            System.out.println("item used");
+                            Buff itemBuff = item.useItem();
+                            if (itemBuff != null) {
+                                if (itemBuff.getType() == BuffType.MONSTER_DAMAGE) {
+                                    monsterBuff.add(itemBuff);
+                                    updateBuff(monsterBuff, monsterBuffContainer);
+                                } else {
+                                    playerBuff.add(itemBuff);
+                                    updateBuff(playerBuff, userBuffContainer);
+                                }
+
+                            }
+                            centerTable.setVisible(true);
+                            centerLabel.setText("You used " + item.getItem().getName());
+                            currentTurn = 1;
+                            delay(1, () -> {
+                                centerTable.setVisible(false);
+                                performMonsterAttack();
+                            });
+                            itemDescription.setVisible(false);
+                            updateItemTable(itemTable, itemDescription);
+
+                        }
+                        return true; // Return true to indicate the event was handled
+                    }
+                });
+            }
+        }
+    }
+
     public void issueAttack(Attack attack) {
         System.out.println("issue attack" + attack.getName() + currentTurn);
         // Check if the attack can be performed (e.g., enough mana, correct turn, etc.)
@@ -553,21 +579,25 @@ public class BattleScreen implements Screen {
                 returnToGameScreen("Won");
             } else {
                 // Schedule the monster's attack after a delay
+                centerLabel.setText("Waiting for opponent...");
                 centerTable.setVisible(true);
-                float delay = 3; // seconds
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        // This block will be executed after the delay
-                        performMonsterAttack();
-                    }
-                }, delay);
+                delay(3, () -> performMonsterAttack());
             }
             currentTurn = 1;
         } else {
             performMonsterAttack();
         }
 
+    }
+
+    public void delay(float delayTime, Runnable taskToRun) {
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                // This block will be executed after the delay
+                taskToRun.run();
+            }
+        }, delayTime);
     }
 
     private void performMonsterAttack() {
@@ -680,7 +710,7 @@ public class BattleScreen implements Screen {
 
             message = "You won! Gained 100 experience, level up!";
 
-            if (random.nextFloat() < 0.4) { // 50% chance to receive an item
+            if (random.nextFloat() < 0.8) { // 50% chance to receive an item
                 // Select a random item
                 Item[] possibleItems = Item.values();
                 int randomItemIndex = random.nextInt(possibleItems.length);
@@ -701,20 +731,15 @@ public class BattleScreen implements Screen {
         centerTable.setVisible(true);
 
         // Delay the switch back to the game screen
-        float delay = 5; // seconds
-        final String currentResult = result;
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                // Hide the waiting label
-                centerTable.setVisible(false);
+        delay(5, () -> {
+            final String currentResult = result;
+            centerTable.setVisible(false);
 
-                // This block will be executed after the delay
-                // Switch back to the game screen
-                mapScreen.setBattleResult(currentResult);
-                game.setScreen(mapScreen);
-            }
-        }, delay);
+            // This block will be executed after the delay
+            // Switch back to the game screen
+            mapScreen.setBattleResult(currentResult);
+            game.setScreen(mapScreen);
+        });
     }
 
     // Implement other required methods from Screen interface
@@ -740,7 +765,7 @@ public class BattleScreen implements Screen {
         backgroundTexture.dispose();
         battleFont.dispose();
         describeFont.dispose();
-    
+
     }
 
 }

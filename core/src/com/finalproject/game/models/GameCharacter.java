@@ -70,7 +70,7 @@ public class GameCharacter {
         inventory.add(new CharacterItem(Item.RELX_V5, 0));
         inventory.add(new CharacterItem(Item.SWORD_OF_TRUTH, 0));
         inventory.add(new CharacterItem(Item.DRAGONSCALE_ARMOR, 0));
-        inventory.add(new CharacterItem(Item.ELIXIR_OF_HEALTH, 0));
+        inventory.add(new CharacterItem(Item.ELIXIR_OF_HEALTH, 2));
         inventory.add(new CharacterItem(Item.BUTTBOOK, 0));
         inventory.add(new CharacterItem(Item.GIGITTY_GUN, 0));
         inventory.add(new CharacterItem(Item.BANANA_CAT, 0));
