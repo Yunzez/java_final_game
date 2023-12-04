@@ -270,7 +270,7 @@ public class BattleScreen implements Screen {
         topContainerWrapper.align(Align.left);
 
         Table topTable = new Table();
-        topTable.top().left().padTop(50);
+        topTable.top().left().padTop(20);
 
         topContainerWrapper.setDebug(false);
 
@@ -317,8 +317,8 @@ public class BattleScreen implements Screen {
         topTable.add(testHPMonster).expandX().right().padRight(20);
 
         topTable.row();
-        topTable.add(hpBarUser).width(hpBarWidth).left().padLeft(10).padTop(50); // Add some padding on top for spacing
-        topTable.add(hpBarMonster).width(hpBarWidth).right().padRight(10).padTop(50); // Same
+        topTable.add(hpBarUser).width(hpBarWidth).left().padLeft(10).padTop(40); // Add some padding on top for spacing
+        topTable.add(hpBarMonster).width(hpBarWidth).right().padRight(10).padTop(40); // Same
 
         userBuffContainer = new Table().align(Align.left).padLeft(5);
         monsterBuffContainer = new Table().align(Align.right).padRight(5);
@@ -327,10 +327,12 @@ public class BattleScreen implements Screen {
         updateBuff(monsterBuff, monsterBuffContainer);
 
         topTable.row();
-        topTable.add(userBuffContainer).left().width(hpBarWidth).padTop(10); // Use expand() and left() for alignment
-        topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10); // Use expand() and right() for
-                                                                                 // alignment
-
+        topTable.add(userBuffContainer).left().width(hpBarWidth).padTop(10).height(80); // Use expand() and left() for
+                                                                                        // alignment
+        topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10).height(80); // Use expand() and right()
+                                                                                            // for
+        // alignment
+        topTable.setDebug(true);
         topContainerWrapper.setActor(topTable);
         stage.addActor(topContainerWrapper);
     }
@@ -566,6 +568,7 @@ public class BattleScreen implements Screen {
     }
 
     public void issueAttack(Attack attack) {
+
         System.out.println("issue attack" + attack.getName() + currentTurn);
         // Check if the attack can be performed (e.g., enough mana, correct turn, etc.)
         if (currentTurn == 0) {
@@ -587,7 +590,29 @@ public class BattleScreen implements Screen {
         } else {
             performMonsterAttack();
         }
+    }
 
+    public void processBuff(ArrayList<Buff> playerBuff, ArrayList<Buff> monsterBuff) {
+        // Process monster buffs
+        for (int i = monsterBuff.size() - 1; i >= 0; i--) {
+            Buff buff = monsterBuff.get(i);
+            buff.setDuration(buff.getDuration() - 1);
+            if (buff.getDuration() == 0) {
+                monsterBuff.remove(i);
+            }
+        }
+
+        // Process player buffs
+        for (int i = playerBuff.size() - 1; i >= 0; i--) {
+            Buff buff = playerBuff.get(i);
+            buff.setDuration(buff.getDuration() - 1);
+            if (buff.getDuration() == 0) {
+                playerBuff.remove(i);
+            }
+        }
+
+        updateBuff(playerBuff, userBuffContainer);
+        updateBuff(monsterBuff, monsterBuffContainer);
     }
 
     public void delay(float delayTime, Runnable taskToRun) {
@@ -613,6 +638,7 @@ public class BattleScreen implements Screen {
             returnToGameScreen("Lost");
         }
         currentTurn = 0; // Player's turn
+        processBuff(playerBuff, monsterBuff);
     }
 
     private void updateHealthIndicators() {
@@ -704,6 +730,7 @@ public class BattleScreen implements Screen {
         // Update the waiting label with the result message
         String message = "You escaped!";
         Random random = new Random();
+        Screen targetScreen = mapScreen;
         if (result.equals("Won")) {
             playerCharacter.addExperience(100);
             playerCharacter.levelUp();
@@ -723,23 +750,28 @@ public class BattleScreen implements Screen {
             }
 
         } else if (result.equals("Lost")) {
+            playerCharacter.setHealth(playerCharacter.getMaxHealth());
             message = "You lost!";
+            targetScreen = new BaseScreen(game, playerCharacter);
         }
 
-        // Show the message immediately
-        centerLabel.setText(message);
-        centerTable.setVisible(true);
-
         // Delay the switch back to the game screen
+        final Screen targetScreenFinal = targetScreen;
         delay(5, () -> {
             final String currentResult = result;
+
             centerTable.setVisible(false);
 
             // This block will be executed after the delay
             // Switch back to the game screen
             mapScreen.setBattleResult(currentResult);
-            game.setScreen(mapScreen);
+            game.setScreen(targetScreenFinal);
         });
+
+        // Show the message immediately
+        centerLabel.setText(message);
+        centerTable.setVisible(true);
+
     }
 
     // Implement other required methods from Screen interface

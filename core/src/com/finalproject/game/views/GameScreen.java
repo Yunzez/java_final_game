@@ -381,6 +381,7 @@ public class GameScreen implements Screen {
             if (currentGameLevel > 1) {
                 int healthIncrease = (currentGameLevel - 1) * (currentMonster.getMaxHealth() + random.nextInt(50) - 25);
                 currentMonster.setHealth(currentMonster.getMaxHealth() + healthIncrease);
+                currentMonster.setMaxHealth(currentMonster.getMaxHealth() + healthIncrease);
             }
 
             game.setScreen(new BattleScreen(game, currentCharacter, currentMonster, this, baseSizeFactor));
