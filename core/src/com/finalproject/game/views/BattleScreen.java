@@ -568,20 +568,21 @@ public class BattleScreen implements Screen {
     }
 
     public void issueAttack(Attack attack) {
+        System.out.println("issue attack " + attack.getName() + " " + currentTurn);
 
-        System.out.println("issue attack" + attack.getName() + currentTurn);
-        // Check if the attack can be performed (e.g., enough mana, correct turn, etc.)
         if (currentTurn == 0) {
-            System.out.println("player attack");
+            String buffMessage = applyPlayerBuff(playerBuff, playerCharacter);
+
             monster.setHealth(monster.getCurrentHealth() - attack.getHarm());
-            System.out.println("monster health: " + monster.getCurrentHealth());
-            activityLabel.setText("You attack " + monster.getName()
-                    + " with " + attack.getName() + " and it does " + attack.getHarm() + " damage");
+            String attackMessage = "You attack " + monster.getName() + " with " + attack.getName() + " and it does "
+                    + attack.getHarm() + " damage";
+
+            activityLabel.setText(buffMessage + attackMessage); // Combine buff and attack messages
+
             if (monster.getCurrentHealth() <= 0) {
                 monsterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(monster.getLostImageTexture())));
                 returnToGameScreen("Won");
             } else {
-                // Schedule the monster's attack after a delay
                 centerLabel.setText("Waiting for opponent...");
                 centerTable.setVisible(true);
                 delay(3, () -> performMonsterAttack());
@@ -590,6 +591,28 @@ public class BattleScreen implements Screen {
         } else {
             performMonsterAttack();
         }
+    }
+
+    public String applyPlayerBuff(ArrayList<Buff> buffList, GameCharacter character) {
+        StringBuilder buffMessage = new StringBuilder();
+
+        for (Buff buff : buffList) {
+            if (buff.getType() == BuffType.HEALTH) {
+                int healAmount = Math.min(buff.getMagnitude(),
+                        character.getMaxHealth() - character.getCurrentHealth());
+                character.setHealth(character.getCurrentHealth() + healAmount);
+                buffMessage.append("You heal yourself with ").append(buff.getName()).append(" and it heals ")
+                        .append(healAmount).append(" health.\n");
+            }
+
+            if (buff.getType() == BuffType.PLAYER_DAMAGE) {
+                monster.setHealth(monster.getCurrentHealth() - buff.getMagnitude());
+                buffMessage.append("You attack ").append(monster.getName()).append(" with ").append(buff.getName())
+                        .append(" and it does ").append(buff.getMagnitude()).append(" damage.\n");
+            }
+        }
+
+        return buffMessage.toString();
     }
 
     public void processBuff(ArrayList<Buff> playerBuff, ArrayList<Buff> monsterBuff) {
@@ -629,9 +652,35 @@ public class BattleScreen implements Screen {
         centerTable.setVisible(false);
         // Logic for the monster to choose and perform an attack
         Attack monsterAttack = monster.getRandomAttack();// ... logic to select an attack ...
-        playerCharacter.setHealth(playerCharacter.getCurrentHealth() - monsterAttack.getHarm());
-        activityLabel.setText(monster.getName() + " attacks you with " + monsterAttack.getName()
-                + " causing " + monsterAttack.getHarm() + " damage");
+
+        int harmDeduction = 0;
+        String message = "";
+        for (Buff buff : monsterBuff) {
+            if (buff.getType() == BuffType.MONSTER_DAMAGE) {
+                harmDeduction += buff.getMagnitude();
+                message += "Monster got damange decrease from " + buff.getName() + " of " + buff.getMagnitude() + ".\n";
+            }
+
+            if(buff.getType() == BuffType.DEFENSE){
+                harmDeduction += buff.getMagnitude();
+                message += "You defend useing " + buff.getName() + " of " + buff.getMagnitude() + " Harm.\n";
+            }
+        }
+
+        int actualHarm = harmDeduction > monsterAttack.getHarm() ? 0 : monsterAttack.getHarm() - harmDeduction;
+        playerCharacter.setHealth(playerCharacter.getCurrentHealth() - actualHarm);
+        
+        if (actualHarm == 0) {
+            message += monster.getName() + " attacks you with " + monsterAttack.getName()
+                    + " but it does no damage.\n";
+           
+        } else {
+           message += (monster.getName() + " attacks you with " + monsterAttack.getName()
+                    + " causing " + monsterAttack.getHarm() + " damage");
+        }
+
+        activityLabel.setText(message);
+
         if (playerCharacter.getCurrentHealth() <= 0) {
             characterImage
                     .setDrawable(new TextureRegionDrawable(new TextureRegion(playerCharacter.getLostImageTexture())));
@@ -737,7 +786,7 @@ public class BattleScreen implements Screen {
 
             message = "You won! Gained 100 experience, level up!";
 
-            if (random.nextFloat() < 0.8) { // 50% chance to receive an item
+            if (random.nextFloat() < 1) { //! 改爆率
                 // Select a random item
                 Item[] possibleItems = Item.values();
                 int randomItemIndex = random.nextInt(possibleItems.length);

@@ -6,7 +6,7 @@ import com.finalproject.game.models.Buff;
 public enum Item {
     RELX_V5(ItemType.WEAPON, "RELX V5", 10,
             "A weapon that can relax you and your enenmy, enenmy attacks drop by 10 next 2 rounds.", "items/relx.png",
-            new Buff("Relax", BuffType.MONSTER_DAMAGE, -10, 2)),
+            new Buff("Relax", BuffType.MONSTER_DAMAGE, 10, 2)),
     SWORD_OF_TRUTH(ItemType.WEAPON, "Sword of Truth", 30,
             "A legendary blade that reveals the truth, cutting through deception. Give enenmy 30 damange",
             "items/sword.png", new Buff("Relax", BuffType.PLAYER_DAMAGE, 30, 1)),
@@ -21,7 +21,7 @@ public enum Item {
     BANANA_CAT(ItemType.POTION, "Banana Cat", 50,
             "A potion that heal 50 points of your hp with the cuteness of banana cat.", "items/banana_cat.png",
             new Buff("Relax", BuffType.HEALTH, 50, 2)),
-    GIGITTY_GUN(ItemType.WEAPON, "Gigity Gun", 15,
+    GIGITTY_GUN(ItemType.WEAPON, "Gigity Gun", 10,
             "A weapon that makes noise of gigity gigity goo, +10 damange for the next 2 rounds.", "items/Gigitty.png",
             new Buff("Relax", BuffType.PLAYER_DAMAGE, 10, 2)),
             ;
