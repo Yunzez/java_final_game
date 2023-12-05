@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.models.CharacterItem;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.Item;
 
@@ -40,13 +41,14 @@ public class InventoryScreen implements Screen {
 
     private BitmapFont currentFont;
 
-    private ArrayList<Item> inventory;
+    private ArrayList<CharacterItem> inventory;
     private HorizontalGroup inventoryGroup;
 
     // constructor
-    public InventoryScreen(FinalProjectGame game, Screen gameScreen) {
+    public InventoryScreen(FinalProjectGame game, Screen gameScreen, ArrayList<CharacterItem> inventory) {
         this.game = game;
         this.gameScreen = gameScreen;
+        this.inventory = inventory;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
@@ -101,23 +103,13 @@ public class InventoryScreen implements Screen {
         backToGame.setPosition(stage.getWidth() - 300, stage.getHeight() - 100);
         stage.addActor(backToGame);
         // Load Inventory (Maybe fetch from database)
-        inventory = new ArrayList<>();
 
-        inventory.add(Item.RELX_V5);
-        inventory.add(Item.SWORD_OF_TRUTH);
-        inventory.add(Item.DRAGONSCALE_ARMOR);
-        inventory.add(Item.ELIXIR_OF_HEALTH);
-
-        HashMap<Item, Integer> inventoryMap = new HashMap<>();
-        inventoryMap.put(Item.RELX_V5, 5);
-        inventoryMap.put(Item.SWORD_OF_TRUTH, 1);
-        inventoryMap.put(Item.DRAGONSCALE_ARMOR, 1);
-        inventoryMap.put(Item.ELIXIR_OF_HEALTH, 10);
+       
 
         // Display Inventory
         inventoryGroup = new HorizontalGroup();
 
-        updateInventoryTable(inventory, inventoryMap);
+        updateInventoryTable(inventory);
 
         ScrollPane scrollPane = new ScrollPane(inventoryGroup);
         scrollPane.setBounds(100, stage.getHeight() * 0.2f, stage.getWidth() - 50, stage.getHeight() * 0.7f);
@@ -125,20 +117,22 @@ public class InventoryScreen implements Screen {
         stage.addActor(scrollPane);
     }
 
-    private void updateInventoryTable(List<Item> inventory, HashMap<Item, Integer> inventoryMap) {
+    private void updateInventoryTable(ArrayList<CharacterItem> inventory) {
         Label.LabelStyle itemFont = new Label.LabelStyle(currentFont, Color.WHITE);
         itemFont.font.getData().setScale(1.0f);
-        for (Item item : inventory) {
+        for (CharacterItem item : inventory) {
+            if(item.getCount() == 0) continue;
+            Item currentItem = item.getItem();
             Table itemTable = new Table();
             itemTable.setSize(1000, 1000);
-            Texture itemTexture = item.getIcon();
+            Texture itemTexture = currentItem.getIcon();
             Image itemImage = new Image(itemTexture);
             itemImage.setScaling(Scaling.fit);
-            itemTable.center().add(itemImage).size(300, 300);
+            itemTable.center().add(itemImage).size(210, 210);
             itemTable.row();
-            itemTable.add(new Label(item.getName(), itemFont));
+            itemTable.add(new Label(currentItem.getName(), itemFont));
             itemTable.row();
-            itemTable.add(new Label("x" + inventoryMap.getOrDefault(item, 0), itemFont));
+            itemTable.add(new Label("x" + item.getCount(), itemFont));
             // Add a background to the table
             Texture backgroundTexture = new Texture("backgrounds/cardNormal.png");
             itemTable.setBackground(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
@@ -151,7 +145,7 @@ public class InventoryScreen implements Screen {
             final Table itemDescriptionTable = new Table();
             itemDescriptionTable.setPosition(0.5f * stage.getWidth() - 400, 0.2f * stage.getHeight());
             itemDescriptionTable.setSize(700, 100);
-            final Label itemDescriptionLabel = new Label(item.getDescription(),
+            final Label itemDescriptionLabel = new Label(currentItem.getDescription(),
                     new Label.LabelStyle(currentFont, Color.WHITE));
             itemDescriptionLabel.setWrap(true);
             itemDescriptionTable.add(itemDescriptionLabel).width(600);

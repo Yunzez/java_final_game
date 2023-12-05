@@ -138,7 +138,7 @@ public class GameScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = true;
                 // Open inventory here
-                game.setScreen(new InventoryScreen(game, GameScreen.this));
+                game.setScreen(new InventoryScreen(game, GameScreen.this, currentCharacter.getInventory()));
             }
         });
 

@@ -388,7 +388,7 @@ public class BaseScreen implements Screen {
 
         if (characterBounds.intersects(treasureBoxBounds)) {
             resetCharacterPosition = true;
-            game.setScreen(new InventoryScreen(game, BaseScreen.this));
+            game.setScreen(new InventoryScreen(game, BaseScreen.this, selectedCharacter.getInventory()));
         }
 
         if (characterBounds.intersects(savingEntranceBounds)) {
