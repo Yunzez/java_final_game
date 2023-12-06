@@ -209,9 +209,9 @@ public class ScoreBoardScreen implements Screen {
         LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Table headerTable = new Table();
         headerTable.setWidth(width);
-        headerTable.add(new Label("Score Board", labelStyle)).center().expandX().width(width).center();
+        headerTable.add(new Label("Score Board", labelStyle)).center().expandX().width(width).center().padLeft(50);
         headerTable.row();
-        headerTable.add(new Label("Top 100", labelStyle)).center().expandX().width(width).center();
+        headerTable.add(new Label("Top 100", labelStyle)).center().expandX().width(width).center().padLeft(50);
 
         // Add each entry as a row
         if (entries == null) {
@@ -222,16 +222,20 @@ public class ScoreBoardScreen implements Screen {
 
         // add header
         Table rowHeaderTable = new Table();
-        rowHeaderTable.add(new Label("Name", labelStyle)).center().expandX().padRight(10);
+        rowHeaderTable.add(new Label("Rank", labelStyle)).center().expandX().padRight(10);
+        rowHeaderTable.add(new Label("User Name", labelStyle)).center().expandX().padRight(10);
+        rowHeaderTable.add(new Label("Character", labelStyle)).center().expandX().padRight(10);
         rowHeaderTable.add(new Label("Points", labelStyle)).center().expandX();
         rowHeaderTable.add(new Label("Monster Killed", labelStyle)).center().expandX()
                 .padLeft(10);
         // table.add(rowHeaderTable).expandX().fillX().top().padTop(0);
         table.row();
-
+        int count = 0;
         for (ScoreBoardEntry entry : entries) {
+            count++;
             Table rowTable = new Table();
-
+            rowTable.add(new Label(String.valueOf(count) + ".", labelStyle)).center().expandX().padRight(10);
+            rowTable.add(new Label(entry.getUserId(), labelStyle)).center().expandX().padRight(10);
             rowTable.add(new Label(entry.getName(), labelStyle)).center().expandX().padRight(10);
             rowTable.add(new Label(String.valueOf(entry.getPoints()), labelStyle)).center().expandX();
             rowTable.add(new Label(String.valueOf(entry.getMonsterKilled()), labelStyle)).center().expandX()

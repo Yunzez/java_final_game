@@ -65,4 +65,42 @@ public class ScoreBoardEntry {
     public int getPoints() {
         return points;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getSavingName() {
+        return savingName;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+
 }
