@@ -3,9 +3,11 @@ package com.finalproject.game.views;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,6 +24,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.models.FontGenerator;
 
 /**
  * show() Method: This method is called when the screen becomes the current
@@ -34,6 +38,8 @@ public class WelcomeScreen implements Screen {
     OrthographicCamera camera;
     Stage stage;
     private Texture background;
+    private BitmapFont headerFont;
+    private Skin skin;
 
     public WelcomeScreen(FinalProjectGame finalProjectGame) {
         this.game = finalProjectGame;
@@ -41,12 +47,18 @@ public class WelcomeScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
-       
+        FontGenerator fontGenerator = new FontGenerator("fonts/Crang.ttf");
+        Color color = Color.valueOf("EB5E28FF");
+
+        this.headerFont = fontGenerator.generate(25, Color.WHITE, 2f, new Color(color));
+        fontGenerator.dispose();
+
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     }
 
     @Override
     public void show() {
-         Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage);
         String[] buttonLabels = { "Start", "Settings", "Quit" };
         background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
 
@@ -99,17 +111,19 @@ public class WelcomeScreen implements Screen {
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw your text here
-        GlyphLayout layout = new GlyphLayout();
-        layout.setText(game.font, "Welcome to The world of dingzhen");
+
+        Label titleLabel = new Label("Welcome to The Meme Village!", new Label.LabelStyle(headerFont, Color.WHITE));
+
+        titleLabel.setFontScale(1.2f);
 
         float objectWidth = camera.viewportWidth;
         float objectHeight = camera.viewportHeight;
 
-        float centerX = (objectWidth - layout.width) / 2;
-        float textY = (objectHeight + layout.height) / 2 + (objectHeight * 0.1f);
+        float centerX = (objectWidth - titleLabel.getWidth()) / 2;
+        float textY = (objectHeight + titleLabel.getHeight()) / 2 + (objectHeight * 0.1f);
 
-        game.font.draw(game.batch, layout, centerX, textY);
-
+        titleLabel.setPosition(centerX, textY);
+        stage.addActor(titleLabel);
         game.batch.end();
 
         // Update and draw the stage
