@@ -82,6 +82,7 @@ public class BaseScreen implements Screen {
     BoundingBox savingEntranceBounds = new BoundingBox();
     BoundingBox treasureBoxBounds = new BoundingBox();
     BoundingBox characterBounds = new BoundingBox();
+    BoundingBox monitorBounds = new BoundingBox();
 
     ShapeRenderer shapeRenderer = new ShapeRenderer();
 
@@ -165,6 +166,7 @@ public class BaseScreen implements Screen {
         battleEntranceBounds = calculateTransformedBoundingBox(battleEntrance);
         treasureBoxBounds = calculateTransformedBoundingBox(treasureBox);
         savingEntranceBounds = calculateTransformedBoundingBox(driveInstance);
+        monitorBounds = calculateTransformedBoundingBox(monitorInstance);
 
         Texture entranceImage = new Texture(Gdx.files.internal("models/start.png"));
         entrancePlateDecal = Decal.newDecal(entranceImage.getWidth(), entranceImage.getHeight(),
@@ -395,6 +397,11 @@ public class BaseScreen implements Screen {
             // Trigger action for saving entrance
             System.out.println("Saving entrance");
             game.setScreen(new LoadFromPreviousSavingScreen(game, selectedCharacter));
+        }
+
+        if(characterBounds.intersects(monitorBounds)){
+            resetCharacterPosition = true;
+            game.setScreen(new ScoreBoardScreen(game, BaseScreen.this));
         }
     }
 
