@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,10 +42,17 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
+import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.views.LoadFromPreviousSavingScreen;
 
@@ -84,12 +92,56 @@ public class BaseScreen implements Screen {
     BoundingBox characterBounds = new BoundingBox();
     BoundingBox monitorBounds = new BoundingBox();
 
+    private Stage loadingStage;
+    private Stage baseStage;
+    private Stage currentStage;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+    // * loading utils
+    private Label loadingLabel;
+    private Label messageLabel;
+    private SpriteBatch spriteBatch;
+    private BitmapFont font;
+    private float loadingDotTimer = 0;
+    private int loadingDotCount = 0;
+    private float messageTimer = 0;
+    private int messageIndex = 0;
+    private String[] loadingMessages = new String[] {
+            "this might take a while ...",
+            "still working on it ...",
+            "almost done ...",
+            // Add more messages as needed
+    };
 
     public BaseScreen(FinalProjectGame game, GameCharacter selectedCharacter) {
         this.game = game;
         this.selectedCharacter = selectedCharacter;
-        this.stage = new Stage(new ScreenViewport());
+        this.loadingStage = new Stage(new ScreenViewport());
+        this.baseStage = new Stage(new ScreenViewport());
+
+        font = new BitmapFont(); // Use LibGDX's default font for simplicity
+        spriteBatch = new SpriteBatch();
+        FontGenerator fontGenerator = new FontGenerator("fonts/PixelOperator.ttf");
+        this.font = fontGenerator.generate(40, Color.WHITE, 1f, Color.DARK_GRAY);
+        fontGenerator.dispose();
+
+        currentStage = loadingStage;
+        Texture backgroundImage = new Texture(Gdx.files.internal("backgrounds/loading_bg.png"));
+        TextureRegionDrawable bgdrawable = new TextureRegionDrawable(new TextureRegion(backgroundImage));
+        Color backgroundColor = new Color(1, 1, 1, 0.5f);
+        Drawable tintedDrawable = bgdrawable.tint(backgroundColor);
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.setBackground(tintedDrawable);
+
+        loadingLabel = new Label("Loading...", new LabelStyle(font, Color.WHITE));
+        messageLabel = new Label("", new LabelStyle(font, Color.WHITE));
+        // Add labels to your main table
+        mainTable.add(loadingLabel).center().padTop(120).row();
+        mainTable.add(messageLabel).center().padTop(10);
+        // Add the main table to the stage
+        loadingStage.addActor(mainTable);
+
         camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 20f);
         camera.lookAt(0, 0, 0);
@@ -223,8 +275,7 @@ public class BaseScreen implements Screen {
 
     @Override
     public void show() {
-
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(currentStage);
         // Implement if needed
         assets = new AssetManager();
         assets.load("models/Character/Y-Bot.g3db", Model.class);
@@ -237,15 +288,44 @@ public class BaseScreen implements Screen {
         assets.load("models/monitor/monitor.g3db", Model.class);
     }
 
+    private void showLoadingMessage(float delta) {
+        // Update the loading label with dynamic dots
+        loadingDotTimer += delta;
+        if (loadingDotTimer >= 0.5f) {
+            loadingDotTimer = 0;
+            loadingDotCount = (loadingDotCount + 1) % 4;
+        }
+        StringBuilder loadingText = new StringBuilder("Loading");
+        for (int i = 0; i < loadingDotCount; i++) {
+            loadingText.append(".");
+        }
+        loadingLabel.setText(loadingText.toString());
+
+        // Update the message label
+        messageTimer += delta;
+        if (messageTimer >= 2f) {
+            messageTimer = 0;
+            messageIndex = (messageIndex + 1) % loadingMessages.length;
+        }
+        messageLabel.setText(loadingMessages[messageIndex]);
+    }
+
     @Override
     public void render(float delta) {
         // Update models if not initialized
-
         if (!assetsLoaded) {
             if (assets.update()) { // Check if all assets are loaded
-                initializeModels();
+                initializeModels(); // Initialize your 3D models here
+                assetsLoaded = true;
+                currentStage = baseStage;
             } else {
-                System.out.println("Loading assets...");
+                currentStage = loadingStage;
+                // Render your loading screen
+                Gdx.gl.glClearColor(0, 0, 0, 1);
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                currentStage.act(delta);
+                currentStage.draw();
+                showLoadingMessage(delta);
                 return; // Return early if assets are still loading
             }
         }
@@ -399,7 +479,7 @@ public class BaseScreen implements Screen {
             game.setScreen(new LoadFromPreviousSavingScreen(game, selectedCharacter));
         }
 
-        if(characterBounds.intersects(monitorBounds)){
+        if (characterBounds.intersects(monitorBounds)) {
             resetCharacterPosition = true;
             game.setScreen(new ScoreBoardScreen(game, BaseScreen.this));
         }
@@ -474,7 +554,8 @@ public class BaseScreen implements Screen {
             characterTexture = null;
         }
         shapeRenderer.dispose();
-        stage.dispose();
+        currentStage.dispose();
+        loadingStage.dispose();
         assets.dispose();
 
     }
