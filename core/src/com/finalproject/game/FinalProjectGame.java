@@ -25,6 +25,7 @@ public class FinalProjectGame extends Game {
 	Texture img;
 	public BitmapFont font;
 	Music gameMusic;
+	public Boolean showTutorial = true;
 	private boolean musicEnabled = true;
 	private ArrayList<GameCharacter> characterList = new ArrayList<GameCharacter>();
 
@@ -85,6 +86,14 @@ public class FinalProjectGame extends Game {
             }
         }
     }
+
+	public void toggleTutorial(boolean showTutorial) {
+		this.showTutorial = showTutorial;
+	}
+
+	public boolean isTutorialEnabled() {
+		return showTutorial;
+	}
 
 	@Override
 	public void render () {

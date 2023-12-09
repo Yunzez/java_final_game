@@ -38,7 +38,7 @@ public class SettingScreen implements Screen {
         float checkBoxWidth = musicCheckbox.getWidth();
         float checkBoxHeight = musicCheckbox.getHeight();
         float centerX = (stage.getWidth() - checkBoxWidth) / 2;
-        float centerY = (stage.getHeight() - checkBoxHeight) / 2;
+        float centerY = (stage.getHeight() - checkBoxHeight) / 2 + 50;
         musicCheckbox.setPosition(centerX, centerY);
 
         musicCheckbox.setChecked(game.isMusicEnabled()); // Set initial state based on game setting
@@ -51,7 +51,24 @@ public class SettingScreen implements Screen {
             }
         });
 
+         // Create a checkbox for music toggle
+        final CheckBox tutorialCheckbox = new CheckBox(" show tutorial", skin);
+        // Center the checkbox
+
+        tutorialCheckbox.setPosition(centerX, centerY-50);
+
+        tutorialCheckbox.setChecked(game.isTutorialEnabled()); // Set initial state based on game setting
+
+         tutorialCheckbox.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                boolean isTutOn = tutorialCheckbox.isChecked();
+                game.toggleTutorial(isTutOn);
+            }
+        });
+
         stage.addActor(musicCheckbox);
+        stage.addActor(tutorialCheckbox);
     }
 
     @Override

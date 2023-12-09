@@ -90,7 +90,6 @@ public class ChooseCharacterScreen implements Screen {
         Label title = new Label("Choose your characters: ", biggerFont);
         title.setPosition(100, stage.getHeight() - 100); // Adjust the position
 
-
         characterTable = new Table(); // No fixed height
 
         addCharacters(characterList);
@@ -141,15 +140,15 @@ public class ChooseCharacterScreen implements Screen {
 
         // Left section: Story
         Label storyLabel = new Label(character.getDescription(), normalFont);
-        storyLabel.setWrap(true); 
+        storyLabel.setWrap(true);
         storyLabel.setAlignment(Align.left);
-        
+
         // Middle section: Stats
         Table statsTable = new Table();
         Label hpLabel = new Label("HP: " + character.getMaxHealth(), normalFont);
         Label attackLabel = new Label("Attack: " + character.getAttack(), normalFont);
         Label defenseLabel = new Label("Defense: " + character.getDefense(), normalFont);
-         Label speedLabel = new Label("Defense: " + character.getSpeed(), normalFont);
+        Label speedLabel = new Label("Defense: " + character.getSpeed(), normalFont);
 
         statsTable.add(hpLabel).row();
         statsTable.add(attackLabel).row();
@@ -158,7 +157,8 @@ public class ChooseCharacterScreen implements Screen {
 
         // Add to table
         float widgetHeight = characterDetailsTable.getHeight();
-        characterDetailsTable.add(storyLabel).width( (Gdx.graphics.getWidth() * 0.7f)).height(widgetHeight).pad(10).padLeft(5).top().left();
+        characterDetailsTable.add(storyLabel).width((Gdx.graphics.getWidth() * 0.7f)).height(widgetHeight).pad(10)
+                .padLeft(5).top().left();
         characterDetailsTable.add(statsTable).height(widgetHeight).expandX().pad(10);
 
     }
@@ -179,7 +179,11 @@ public class ChooseCharacterScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selectedCharacter.assignRandomAttacks(3);
-                game.setScreen(new BaseScreen(game, selectedCharacter));
+                if (!game.showTutorial) {
+                    game.setScreen(new BaseScreen(game, selectedCharacter));
+                } else {
+                    game.setScreen(new TutorialScreen(game, selectedCharacter));
+                }
 
                 dispose();
             }
