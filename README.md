@@ -58,7 +58,7 @@ There are a few **screens** that we made, which are the key components to this g
 9. **WelcomeScreen**
 - this is the landing screen once user enters the game. 
 
-
+----------
 
 There are a few **models** that we made to handle data:
 - **Attack**
@@ -80,8 +80,8 @@ There are a few **models** that we made to handle data:
 - **UserGameCharacters**
     - Extends "GameCharacter" to depict characters as saved by users, preserving their game state. 
 
-___
----
+----------
+----------
 
 ### Backend Design:
 
@@ -92,7 +92,7 @@ The database is hosted on Google Cloud with a few features:
 - Register user
 - Login user and upload their scores
 
-
+----------
 
 ## Resource:
 - [pixelate-effect-image](https://pinetools.com/pixelate-effect-image) : we use this to generate pixelated image
