@@ -226,11 +226,25 @@ public class BaseScreen implements Screen {
         entrancePlateDecal.setPosition(-75f, 360f, -450f);
         entrancePlateDecal.setScale(0.1f);
 
+
+        // ! load character image
+        float desiredHeight = 200f;
         Texture characterImage = this.selectedCharacter.getImageTexture();
-        characterImageDecal = Decal.newDecal(characterImage.getWidth(), characterImage.getHeight(),
-                new TextureRegion(characterImage), true);
-        characterImageDecal.setPosition(-185f, 380f, -450f);
-        characterImageDecal.setScale(0.3f);
+        float originalHeight = characterImage.getHeight();
+        float originalWidth = characterImage.getWidth();
+        float aspectRatio = originalWidth / originalHeight;
+        // Calculate the new width to maintain the aspect ratio
+        float newWidth = desiredHeight * aspectRatio;
+
+        // Calculate the scale factor based on the desired height
+        float scaleFactor = desiredHeight / originalHeight;
+
+        // Now create the Decal with new dimensions
+        characterImageDecal = Decal.newDecal(newWidth, desiredHeight, new TextureRegion(characterImage), true);
+
+        characterImageDecal.setPosition(-185f, 360f, -450f);
+        // characterImageDecal.setScale(scaleFactor);
+
 
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
         instances.add(driveInstance, monitorInstance);
@@ -364,10 +378,10 @@ public class BaseScreen implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         // Draw character bounding box
-        drawBoundingBox(shapeRenderer, characterBounds, Color.RED);
+        // drawBoundingBox(shapeRenderer, characterBounds, Color.RED);
 
         // Draw battle entrance bounding box
-        drawBoundingBox(shapeRenderer, battleEntranceBounds, Color.BLUE);
+        // drawBoundingBox(shapeRenderer, battleEntranceBounds, Color.BLUE);
 
         shapeRenderer.end();
 
