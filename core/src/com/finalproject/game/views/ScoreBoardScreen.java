@@ -435,7 +435,7 @@ public class ScoreBoardScreen implements Screen {
                 finalTitleLabel.setText("Uploading score...");
                 // Step 1:
                 // first verify the username and password
-                String username = usernameField.getText();
+                final String username = usernameField.getText();
                 String password = passwordField.getText();
                 final boolean[] isUserValid = new boolean[]{false};
                 // check if username and password are valid
@@ -451,6 +451,7 @@ public class ScoreBoardScreen implements Screen {
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
+                                // check if the user is valid
                                 JsonValue json = new Json().fromJson(null, response);
                                 if (status == 200) {
                                     // login successfully
@@ -467,6 +468,48 @@ public class ScoreBoardScreen implements Screen {
                                     dialog.show(finalStage);
                                     return;
                                 }
+                                // Step 2:
+                                // check if th user has already uploaded the score
+                                // if yes, update the score
+                                System.out.println("Checking if the user has already uploaded the score");
+                                final String[] userRecord = new String[1];
+                                Net.HttpRequest httpRequest2 = new Net.HttpRequest(Net.HttpMethods.GET);
+                                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/"+username);
+                                httpRequest2.setHeader("Content-Type", "application/json");
+                                Gdx.net.sendHttpRequest(httpRequest2, new Net.HttpResponseListener() {
+                                    @Override
+                                    public void handleHttpResponse(Net.HttpResponse httpResponse){
+                                        final String response = httpResponse.getResultAsString();
+                                        final int status = httpResponse.getStatus().getStatusCode();
+                                        Gdx.app.postRunnable(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (status == 200) {
+                                                    System.out.println("userRecord: "+response);
+                                                    userRecord[0] = response;
+                                                } else {
+                                                    System.out.println("userRecord: null");
+                                                    userRecord[0] = generateRecord(username);
+                                                }
+                                                // Step 3:
+                                                // update the record
+                                                System.out.println("Updating the record");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void failed(Throwable t) {
+                                        // Handle any errors here
+                                    }
+
+                                    @Override
+                                    public void cancelled() {
+                                        // Handle cancellation here
+                                    }
+                                });
+
+
                             }
                         });
                     }
@@ -480,58 +523,6 @@ public class ScoreBoardScreen implements Screen {
                         // Handle cancellation here
                     }
                 });
-                // if the user is not valid, return
-                System.out.println("isUserValid: "+isUserValid[0]);
-                if (!isUserValid[0]){
-                    return;
-                }
-                // Step 2:
-                // check if the user has already uploaded the score
-                // if yes, update the score
-                System.out.println("Checking if the user has already uploaded the score");
-                final String[] userRecord = new String[1];
-                Net.HttpRequest httpRequest2 = new Net.HttpRequest(Net.HttpMethods.GET);
-                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/"+username);
-                httpRequest2.setHeader("Content-Type", "application/json");
-                Gdx.net.sendHttpRequest(httpRequest2, new Net.HttpResponseListener() {
-                    @Override
-                    public void handleHttpResponse(Net.HttpResponse httpResponse){
-                        final String response = httpResponse.getResultAsString();
-                        final int status = httpResponse.getStatus().getStatusCode();
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (status == 200) {
-                                    System.out.println("userRecord: "+response);
-                                    userRecord[0] = response;
-                                } else {
-                                    System.out.println("userRecord: null");
-                                    userRecord[0] = null;
-                                    return;
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failed(Throwable t) {
-                        // Handle any errors here
-                    }
-
-                    @Override
-                    public void cancelled() {
-                        // Handle cancellation here
-                    }
-                });
-                // if no, create a new record
-                if (userRecord[0] == null){
-                    System.out.print("Creating a new record");
-                    userRecord[0] = generateRecord(username);
-                }
-                System.out.println("userRecord: "+userRecord[0]);
-                // Step 3:
-                // send request to upload score
-
             }
         });
 
