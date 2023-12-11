@@ -494,6 +494,55 @@ public class ScoreBoardScreen implements Screen {
                                                 // Step 3:
                                                 // update the record
                                                 System.out.println("Updating the record");
+
+                                                // Step 4:
+                                                // upload the record
+                                                System.out.println("Uploading the record");
+                                                Net.HttpRequest httpRequest3 = new Net.HttpRequest(Net.HttpMethods.POST);
+                                                httpRequest3.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records");
+                                                httpRequest3.setHeader("Content-Type", "application/json");
+                                                httpRequest3.setContent(userRecord[0]);
+                                                Gdx.net.sendHttpRequest(httpRequest3, new Net.HttpResponseListener() {
+                                                    @Override
+                                                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                                                        final String response = httpResponse.getResultAsString();
+                                                        final int status = httpResponse.getStatus().getStatusCode();
+                                                        Gdx.app.postRunnable(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                JsonValue json = new Json().fromJson(null, response);
+                                                                if (status == 201) {
+                                                                    Dialog dialog = new Dialog("Success", finalSkin);
+                                                                    dialog.text("Upload score successfully");
+                                                                    dialog.button("OK");
+                                                                    dialog.show(finalStage);
+                                                                    fetchScoreBoardData();
+                                                                    // finalTitleLabel.setText("Upload score successfully");
+                                                                } else {
+                                                                    String errorMessages = "Upload score failed: ";
+                                                                    for (JsonValue error : json.get("message")) {
+                                                                        errorMessages += error.asString() + "\n";
+                                                                    }
+                                                                    Dialog dialog = new Dialog("Warning", finalSkin);
+                                                                    dialog.text(errorMessages);
+                                                                    dialog.button("OK");
+                                                                    dialog.show(finalStage);
+                                                                    // finalTitleLabel.setText("Upload score failed");
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void failed(Throwable t) {
+                                                        // Handle any errors here
+                                                    }
+
+                                                    @Override
+                                                    public void cancelled() {
+                                                        // Handle cancellation here
+                                                    }
+                                                });
                                             }
                                         });
                                     }

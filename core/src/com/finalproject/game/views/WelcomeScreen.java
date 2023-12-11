@@ -60,6 +60,7 @@ public class WelcomeScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         String[] buttonLabels = { "Start", "Scoreboard and Login","Settings", "Quit" };
+        // String[] buttonLabels = { "Start", "Settings", "Quit" };
         background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
 
         float y = 300; // Initial y-coordinate
