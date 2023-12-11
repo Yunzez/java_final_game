@@ -1,6 +1,7 @@
 package com.finalproject.game.views;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+
 
 public class ScoreBoardScreen implements Screen {
     private SpriteBatch spriteBatch;
@@ -433,8 +435,9 @@ public class ScoreBoardScreen implements Screen {
                 finalTitleLabel.setText("Uploading score...");
                 // Step 1:
                 // first verify the username and password
-                final String username = usernameField.getText();
+                String username = usernameField.getText();
                 String password = passwordField.getText();
+                final boolean[] isUserValid = new boolean[]{false};
                 // check if username and password are valid
                 Net.HttpRequest httpRequest = new Net.HttpRequest(Net.HttpMethods.POST);
                 httpRequest.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/user/login");
@@ -445,14 +448,14 @@ public class ScoreBoardScreen implements Screen {
                     public void handleHttpResponse(Net.HttpResponse httpResponse) {
                         final String response = httpResponse.getResultAsString();
                         final int status = httpResponse.getStatus().getStatusCode();
-
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
                                 JsonValue json = new Json().fromJson(null, response);
                                 if (status == 200) {
                                     // login successfully
-                                    System.out.println(username+" Login successfully");
+                                    isUserValid[0] = true;
+                                    System.out.println(" Login successfully");
                                 } else {
                                     String errorMessages = "Login failed: ";
                                     for (JsonValue error : json.get("message")) {
@@ -477,15 +480,91 @@ public class ScoreBoardScreen implements Screen {
                         // Handle cancellation here
                     }
                 });
+                // if the user is not valid, return
+                System.out.println("isUserValid: "+isUserValid[0]);
+                if (!isUserValid[0]){
+                    return;
+                }
                 // Step 2:
-                // send request to upload score
                 // check if the user has already uploaded the score
                 // if yes, update the score
+                System.out.println("Checking if the user has already uploaded the score");
+                final String[] userRecord = new String[1];
                 Net.HttpRequest httpRequest2 = new Net.HttpRequest(Net.HttpMethods.GET);
-                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/");
+                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/"+username);
+                httpRequest2.setHeader("Content-Type", "application/json");
+                Gdx.net.sendHttpRequest(httpRequest2, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse){
+                        final String response = httpResponse.getResultAsString();
+                        final int status = httpResponse.getStatus().getStatusCode();
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (status == 200) {
+                                    System.out.println("userRecord: "+response);
+                                    userRecord[0] = response;
+                                } else {
+                                    System.out.println("userRecord: null");
+                                    userRecord[0] = null;
+                                    return;
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        // Handle any errors here
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        // Handle cancellation here
+                    }
+                });
+                // if no, create a new record
+                if (userRecord[0] == null){
+                    System.out.print("Creating a new record");
+                    userRecord[0] = generateRecord(username);
+                }
+                System.out.println("userRecord: "+userRecord[0]);
+                // Step 3:
+                // send request to upload score
+
             }
         });
+
+
         return loginTable;
+    }
+
+    private String generateRecord(String username){
+        String id = UUID.randomUUID().toString();
+        String savingName = "savingName";
+        String health = "100";
+        String strength = "100";
+        String defense = "100";
+        String speed = "100";
+        String level = "1";
+        String name = "Liu Bo";
+        String imagePath = "imagePath";
+        String monsterKilled = "100";
+        String points = "100";
+        String userId = username;
+        String newRecord = "{\"id\":\""+id
+                            +"\",\"savingName\":\""+savingName+
+                            "\",\"health\":\""+health+
+                            "\",\"strength\":\""+strength+
+                            "\",\"defense\":\""+defense+
+                            "\",\"speed\":\""+speed+
+                            "\",\"level\":\""+level+
+                            "\",\"name\":\""+name+
+                            "\",\"imagePath\":\""+imagePath+
+                            "\",\"monsterKilled\":\""+monsterKilled+
+                            "\",\"points\":\""+points+
+                            "\",\"userId\":\""+userId+"\"}";
+        return newRecord;
     }
 
     @Override
