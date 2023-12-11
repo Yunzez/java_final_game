@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -308,17 +309,30 @@ public class ScoreBoardScreen implements Screen {
         loginTable.row();
 
         // Add username input field
-        TextField usernameField = new TextField("", skin);
+        final TextField usernameField = new TextField("", skin);
         usernameField.setMessageText("Username");
         loginTable.add(usernameField).width(200).pad(10);
         loginTable.row();
 
         // Add password input field
-        TextField passwordField = new TextField("", skin);
+        final TextField passwordField = new TextField("", skin);
         passwordField.setMessageText("Password");
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         loginTable.add(passwordField).width(200).pad(10);
+        loginTable.row();
+
+        // Add password visibility toggle button
+        final TextButton passwordVisibilityButton = new TextButton("Show Password", skin);
+        passwordVisibilityButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                boolean isPasswordMode = passwordField.isPasswordMode();
+                passwordField.setPasswordMode(!isPasswordMode); // Toggle password mode
+                passwordVisibilityButton.setText(isPasswordMode ? "Hide Password" : "Show Password"); // Toggle button text
+            }
+        });
+        loginTable.add(passwordVisibilityButton).pad(10);
         loginTable.row();
 
         // Add register button
@@ -331,12 +345,83 @@ public class ScoreBoardScreen implements Screen {
         loginTable.add(verifyButton).pad(10);
         loginTable.row();
         // Listener for the register button
+        final Label finalTitleLabel = titleLabel; // Declare titleLabel as final
+        final Skin finalSkin = skin;
+        final Stage finalStage = currentStage;
+
         registerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Register button clicked");
 
-                titleLabel.setText("Registering...");
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                // check if username and password are valid
+
+                String usernameRegex = "^[a-zA-Z0-9_]{6,20}$";
+                String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$";
+                if (!username.matches(usernameRegex)) {
+                    Dialog dialog = new Dialog("Warning", finalSkin);
+                    dialog.text("Username must be 6-20 characters long and only contain letters, numbers and _");
+                    dialog.button("OK");
+                    dialog.show(finalStage);
+                    return;
+                }
+                if (!password.matches(passwordRegex)) {
+                    Dialog dialog = new Dialog("Warning", finalSkin);
+                    dialog.text("Password must be 8-20 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+                    dialog.button("OK");
+                    dialog.show(finalStage);
+                    return;
+                }
+                // send request to register
+                System.out.println("Sending request to register");
+                Net.HttpRequest httpRequest = new Net.HttpRequest(Net.HttpMethods.POST);
+                httpRequest.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/user/register");
+                httpRequest.setHeader("Content-Type", "application/json");
+                httpRequest.setContent("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}");
+                Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        final String response = httpResponse.getResultAsString();
+                        final int status = httpResponse.getStatus().getStatusCode();
+                        // Process the response here (e.g., parse JSON)
+                        // Since we're in a separate thread, use Gdx.app.postRunnable to interact with the UI
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                JsonValue json = new Json().fromJson(null, response);
+                                if (status == 201) {
+                                    Dialog dialog = new Dialog("Success", finalSkin);
+                                    dialog.text("Register successfully");
+                                    dialog.button("OK");
+                                    dialog.show(finalStage);
+                                } else {
+                                    String errorMessages = "Register failed: ";
+                                    for (JsonValue error : json.get("message")) {
+                                        errorMessages += error.asString() + "\n";
+                                    }
+                                    Dialog dialog = new Dialog("Warning", finalSkin);
+                                    dialog.text(errorMessages);
+                                    dialog.button("OK");
+                                    dialog.show(finalStage);
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        // Handle any errors here
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        // Handle cancellation here
+                    }
+                });
+
+
             }
         });
 
@@ -345,8 +430,59 @@ public class ScoreBoardScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Verify button clicked");
+                finalTitleLabel.setText("Uploading score...");
+                // Step 1:
+                // first verify the username and password
+                final String username = usernameField.getText();
+                String password = passwordField.getText();
+                // check if username and password are valid
+                Net.HttpRequest httpRequest = new Net.HttpRequest(Net.HttpMethods.POST);
+                httpRequest.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/user/login");
+                httpRequest.setHeader("Content-Type", "application/json");
+                httpRequest.setContent("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}");
+                Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        final String response = httpResponse.getResultAsString();
+                        final int status = httpResponse.getStatus().getStatusCode();
 
-                titleLabel.setText("Uploading score...");
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                JsonValue json = new Json().fromJson(null, response);
+                                if (status == 200) {
+                                    // login successfully
+                                    System.out.println(username+" Login successfully");
+                                } else {
+                                    String errorMessages = "Login failed: ";
+                                    for (JsonValue error : json.get("message")) {
+                                        errorMessages += error.asString() + "\n";
+                                    }
+                                    Dialog dialog = new Dialog("Warning", finalSkin);
+                                    dialog.text(errorMessages);
+                                    dialog.button("OK");
+                                    dialog.show(finalStage);
+                                    return;
+                                }
+                            }
+                        });
+                    }
+                    @Override
+                    public void failed(Throwable t) {
+                        // Handle any errors here
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        // Handle cancellation here
+                    }
+                });
+                // Step 2:
+                // send request to upload score
+                // check if the user has already uploaded the score
+                // if yes, update the score
+                Net.HttpRequest httpRequest2 = new Net.HttpRequest(Net.HttpMethods.GET);
+                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/");
             }
         });
         return loginTable;
