@@ -188,6 +188,9 @@ public class ScoreBoardScreen implements Screen {
 
     private void populateScoreBoard(String data) {
         ArrayList<ScoreBoardEntry> entries = parseScoreBoardData(data);
+        entries.sort((ScoreBoardEntry e1, ScoreBoardEntry e2) -> {
+            return e2.getPoints() - e1.getPoints();
+        });
         createScoreBoard(entries);
     }
 
