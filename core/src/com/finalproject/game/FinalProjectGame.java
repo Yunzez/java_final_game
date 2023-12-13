@@ -56,11 +56,12 @@ public class FinalProjectGame extends Game {
             int defense = characterValue.getInt("defense");
             int speed = characterValue.getInt("speed");
             int level = characterValue.getInt("level");
+			int monsterKilled = 0;
             String name = characterValue.getString("name");
             String imagePath = characterValue.getString("imagePath");
             String lostImagePath = characterValue.getString("lostImagePath");
 			String description = characterValue.getString("description");
-            GameCharacter character = new GameCharacter(health, strength, defense, speed, level, name, imagePath, lostImagePath);
+            GameCharacter character = new GameCharacter(health, strength, defense, speed, level, monsterKilled, name, imagePath, lostImagePath);
 			character.setDescription(description);
 			characterList.add(character);
         }
@@ -99,7 +100,7 @@ public class FinalProjectGame extends Game {
 	public void render () {
 		super.render();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();

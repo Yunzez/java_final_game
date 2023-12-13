@@ -57,6 +57,8 @@ public class GameScreen implements Screen {
 
     Label healthLabel;
     Label levelLabel;
+    Label monsterKilledLabel;
+    Label pointsLabel;
     Label gameLevelLabel;
 
     boolean isPaused = false;
@@ -129,6 +131,8 @@ public class GameScreen implements Screen {
         healthLabel = new Label(
                 "Health: " + currentCharacter.getCurrentHealth() + "/" + currentCharacter.getMaxHealth(), gameFont);
         levelLabel = new Label("Level: " + currentCharacter.getLevel(), gameFont);
+        monsterKilledLabel = new Label("Monsters killed: " + currentCharacter.getMonsterKilled(), gameFont);
+        pointsLabel = new Label("Points: " + currentCharacter.getPoints(), gameFont);
         gameLevelLabel = new Label("Game Level: " + currentGameLevel + "/" + maxGameLevel, gameFont);
         // Create and add the Inventory button
         TextButton inventoryButton = GameButton.createButton("Inventory", game.font);
@@ -171,6 +175,8 @@ public class GameScreen implements Screen {
         statusBarTable.setBackground(new Image(statusBarBackground).getDrawable());
         statusBarTable.add(healthLabel).pad(12);
         statusBarTable.add(levelLabel).pad(12);
+        statusBarTable.add(monsterKilledLabel).pad(12);
+        statusBarTable.add(pointsLabel).pad(12);
         statusBarTable.add(gameLevelLabel).pad(12);
 
         statusBarTable.setBounds(0, Gdx.graphics.getHeight() - 90, Gdx.graphics.getWidth(), 90);

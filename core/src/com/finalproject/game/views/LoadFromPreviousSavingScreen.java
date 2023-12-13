@@ -272,8 +272,8 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 currentCharacter.getLevel(),
                 currentCharacter.getName(),
                 currentCharacter.getImagePath(),
-                0, // monsterKilled
-                0, // points
+                currentCharacter.getMonsterKilled(), // monsterKilled
+                currentCharacter.getPoints(), // points
                 saveName);
         savedCharacters.add(newCharacter);
 

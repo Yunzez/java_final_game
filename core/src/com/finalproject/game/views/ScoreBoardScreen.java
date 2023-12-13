@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
 import com.finalproject.game.models.FontGenerator;
+import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.ScoreBoardEntry;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -54,6 +55,7 @@ public class ScoreBoardScreen implements Screen {
     private Stage currentStage;
     private TextureRegionDrawable bgdrawable;
     private TextButton backButton;
+    private GameCharacter currentCharacter;
     // Other class members like network handling, leaderboard data, etc.
 
     // * loading utils
@@ -68,10 +70,11 @@ public class ScoreBoardScreen implements Screen {
             // Add more messages as needed
     };
 
-    public ScoreBoardScreen(FinalProjectGame game, Screen gameScreen) {
+    public ScoreBoardScreen(FinalProjectGame game, Screen gameScreen, GameCharacter currentCharacter) {
         // Initialize other class members here
         this.game = game;
         this.preScreen = gameScreen;
+        this.currentCharacter = currentCharacter;
         Texture backgroundImage = new Texture(Gdx.files.internal("backgrounds/scoreboard_bg.png"));
         bgdrawable = new TextureRegionDrawable(new TextureRegion(backgroundImage));
         camera = new OrthographicCamera();
@@ -230,8 +233,8 @@ public class ScoreBoardScreen implements Screen {
         rowHeaderTable.add(new Label("User Name", labelStyle)).center().expandX().padRight(10);
         rowHeaderTable.add(new Label("Character", labelStyle)).center().expandX().padRight(10);
         rowHeaderTable.add(new Label("Points", labelStyle)).center().expandX();
-        rowHeaderTable.add(new Label("Monster Killed", labelStyle)).center().expandX()
-                .padLeft(10);
+        rowHeaderTable.add(new Label("Monster Killed", labelStyle)).center().expandX();
+        rowHeaderTable.add(new Label("Level", labelStyle)).center().expandX().padLeft(10);
         // table.add(rowHeaderTable).expandX().fillX().top().padTop(0);
         table.row();
         int count = 0;
@@ -242,8 +245,8 @@ public class ScoreBoardScreen implements Screen {
             rowTable.add(new Label(entry.getUserId(), labelStyle)).center().expandX().padRight(10);
             rowTable.add(new Label(entry.getName(), labelStyle)).center().expandX().padRight(10);
             rowTable.add(new Label(String.valueOf(entry.getPoints()), labelStyle)).center().expandX();
-            rowTable.add(new Label(String.valueOf(entry.getMonsterKilled()), labelStyle)).center().expandX()
-                    .padLeft(10);
+            rowTable.add(new Label(String.valueOf(entry.getMonsterKilled()), labelStyle)).center().expandX();
+            rowTable.add(new Label(String.valueOf(entry.getLevel()), labelStyle)).center().expandX().padLeft(10);
             table.add(rowTable).expandX().fillX().top().padTop(0);
             table.row();
         }
@@ -495,8 +498,20 @@ public class ScoreBoardScreen implements Screen {
                                                 // Step 3:
                                                 // update the record
                                                 System.out.println("Updating the record");
+                                                // compare the current character with the record points, if not higher, then return
+                                                if (!isHigherScore(userRecord[0], currentCharacter)){
+                                                    Dialog dialog = new Dialog("Warning", finalSkin);
+                                                    if (currentCharacter.getPoints() == 0){
+                                                        dialog.text("Your points is 0, no need to update");
+                                                    } else{
+                                                        dialog.text("Your points is not higher than your points in the database, no need to update");
+                                                    }
+                                                    dialog.button("OK");
+                                                    dialog.show(finalStage);
+                                                    return;
+                                                }
                                                 System.out.println("Before updating"+userRecord[0]);
-                                                userRecord[0] = updateRecord(userRecord[0], 1000, 1, 100);
+                                                userRecord[0] = updateRecord(userRecord[0], currentCharacter);
                                                 System.out.println("After updating"+userRecord[0]);
                                                 // Step 4:
                                                 // upload the record
@@ -585,16 +600,17 @@ public class ScoreBoardScreen implements Screen {
         ScoreBoardEntry newRecord = new ScoreBoardEntry();
         newRecord.setUserId(username);
         newRecord.setId(UUID.randomUUID().toString());
-        newRecord.setPoints(100);
-        newRecord.setMonsterKilled(100);
+        newRecord.setPoints(0);
+        newRecord.setMonsterKilled(0);
         newRecord.setLevel(1);
+        newRecord.setName("Default");
 
+        // these parameters are for future use
         newRecord.setSavingName("savingName");
         newRecord.setHealth(100);
         newRecord.setStrength(100);
         newRecord.setDefense(100);
         newRecord.setSpeed(100);
-        newRecord.setName("Liu Bo");
         newRecord.setImagePath("imagePath");
 
         Json json = new Json();
@@ -602,14 +618,27 @@ public class ScoreBoardScreen implements Screen {
         return json.toJson(newRecord);
     }
 
-    private String updateRecord(String record, int points, int level, int monsterKilled){
+    private String updateRecord(String record, GameCharacter character){
         Json json = new Json();
         json.setOutputType(OutputType.json);
         ScoreBoardEntry newRecord = json.fromJson(ScoreBoardEntry.class, record);
-        newRecord.setPoints(points);
-        newRecord.setMonsterKilled(monsterKilled);
-        newRecord.setLevel(level);
+        newRecord.setName(character.getName());
+        newRecord.setPoints(character.getPoints());
+        newRecord.setMonsterKilled(character.getMonsterKilled());
+        newRecord.setLevel(character.getLevel());
         return json.toJson(newRecord);
+    }
+
+    private boolean isHigherScore(String record, GameCharacter character){
+        if (character.getPoints() == 0){
+            return false;
+        }
+        Json json = new Json();
+        ScoreBoardEntry newRecord = json.fromJson(ScoreBoardEntry.class, record);
+        if (newRecord.getPoints() <= character.getPoints()){
+            return true;
+        }
+        return false;
     }
 
     @Override

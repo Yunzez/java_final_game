@@ -59,8 +59,8 @@ public class WelcomeScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        String[] buttonLabels = { "Start", "Scoreboard and Login","Settings", "Quit" };
-        // String[] buttonLabels = { "Start", "Settings", "Quit" };
+        // String[] buttonLabels = { "Start", "Scoreboard and Login","Settings", "Quit" };
+        String[] buttonLabels = { "Start", "Settings", "Quit" };
         background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
 
         float y = 300; // Initial y-coordinate
@@ -77,10 +77,10 @@ public class WelcomeScreen implements Screen {
                         dispose();
                     }
 
-                    if ("Scoreboard and Login".equals(finalLabel)) {
-                        game.setScreen(new ScoreBoardScreen(game, new WelcomeScreen(game)));
-                        dispose();
-                    }
+                    // if ("Scoreboard and Login".equals(finalLabel)) {
+                    //     game.setScreen(new ScoreBoardScreen(game, new WelcomeScreen(game)));
+                    //     dispose();
+                    // }
 
                     if ("Quit".equals(finalLabel)) {
                         Gdx.app.exit();

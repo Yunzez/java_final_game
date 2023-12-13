@@ -669,11 +669,11 @@ public class BattleScreen implements Screen {
 
         int actualHarm = harmDeduction > monsterAttack.getHarm() ? 0 : monsterAttack.getHarm() - harmDeduction;
         playerCharacter.setHealth(playerCharacter.getCurrentHealth() - actualHarm);
-        
+
         if (actualHarm == 0) {
             message += monster.getName() + " attacks you with " + monsterAttack.getName()
                     + " but it does no damage.\n";
-           
+
         } else {
            message += (monster.getName() + " attacks you with " + monsterAttack.getName()
                     + " causing " + monsterAttack.getHarm() + " damage");
@@ -782,7 +782,8 @@ public class BattleScreen implements Screen {
         Screen targetScreen = mapScreen;
         if (result.equals("Won")) {
             playerCharacter.addExperience(100);
-            playerCharacter.levelUp();
+            // playerCharacter.levelUp();
+            playerCharacter.addMonsterKilled();
 
             message = "You won! Gained 100 experience, level up!";
 

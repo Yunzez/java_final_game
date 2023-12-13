@@ -495,7 +495,7 @@ public class BaseScreen implements Screen {
 
         if (characterBounds.intersects(monitorBounds)) {
             resetCharacterPosition = true;
-            game.setScreen(new ScoreBoardScreen(game, BaseScreen.this));
+            game.setScreen(new ScoreBoardScreen(game, BaseScreen.this, selectedCharacter));
         }
     }
 

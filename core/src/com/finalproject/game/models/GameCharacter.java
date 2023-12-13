@@ -25,8 +25,14 @@ public class GameCharacter {
 
     private ArrayList<Attack> attacks;
 
-    public GameCharacter(int id, int health, int strength, int defense, int speed, int level, String name,
-            String characterCardPath) {
+    // These attributes are for record
+    private int monsterKilled;
+    private int points;
+    //
+
+
+    public GameCharacter(int id, int health, int strength, int defense, int speed, int level, int monsterKilled,
+            String name,String characterCardPath) {
         this.id = id;
         this.health = health;
         this.maxHealth = health;
@@ -34,6 +40,10 @@ public class GameCharacter {
         this.defense = defense;
         this.speed = speed;
         this.level = level;
+        //
+        this.monsterKilled = monsterKilled;
+        this.points = monsterKilled * 20 + (level-1)*100;
+        //
         this.name = name;
         this.characterCardPath = characterCardPath;
         this.characterCard = new Texture(characterCardPath);
@@ -41,8 +51,8 @@ public class GameCharacter {
         initializeInventory();
     }
 
-    public GameCharacter(int health, int strength, int defense, int speed, int level, String name,
-            String characterCardPath, String characterLostCardPath) {
+    public GameCharacter(int health, int strength, int defense, int speed, int level, int monsterKilled,
+            String name,String characterCardPath, String characterLostCardPath) {
         // Add validation here if needed
         this.id = autoId++;
         this.health = health;
@@ -51,6 +61,10 @@ public class GameCharacter {
         this.defense = defense;
         this.speed = speed;
         this.level = level;
+        //
+        this.monsterKilled = monsterKilled;
+        this.points = monsterKilled * 20 + (level-1)*100;
+        //
         this.name = name;
         this.characterCardPath = characterCardPath;
         this.characterCard = new Texture(characterCardPath);
@@ -63,7 +77,7 @@ public class GameCharacter {
 
     public GameCharacter() {
         // Default values
-        this(100, 10, 10, 10, 1, "Unknown Character", "charactors/xiaochuan.png", "charactors/xiaochuanLost.png");
+        this(100, 10, 10, 10, 1,0, "Unknown Character", "charactors/xiaochuan.png", "charactors/xiaochuanLost.png");
     }
 
     public void initializeInventory() {
@@ -82,6 +96,18 @@ public class GameCharacter {
         setDefense(defense + 5);
         setMaxHealth(maxHealth + 10);
         setHealth(maxHealth);
+        System.out.println("Level up!");
+        System.out.println("Before points"+this.points);
+        setPoints(this.points + 100);
+        System.out.println("After points"+this.points);
+    }
+
+    public void addMonsterKilled() {
+        this.monsterKilled++;
+        System.out.println("Monster killed!");
+        System.out.println("Before points"+this.points);
+        setPoints(points + 20);
+        System.out.println("After points"+this.points);
     }
 
     public void setImagePath(String imagePath) {
@@ -216,9 +242,27 @@ public class GameCharacter {
 
     // retunr the character as a new instance
     public GameCharacter clone() {
-        GameCharacter clone = new GameCharacter(this.health, this.attack, this.defense, this.speed, this.level,
+        GameCharacter clone = new GameCharacter(this.health, this.attack, this.defense, this.speed, this.level, this.monsterKilled,
                 this.name, this.characterCardPath, this.characterLostCardPath);
         clone.attacks = this.attacks;
         return clone;
+    }
+
+
+    // These are for record
+    public int getMonsterKilled() {
+        return monsterKilled;
+    }
+
+    public void setMonsterKilled(int monsterKilled) {
+        this.monsterKilled = monsterKilled;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }
