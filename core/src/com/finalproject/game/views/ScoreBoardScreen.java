@@ -1,6 +1,7 @@
 package com.finalproject.game.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 
 public class ScoreBoardScreen implements Screen {
@@ -517,7 +519,6 @@ public class ScoreBoardScreen implements Screen {
                                                                     dialog.button("OK");
                                                                     dialog.show(finalStage);
                                                                     fetchScoreBoardData();
-                                                                    // finalTitleLabel.setText("Upload score successfully");
                                                                 } else {
                                                                     String errorMessages = "Upload score failed: ";
                                                                     for (JsonValue error : json.get("message")) {
@@ -527,7 +528,6 @@ public class ScoreBoardScreen implements Screen {
                                                                     dialog.text(errorMessages);
                                                                     dialog.button("OK");
                                                                     dialog.show(finalStage);
-                                                                    // finalTitleLabel.setText("Upload score failed");
                                                                 }
                                                             }
                                                         });
@@ -580,31 +580,25 @@ public class ScoreBoardScreen implements Screen {
     }
 
     private String generateRecord(String username){
-        String id = UUID.randomUUID().toString();
-        String savingName = "savingName";
-        String health = "100";
-        String strength = "100";
-        String defense = "100";
-        String speed = "100";
-        String level = "1";
-        String name = "Liu Bo";
-        String imagePath = "imagePath";
-        String monsterKilled = "100";
-        String points = "100";
-        String userId = username;
-        String newRecord = "{\"id\":\""+id
-                            +"\",\"savingName\":\""+savingName+
-                            "\",\"health\":\""+health+
-                            "\",\"strength\":\""+strength+
-                            "\",\"defense\":\""+defense+
-                            "\",\"speed\":\""+speed+
-                            "\",\"level\":\""+level+
-                            "\",\"name\":\""+name+
-                            "\",\"imagePath\":\""+imagePath+
-                            "\",\"monsterKilled\":\""+monsterKilled+
-                            "\",\"points\":\""+points+
-                            "\",\"userId\":\""+userId+"\"}";
-        return newRecord;
+
+        ScoreBoardEntry newRecord = new ScoreBoardEntry();
+        newRecord.setUserId(username);
+        newRecord.setId(UUID.randomUUID().toString());
+        newRecord.setPoints(100);
+        newRecord.setMonsterKilled(100);
+
+        newRecord.setSavingName("savingName");
+        newRecord.setHealth(100);
+        newRecord.setStrength(100);
+        newRecord.setDefense(100);
+        newRecord.setSpeed(100);
+        newRecord.setLevel(1);
+        newRecord.setName("Liu Bo");
+        newRecord.setImagePath("imagePath");
+
+        Json json = new Json();
+        json.setOutputType(OutputType.json);
+        return json.toJson(newRecord);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ScoreBoardEntry {
         this.savingName = "";
         this.id = "";
         this.userId = "";
-        
+
     }
 
     public ScoreBoardEntry(String id, String savingName, int health, int strength, int defense,
@@ -102,5 +102,52 @@ public class ScoreBoardEntry {
         return userId;
     }
 
+    // Setters
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public void setMonsterKilled(int monsterKilled) {
+        this.monsterKilled = monsterKilled;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setSavingName(String savingName) {
+        this.savingName = savingName;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }
