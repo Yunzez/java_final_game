@@ -1,7 +1,6 @@
 package com.finalproject.game.views;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
@@ -487,16 +486,18 @@ public class ScoreBoardScreen implements Screen {
                                             @Override
                                             public void run() {
                                                 if (status == 200) {
-                                                    System.out.println("userRecord: "+response);
+                                                    System.out.println("Receive a userRecord");
                                                     userRecord[0] = response;
                                                 } else {
-                                                    System.out.println("userRecord: null");
                                                     userRecord[0] = generateRecord(username);
+                                                    System.out.println("There is no matching userRecord, generate a new one");
                                                 }
                                                 // Step 3:
                                                 // update the record
                                                 System.out.println("Updating the record");
-
+                                                System.out.println("Before updating"+userRecord[0]);
+                                                userRecord[0] = updateRecord(userRecord[0], 1000, 1, 100);
+                                                System.out.println("After updating"+userRecord[0]);
                                                 // Step 4:
                                                 // upload the record
                                                 System.out.println("Uploading the record");
@@ -586,18 +587,28 @@ public class ScoreBoardScreen implements Screen {
         newRecord.setId(UUID.randomUUID().toString());
         newRecord.setPoints(100);
         newRecord.setMonsterKilled(100);
+        newRecord.setLevel(1);
 
         newRecord.setSavingName("savingName");
         newRecord.setHealth(100);
         newRecord.setStrength(100);
         newRecord.setDefense(100);
         newRecord.setSpeed(100);
-        newRecord.setLevel(1);
         newRecord.setName("Liu Bo");
         newRecord.setImagePath("imagePath");
 
         Json json = new Json();
         json.setOutputType(OutputType.json);
+        return json.toJson(newRecord);
+    }
+
+    private String updateRecord(String record, int points, int level, int monsterKilled){
+        Json json = new Json();
+        json.setOutputType(OutputType.json);
+        ScoreBoardEntry newRecord = json.fromJson(ScoreBoardEntry.class, record);
+        newRecord.setPoints(points);
+        newRecord.setMonsterKilled(monsterKilled);
+        newRecord.setLevel(level);
         return json.toJson(newRecord);
     }
 
