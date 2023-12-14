@@ -171,6 +171,8 @@ public class LoadFromPreviousSavingScreen implements Screen {
         if (selectedSaveCharacter != null) {
             messageLabel.setText("Enter the a name for your save, this will cover the previous save named:  "
                     + selectedSaveCharacter.getSavingName());
+            // remove the previous save
+            savedCharacters.remove(selectedSaveCharacter);
         }
 
         dialog.getContentTable().add(messageLabel).padTop(10);
@@ -289,7 +291,12 @@ public class LoadFromPreviousSavingScreen implements Screen {
 
         // Write to file
         try {
-            FileWriter writer = new FileWriter(Gdx.files.local("assets/document/savedCharacters.json").file());
+            String jsonFileName = "assets/document/savedCharacters.json";
+            if (!Gdx.files.local(jsonFileName).exists()) {
+                System.out.println("File not found"+Gdx.files.local(jsonFileName).file().getAbsolutePath());
+                jsonFileName = "document/savedCharacters.json";
+            }
+            FileWriter writer = new FileWriter(Gdx.files.local(jsonFileName).file());
             writer.write(jsonString);
             writer.close();
             Gdx.app.log("SaveGame", "Game saved as: " + saveName);
