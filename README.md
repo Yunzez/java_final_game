@@ -101,4 +101,6 @@ The database is hosted on Google Cloud with a few features:
 - [crop-image](https://imageresizer.com/crop-image/editor): we use this to crop the image after generation
 - [BitmapFont](https://www.dafont.com/bitmap.php): we use this website to get free fonts!
 - [Create OBJ models](https://www.figuro.io/Designer): we use this website to make simple obj models
+- [Free 3D models](https://www.turbosquid.com/Search/3D-Models/free/obj): we use this website to gather free 3D models
+
   *shout out to all the creators above that made this dumb project possible*
