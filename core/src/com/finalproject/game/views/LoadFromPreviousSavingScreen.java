@@ -23,9 +23,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
+import com.finalproject.game.models.Attack;
 import com.finalproject.game.models.FontGenerator;
 import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.UserGameCharacters;
+import com.finalproject.game.models.CharacterItem;
+import com.finalproject.game.models.Item;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -178,7 +181,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
         dialog.getContentTable().add(saveNameField).padTop(10);
 
         // Create "Okay" button
-        TextButton okayButton = new TextButton("Okay", skin);
+        final TextButton okayButton = new TextButton("Okay", skin);
         okayButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -253,6 +256,8 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 json.writeValue("imagePath", character.getImagePath());
                 json.writeValue("monsterKilled", character.getMonsterKilled());
                 json.writeValue("points", character.getPoints());
+                json.writeValue("attacks", character.getAttacks());
+                json.writeValue("inventory", character.getInventory());
                 // ... other primitive fields
                 json.writeObjectEnd();
             }
@@ -274,7 +279,9 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 currentCharacter.getImagePath(),
                 currentCharacter.getMonsterKilled(), // monsterKilled
                 currentCharacter.getPoints(), // points
-                saveName);
+                saveName,
+                currentCharacter.getAttacks(),
+                currentCharacter.getInventory());
         savedCharacters.add(newCharacter);
 
         // Serialize the list of characters
@@ -321,10 +328,35 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 String savingName = characterJson.getString("savingName");
                 int monsterKilled = characterJson.getInt("monsterKilled"); // if needed
                 int points = characterJson.getInt("points"); // if needed
-
+                // add attacks
+                ArrayList<Attack> attacks = new ArrayList<Attack>();
+                JsonValue attacksJson = characterJson.get("attacks");
+                if (attacksJson != null) {
+                    for (JsonValue attackJson : attacksJson) {
+                        String attackName = attackJson.getString("value");
+                        System.out.println("attackName: " + attackName);
+                        try {
+                            Attack attackType = Attack.valueOf(attackName);
+                            attacks.add(attackType);
+                        } catch (IllegalArgumentException e) {
+                            System.err.println("Unknown attack in JSON: " + attackName);
+                        }
+                    }
+                }
+                // add inventory
+                ArrayList<CharacterItem> inventory = new ArrayList<>();
+                JsonValue inventoryJson = characterJson.get("inventory");
+                if (inventoryJson != null) {
+                    for (JsonValue itemJson : inventoryJson) {
+                        String itemName = itemJson.getString("item");
+                        int itemQuantity = itemJson.getInt("count");
+                        CharacterItem item = new CharacterItem(Item.valueOf(itemName), itemQuantity);
+                        inventory.add(item);
+                    }
+                }
                 // Create an instance of UserGameCharacters
                 UserGameCharacters character = new UserGameCharacters(health, attack, defense, speed, level, name,
-                        imagePath, monsterKilled, points, savingName);
+                        imagePath, monsterKilled, points, savingName, attacks, inventory);
 
                 savedCharacters.add(character);
             }

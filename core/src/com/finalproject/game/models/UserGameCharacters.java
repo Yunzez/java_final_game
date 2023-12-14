@@ -1,5 +1,7 @@
 package com.finalproject.game.models;
 
+import java.util.ArrayList;
+
 public class UserGameCharacters extends GameCharacter{
     // private int monsterKilled;
     // private int points;
@@ -17,8 +19,11 @@ public class UserGameCharacters extends GameCharacter{
     }
 
     // Additional constructor to initialize all fields
-    public UserGameCharacters(int health, int strength, int defense, int speed, int level, String name, String imagePath, int monsterKilled, int points, String savingName) {
+    public UserGameCharacters(int health, int strength, int defense, int speed,
+            int level, String name, String imagePath, int monsterKilled, int points, String savingName, ArrayList<Attack> attacks, ArrayList<CharacterItem> inventory) {
         super(health, strength, defense, speed, level, monsterKilled, name, imagePath, imagePath); // Assuming these are the fields of GameCharacter
+        this.setAttacks(attacks);
+        this.setInventory(inventory);
         this.imagePath = imagePath;
         this.savingName = savingName;
         // this.points = points;

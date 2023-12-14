@@ -168,6 +168,10 @@ public class GameCharacter {
         return attacks;
     }
 
+    public void setAttacks(ArrayList<Attack> attacks) {
+        this.attacks = attacks;
+    }
+
     public Attack getRandomAttack() {
         return attacks.get((int) (Math.random() * attacks.size()));
     }
@@ -212,6 +216,10 @@ public class GameCharacter {
 
     public ArrayList<CharacterItem> getInventory() {
         return inventory;
+    }
+
+    public void setInventory(ArrayList<CharacterItem> inventory) {
+        this.inventory = inventory;
     }
 
     public void addInventory(Item item, int count) {
