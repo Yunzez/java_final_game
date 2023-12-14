@@ -134,6 +134,24 @@ public class LoadFromPreviousSavingScreen implements Screen {
         });
         startButton.toFront();
         stage.addActor(startButton);
+
+        TextButton deleteButton = GameButton.createButton("Delete", game.font);
+        deleteButton.setPosition(500, 100);
+        deleteButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (selectedSaveCharacter != null) {
+                    Gdx.app.log("TestButton", "Button clicked");
+                    savedCharacters.remove(selectedSaveCharacter);
+                    displaySavedCharacters();
+                    saveGame();
+
+                }
+                Gdx.app.log("TestButton", "Button clicked");
+            }
+        });
+        deleteButton.toFront();
+        stage.addActor(deleteButton);
     }
 
     @Override
@@ -150,7 +168,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
 
     private void addSaveButton() {
         TextButton saveButton = GameButton.createButton("Save This Game", game.font);
-        saveButton.setPosition(500, 100);
+        saveButton.setPosition(700, 100);
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -236,6 +254,60 @@ public class LoadFromPreviousSavingScreen implements Screen {
         return true;
     }
 
+    private void saveGame() {
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+
+        // Exclude complex fields from serialization
+        json.setSerializer(UserGameCharacters.class, new Json.Serializer<UserGameCharacters>() {
+            @Override
+            public void write(Json json, UserGameCharacters character, Class knownType) {
+
+                json.writeObjectStart();
+                json.writeValue("savingName", character.getSavingName());
+                json.writeValue("id", character.getId());
+                json.writeValue("health", character.getCurrentHealth());
+                json.writeValue("maxHealth", character.getMaxHealth());
+                json.writeValue("attack", character.getAttack());
+                json.writeValue("defense", character.getDefense());
+                json.writeValue("speed", character.getSpeed());
+                json.writeValue("level", character.getLevel());
+                json.writeValue("name", character.getName());
+                json.writeValue("imagePath", character.getImagePath());
+                json.writeValue("monsterKilled", character.getMonsterKilled());
+                json.writeValue("points", character.getPoints());
+                json.writeValue("attacks", character.getAttacks());
+                json.writeValue("inventory", character.getInventory());
+                // ... other primitive fields
+                json.writeObjectEnd();
+            }
+
+            @Override
+            public UserGameCharacters read(Json json, JsonValue jsonData, Class type) {
+                // Implement if needed for deserialization
+                return null;
+            }
+        });
+
+        // Serialize the list of characters
+        String jsonString = json.toJson(savedCharacters);
+
+        // Write to file
+        try {
+            String jsonFileName = "assets/document/savedCharacters.json";
+            if (!Gdx.files.local(jsonFileName).exists()) {
+                System.out.println("File not found" + Gdx.files.local(jsonFileName).file().getAbsolutePath());
+                jsonFileName = "document/savedCharacters.json";
+            }
+            FileWriter writer = new FileWriter(Gdx.files.local(jsonFileName).file());
+            writer.write(jsonString);
+            writer.close();
+
+        } catch (IOException e) {
+            Gdx.app.error("SaveGame", "Error saving game: ", e);
+        }
+    }
+
     private void saveGame(String saveName) {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
@@ -293,7 +365,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
         try {
             String jsonFileName = "assets/document/savedCharacters.json";
             if (!Gdx.files.local(jsonFileName).exists()) {
-                System.out.println("File not found"+Gdx.files.local(jsonFileName).file().getAbsolutePath());
+                System.out.println("File not found" + Gdx.files.local(jsonFileName).file().getAbsolutePath());
                 jsonFileName = "document/savedCharacters.json";
             }
             FileWriter writer = new FileWriter(Gdx.files.local(jsonFileName).file());
