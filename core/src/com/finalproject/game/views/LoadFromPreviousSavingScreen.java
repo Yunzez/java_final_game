@@ -334,7 +334,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 if (attacksJson != null) {
                     for (JsonValue attackJson : attacksJson) {
                         String attackName = attackJson.getString("value");
-                        System.out.println("attackName: " + attackName);
+                        // System.out.println("attackName: " + attackName);
                         try {
                             Attack attackType = Attack.valueOf(attackName);
                             attacks.add(attackType);

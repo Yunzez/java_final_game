@@ -378,7 +378,7 @@ public class ScoreBoardScreen implements Screen {
                 }
                 if (!password.matches(passwordRegex)) {
                     Dialog dialog = new Dialog("Warning", finalSkin);
-                    dialog.text("Password must be 8-20 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+                    dialog.text("Password must be 8-20 characters long and contain at least one uppercase letter, \none lowercase letter, one number and one special character. (@#$%^&+=)");
                     dialog.button("OK");
                     dialog.show(finalStage);
                     return;
