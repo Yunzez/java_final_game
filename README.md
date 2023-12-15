@@ -85,8 +85,9 @@ There are a few **models** that we made to handle data:
 
 ### Backend Design:
 
-There is a simple database designed to upload user scores and compare them with other players. 
-We used MongoDB as our database, the database is hosted on AWS.
+There is a simple database designed to upload user scores and compare them with other players.  
+Each user can only upload their highest record in the database.  
+We used MongoDB as our database, the database is hosted on AWS.  
 Our backend Spring Boot service is hosted on Google Cloud with a few features:
 
 - Register user
