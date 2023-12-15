@@ -1,6 +1,5 @@
 package com.finalproject.game.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum TileType {
@@ -12,7 +11,7 @@ public enum TileType {
     private Texture texture;
     private int width;
     private int height;
-    
+
     TileType(String tileName, boolean walkable, String texturePath, int width, int height) {
         this.tileName = tileName;
         this.walkable = walkable;
@@ -20,11 +19,11 @@ public enum TileType {
         this.width = width;
         this.height = height;
     }
-    
+
     public String getTileName() {
         return tileName;
     }
-    
+
     public boolean isWalkable() {
         return walkable;
     }
@@ -33,14 +32,14 @@ public enum TileType {
         // Lazy loading of the texture
         if (texture == null) {
             throw new IllegalArgumentException("Texture for tile type " + tileName + " has not been loaded.");
-        } 
+        }
         return texture;
     }
-    
+
     public int getWidth() {
         return width;
     }
-    
+
     public int getHeight() {
         return height;
     }

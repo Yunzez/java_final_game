@@ -1,10 +1,7 @@
 package com.finalproject.game.models;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
-import com.badlogic.gdx.utils.SortedIntList.Iterator;
 
 import java.util.Collections;
 
@@ -35,16 +32,16 @@ public class AttackUtils {
             case "Mark Zucks":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_ZUCK).get(0));
                 break;
-            
+
             case "Mikado Sun":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_SUN).get(0));
                 break;
-            
+
             case "Beff Jezos":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_BEFF).get(0));
                 break;
-            
-            case "Jezos Beffs": 
+
+            case "Jezos Beffs":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_JEZO).get(0));
                 break;
             default:

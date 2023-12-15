@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.finalproject.game.models.CharacterItem;
 
@@ -98,13 +97,13 @@ public class GameButton {
         TextButton button = new TextButton(buttonText, textButtonStyle);
         if (icon != null) {
             float aspectRatio = (float) icon.getWidth() / icon.getHeight();
-            // Add the icon as an image to the button  
+            // Add the icon as an image to the button
             Image iconImage = new Image(new TextureRegionDrawable(new TextureRegion(icon)));
             button.clearChildren(); // Clear existing children if needed
             float iconHeight = 80; // Desired height
             float iconWidth = aspectRatio * iconHeight;
             button.add(iconImage).size(iconWidth, iconHeight);
-        
+
             button.row();
             // Create a label for the count and add it to the button
             Label countLabel = new Label("X " + count, new Label.LabelStyle(font, Color.WHITE)); // Adjust the style as

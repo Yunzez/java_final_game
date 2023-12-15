@@ -1,7 +1,6 @@
 package com.finalproject.game.models;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.finalproject.game.models.Buff;
 
 public enum Item {
     RELX_V5(ItemType.WEAPON, "RELX V5", 10,
@@ -16,7 +15,8 @@ public enum Item {
     ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health of 20 hp.",
             "items/potion.png", new Buff("Relax", BuffType.HEALTH, 20, 2)),
     BUTTBOOK(ItemType.WEAPON, "Buttbook", 40,
-            "A weapon that can make you lost all your personal data, give opponent +20 damanges for next 2 rounds.", "items/buttbook.png",
+            "A weapon that can make you lost all your personal data, give opponent +20 damanges for next 2 rounds.",
+            "items/buttbook.png",
             new Buff("Relax", BuffType.PLAYER_DAMAGE, 20, 2)),
     BANANA_CAT(ItemType.POTION, "Banana Cat", 50,
             "A potion that heal 50 points of your hp with the cuteness of banana cat.", "items/banana_cat.png",

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import com.finalproject.game.models.TileType;
 import com.finalproject.game.models.Room;
 import com.finalproject.game.models.TilePoint;
@@ -55,7 +54,7 @@ public class MapGenerator {
 
     public ArrayList<TilePoint> returnAccessibleLocations(int numberOfMonsters) {
         ArrayList<TilePoint> accessibleLocations = new ArrayList<>();
-    
+
         // Collect all possible floor locations
         ArrayList<TilePoint> potentialLocations = new ArrayList<>();
         for (int x = 0; x < width; x++) {
@@ -65,16 +64,17 @@ public class MapGenerator {
                 }
             }
         }
-    
+
         // Shuffle the list to get random floor locations
         Collections.shuffle(potentialLocations, random);
-    
+
         // Add a check to avoid placing monsters near the entrance and exit
         TilePoint entrance = getEntranceLocation();
         TilePoint exit = getExitLocation();
         for (TilePoint point : potentialLocations) {
             if (accessibleLocations.size() < numberOfMonsters) {
-                // Check the distance from the entrance and exit to avoid placing monsters too close
+                // Check the distance from the entrance and exit to avoid placing monsters too
+                // close
                 if (point.distance(entrance) > 2 && point.distance(exit) > 2) {
                     accessibleLocations.add(point);
                 }
@@ -82,10 +82,9 @@ public class MapGenerator {
                 break; // Break if we have enough locations
             }
         }
-    
+
         return accessibleLocations;
     }
-    
 
     private void generateRoomsAndCorridors() {
         rooms = new ArrayList<Room>();

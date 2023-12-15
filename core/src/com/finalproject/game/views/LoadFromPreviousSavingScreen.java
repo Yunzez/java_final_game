@@ -381,7 +381,14 @@ public class LoadFromPreviousSavingScreen implements Screen {
         JsonValue base;
 
         try {
-            base = jsonReader.parse(Gdx.files.internal("document/savedCharacters.json"));
+            String jsonFileName = "document/savedCharacters.json";
+            if (!Gdx.files.internal("document/savedCharacters.json").exists()) {
+                System.out.println(
+                        "File not found"
+                                + Gdx.files.internal("document/savedCharacters.json").file().getAbsolutePath());
+                jsonFileName = "assets/document/savedCharacters.json";
+            }
+            base = jsonReader.parse(Gdx.files.internal(jsonFileName));
         } catch (Exception e) {
             base = null; // File not found or error in reading
         }
