@@ -85,12 +85,15 @@ There are a few **models** that we made to handle data:
 
 ### Backend Design:
 
-There is a simple database designed to upload user score and compare it across with other players. 
-The database is hosted on Google Cloud with a few features:
-- Fetch top 100 players records
-- Upload user records
+There is a simple database designed to upload user scores and compare them with other players. 
+We used MongoDB as our database, the database is hosted on AWS.
+Our backend Spring Boot service is hosted on Google Cloud with a few features:
+
 - Register user
-- Login user and upload their scores
+- Login user
+- Fetch top 100 players records
+- Upload user record
+- Fetch user record by the username
 
 ----------
 
