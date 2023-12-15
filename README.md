@@ -93,6 +93,7 @@ Our backend Spring Boot service is hosted on Google Cloud with a few features:
 - Login user
 - Fetch top 100 players records
 - Upload user record
+- Update user record by the username if corresponding record exists
 - Fetch user record by the username
 
 ----------
