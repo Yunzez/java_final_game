@@ -45,7 +45,7 @@ There are a few **screens** that we made, which are the key components to this g
 - this is where user can **store and load** games in to their local drive. The saving will be in the savedCharacters.json
 
 6. **ScoreBoardScreen**
-- this is the screen where we prsent user the scoreboard. Scoreboard shows the top 100 players in the server. Our server is hosted on Google clound. 
+- this is the screen where we prsent user the scoreboard. Scoreboard shows the top 100 players in the server. Our server is hosted on Google cloud. 
 - User can register an account with an username and a password where the username will be user's name in the rank. 
 - we do not use super secure encryption so make sure we are not using some actual passwords you would use in your daily life. 
 
