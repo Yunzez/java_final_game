@@ -1,6 +1,5 @@
 package com.finalproject.game.views;
 
-import com.badlogic.gdx.Game;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -12,8 +11,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,17 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -46,7 +39,6 @@ import com.finalproject.game.models.GameCharacter;
 import com.finalproject.game.models.Item;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BattleScreen implements Screen {
 
@@ -88,6 +80,8 @@ public class BattleScreen implements Screen {
     private Image characterImage;
     private Image monsterImage;
 
+    private boolean firstRound = false;
+
     public BattleScreen(FinalProjectGame game, GameCharacter playerCharacter, GameCharacter monster,
             GameScreen mapScreen, float baseSizeFactor) {
         this.game = game;
@@ -103,6 +97,7 @@ public class BattleScreen implements Screen {
             this.currentTurn = 0;
         } else {
             this.currentTurn = 1;
+            this.firstRound = true;
         }
         // Create an instance of your font generator
         FontGenerator fontGenerator = new FontGenerator("fonts/PixelGameFont.ttf");
@@ -244,7 +239,6 @@ public class BattleScreen implements Screen {
     @Override
     public void render(float delta) {
         // Render battle UI and handle user input
-
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
         camera.update();
@@ -255,6 +249,17 @@ public class BattleScreen implements Screen {
         // Add any other rendering here
 
         updateHealthIndicators();
+
+        // If the monster's speed is higher than the player's, the monster attacks first
+        // this only applies to the first round
+        if (currentTurn == 1 && firstRound) {
+            System.out.println("first round when monster speed is higher");
+            centerLabel.setText("Waiting for opponent...");
+            centerTable.setVisible(true);
+            delay(3, () -> performMonsterAttack());
+            currentTurn = 0;
+            firstRound = false;
+        }
 
         game.batch.end();
 

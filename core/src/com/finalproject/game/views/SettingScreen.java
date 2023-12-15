@@ -11,9 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class SettingScreen implements Screen {
@@ -51,15 +49,15 @@ public class SettingScreen implements Screen {
             }
         });
 
-         // Create a checkbox for music toggle
+        // Create a checkbox for music toggle
         final CheckBox tutorialCheckbox = new CheckBox(" show tutorial", skin);
         // Center the checkbox
 
-        tutorialCheckbox.setPosition(centerX, centerY-50);
+        tutorialCheckbox.setPosition(centerX, centerY - 50);
 
         tutorialCheckbox.setChecked(game.isTutorialEnabled()); // Set initial state based on game setting
 
-         tutorialCheckbox.addListener(new ClickListener() {
+        tutorialCheckbox.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 boolean isTutOn = tutorialCheckbox.isChecked();

@@ -2,8 +2,6 @@ package com.finalproject.game.views;
 
 import java.util.ArrayList;
 
-import org.w3c.dom.Text;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -185,12 +183,12 @@ public class TutorialScreen implements Screen {
 
     @Override
     public void pause() {
-       
+
     }
 
     @Override
     public void resume() {
-       
+
     }
 
     @Override

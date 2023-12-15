@@ -1,6 +1,5 @@
 package com.finalproject.game.views;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -8,19 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.finalproject.game.FinalProjectGame;
 import com.finalproject.game.components.GameButton;
@@ -59,7 +51,8 @@ public class WelcomeScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        // String[] buttonLabels = { "Start", "Scoreboard and Login","Settings", "Quit" };
+        // String[] buttonLabels = { "Start", "Scoreboard and Login","Settings", "Quit"
+        // };
         String[] buttonLabels = { "Start", "Settings", "Quit" };
         background = new Texture(Gdx.files.internal("backgrounds/welcomBackground.png"));
 
@@ -78,8 +71,8 @@ public class WelcomeScreen implements Screen {
                     }
 
                     // if ("Scoreboard and Login".equals(finalLabel)) {
-                    //     game.setScreen(new ScoreBoardScreen(game, new WelcomeScreen(game)));
-                    //     dispose();
+                    // game.setScreen(new ScoreBoardScreen(game, new WelcomeScreen(game)));
+                    // dispose();
                     // }
 
                     if ("Quit".equals(finalLabel)) {

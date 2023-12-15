@@ -190,9 +190,7 @@ public class GameCharacter {
     }
 
     public void setHealth(int health) {
-        if (health > maxHealth) {
-            this.health = maxHealth;
-        } else if (health < 0) {
+        if (health < 0) {
             this.health = 0;
         } else {
             this.health = health;
