@@ -143,6 +143,7 @@ public class LoadFromPreviousSavingScreen implements Screen {
                 if (selectedSaveCharacter != null) {
                     Gdx.app.log("TestButton", "Button clicked");
                     savedCharacters.remove(selectedSaveCharacter);
+                    selectedSaveCharacter = null;
                     displaySavedCharacters();
                     saveGame();
 

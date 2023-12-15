@@ -459,6 +459,10 @@ public class BattleScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     // This will get executed when the button is pressed down
                     // Here, you can issue the attack:
+                    if (currentTurn == 1) {
+                        System.out.println("not your turn");
+                        return true;
+                    }
                     issueAttack(currentAttack);
                     System.out.println("attack used");
                     return true; // Return true to indicate the event was handled
@@ -661,7 +665,7 @@ public class BattleScreen implements Screen {
                 message += "Monster got damange decrease from " + buff.getName() + " of " + buff.getMagnitude() + ".\n";
             }
 
-            if(buff.getType() == BuffType.DEFENSE){
+            if (buff.getType() == BuffType.DEFENSE) {
                 harmDeduction += buff.getMagnitude();
                 message += "You defend useing " + buff.getName() + " of " + buff.getMagnitude() + " Harm.\n";
             }
@@ -675,7 +679,7 @@ public class BattleScreen implements Screen {
                     + " but it does no damage.\n";
 
         } else {
-           message += (monster.getName() + " attacks you with " + monsterAttack.getName()
+            message += (monster.getName() + " attacks you with " + monsterAttack.getName()
                     + " causing " + monsterAttack.getHarm() + " damage");
         }
 
@@ -787,7 +791,7 @@ public class BattleScreen implements Screen {
 
             message = "You won! Gained 100 experience, level up!";
 
-            if (random.nextFloat() < 1) { //! 改爆率
+            if (random.nextFloat() < 1) { // ! 改爆率
                 // Select a random item
                 Item[] possibleItems = Item.values();
                 int randomItemIndex = random.nextInt(possibleItems.length);
