@@ -52,7 +52,7 @@ public class Buff {
         }
 
         public String toString() {
-            return name + " (" + type.toString() + "): " + magnitude + " for " + duration + " seconds";
+            return name + " (" + type.toString() + "): " + magnitude + " for " + duration + " rounds";
         }
     
         // Additional methods to handle the buff logic

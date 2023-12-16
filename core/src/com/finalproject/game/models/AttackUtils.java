@@ -11,7 +11,6 @@ public class AttackUtils {
 
     public static ArrayList<Attack> generateRandomAttacks(int numberOfAttacks, String name) {
         ArrayList<Attack> availableAttacks = Attack.getAttacksExcludingSpecial();
-        Collections.addAll(availableAttacks, Attack.values());
         ArrayList<Attack> assignedAttacks = new ArrayList<>();
 
         // Generate the random attacks
@@ -58,6 +57,8 @@ public class AttackUtils {
             default:
                 break;
         }
+
+        System.out.println( name + " assigned attacks: " + assignedAttacks.toString());
 
         return assignedAttacks;
     }
