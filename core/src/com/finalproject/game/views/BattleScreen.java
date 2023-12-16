@@ -553,7 +553,7 @@ public class BattleScreen implements Screen {
 
                         if (item.getCount() > 0) {
                             System.out.println("item used");
-                            Buff itemBuff = item.useItem();
+                            Buff itemBuff = new Buff(item.useItem());
                             if (itemBuff != null) {
                                 if (itemBuff.getType() == BuffType.MONSTER_DAMAGE) {
                                     monsterBuff.add(itemBuff);
@@ -566,11 +566,6 @@ public class BattleScreen implements Screen {
                             }
                             centerTable.setVisible(true);
                             centerLabel.setText("You used " + item.getItem().getName());
-                            // currentTurn = 1;
-                            // delay(1, () -> {
-                            // centerTable.setVisible(false);
-                            // performMonsterAttack();
-                            // });
                             itemDescription.setVisible(false);
                             updateItemTable(itemTable, itemDescription);
 
@@ -609,6 +604,7 @@ public class BattleScreen implements Screen {
     }
 
     public String applyPlayerBuff(ArrayList<Buff> buffList, GameCharacter character) {
+        System.out.println("Apply player buff" + buffList.toString());
         StringBuilder buffMessage = new StringBuilder();
 
         for (Buff buff : buffList) {
@@ -634,19 +630,17 @@ public class BattleScreen implements Screen {
         // Process monster buffs
         System.out.println(monsterBuff.toString() + "   " + playerBuff.toString());
         for (int i = monsterBuff.size() - 1; i >= 0; i--) {
-            System.out.println(monsterBuff);
             Buff buff = monsterBuff.get(i);
-            if (buff.getDuration() == 0) {
+            if (buff.getDuration() <= 0) {
                 monsterBuff.remove(i);
             }
-             buff.setDuration(buff.getDuration() - 1);
+            buff.setDuration(buff.getDuration() - 1);
         }
 
         // Process player buffs
         for (int i = playerBuff.size() - 1; i >= 0; i--) {
-            System.out.println(playerBuff);
             Buff buff = playerBuff.get(i);
-            if (buff.getDuration() == 0) {
+            if (buff.getDuration() <= 0) {
                 playerBuff.remove(i);
             }
             buff.setDuration(buff.getDuration() - 1);
@@ -673,6 +667,7 @@ public class BattleScreen implements Screen {
 
         int harmDeduction = 0;
         String message = "";
+        System.out.println("Applied monster buff" + monsterBuff.toString());
         for (Buff buff : monsterBuff) {
             if (buff.getType() == BuffType.MONSTER_DAMAGE) {
                 harmDeduction += buff.getMagnitude();
