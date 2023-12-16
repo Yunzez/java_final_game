@@ -32,10 +32,14 @@ public enum Attack {
     NO_TIME_TO_PEE("No Time To Pee", AttackType.SPECIAL_BEFF, 35,
             "Use the super short break interval to make the enemy have no time to pee!"),
 
-    HELICOPTER("Helicopter", AttackType.SPECIAL_KOUBEI, 35, "Use the helicopter to hit the enemy!"),
+    PORRIGE_PUNCH("Porridge Punch", AttackType.SPECIAL_SUN, 35, "Use the porridge to hit the enemy!"),
 
-    PORRIGE_PUNCH("Porridge Punch", AttackType.SPECIAL_SUN, 35, "Use the porridge to hit the enemy!");
+    DEVALUATION("Devaluation", AttackType.SPECIAL_BO, 35, "Use the personal attacks to Devaluating the enemy!"),
 
+    HELICOPTER_KICK("Helicopter Kick", AttackType.SPECIAL_KEUBE, 35, "Use the helicopter kick to hit the enemy!"),
+
+    MEME_SLAP("Meme Slap", AttackType.SPECIAL_MEME, 35, "Use the meme to hit the enemy!");
+    
     private final String name;
     private final AttackType type;
     private final int harm;

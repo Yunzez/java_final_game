@@ -17,7 +17,10 @@ public enum AttackType {
     SPECIAL_BO("Special", "A special attack that only Bob can use."),
     SPECIAL_BEFF("Special", "A special attack that only Beff can use."),
     SPECIAL_JEZO("Special", "A special attack that only Jezo can use."),
-    SPECIAL_KOUBEI("Special", "A special attack that only Koubei can use.");
+    SPECIAL_MEME("Special", "A special attack that only Meme Man can use" ),
+    SPECIAL_KEUBE("Special", "A special attack that only Keube can use" ),
+    SPECIAL_BOB("Special", "A special attack that only Bo Liu can use" );
+
 
     private final String name;
     private final String description;

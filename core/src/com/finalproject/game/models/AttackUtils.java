@@ -44,6 +44,17 @@ public class AttackUtils {
             case "Jezos Beffs":
                 assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_JEZO).get(0));
                 break;
+
+            case "Bo Liu":
+                assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_BO).get(0));
+                break;
+
+            case "Meme Man":
+                assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_MEME).get(0));
+                break;
+            case "Keube Icetea":
+                assignedAttacks.add(Attack.getAttacksByType(AttackType.SPECIAL_KEUBE).get(0));
+                break;
             default:
                 break;
         }
