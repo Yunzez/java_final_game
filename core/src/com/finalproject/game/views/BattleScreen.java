@@ -465,7 +465,7 @@ public class BattleScreen implements Screen {
                     // This will get executed when the button is pressed down
                     // Here, you can issue the attack:
                     if (currentTurn == 1) {
-                        System.out.println("not your turn");
+                        System.out.println("not your turn, can not attack");
                         return true;
                     }
                     issueAttack(currentAttack);
@@ -545,6 +545,12 @@ public class BattleScreen implements Screen {
                         // This will get executed when the button is pressed down
                         // Here, you can issue the item:
 
+                        // when it is not your turn, you can not use item
+                        if (currentTurn == 1) {
+                            System.out.println("not your turn, can not use item");
+                            return true;
+                        }
+
                         if (item.getCount() > 0) {
                             System.out.println("item used");
                             Buff itemBuff = item.useItem();
@@ -560,11 +566,11 @@ public class BattleScreen implements Screen {
                             }
                             centerTable.setVisible(true);
                             centerLabel.setText("You used " + item.getItem().getName());
-                            currentTurn = 1;
-                            delay(1, () -> {
-                                centerTable.setVisible(false);
-                                performMonsterAttack();
-                            });
+                            // currentTurn = 1;
+                            // delay(1, () -> {
+                            // centerTable.setVisible(false);
+                            // performMonsterAttack();
+                            // });
                             itemDescription.setVisible(false);
                             updateItemTable(itemTable, itemDescription);
 
@@ -627,6 +633,7 @@ public class BattleScreen implements Screen {
     public void processBuff(ArrayList<Buff> playerBuff, ArrayList<Buff> monsterBuff) {
         // Process monster buffs
         for (int i = monsterBuff.size() - 1; i >= 0; i--) {
+            System.out.println(monsterBuff);
             Buff buff = monsterBuff.get(i);
             buff.setDuration(buff.getDuration() - 1);
             if (buff.getDuration() == 0) {
@@ -636,6 +643,7 @@ public class BattleScreen implements Screen {
 
         // Process player buffs
         for (int i = playerBuff.size() - 1; i >= 0; i--) {
+            System.out.println(playerBuff);
             Buff buff = playerBuff.get(i);
             buff.setDuration(buff.getDuration() - 1);
             if (buff.getDuration() == 0) {
@@ -685,7 +693,7 @@ public class BattleScreen implements Screen {
 
         } else {
             message += (monster.getName() + " attacks you with " + monsterAttack.getName()
-                    + " causing " + monsterAttack.getHarm() + " damage");
+                    + " causing " + actualHarm + " damage");
         }
 
         activityLabel.setText(message);
