@@ -1,1 +1,259 @@
-[{"savingName":"666","id":12,"health":365,"maxHealth":365,"attack":231,"defense":237,"speed":20,"level":46,"name":"Relx Ding","imagePath":"charactors/dingzhen.png","monsterKilled":45,"points":5400,"attacks":[{"class":"com.finalproject.game.models.Attack","value":"SCOPE_CREEP"},{"class":"com.finalproject.game.models.Attack","value":"POWER_OF_LITANG"},{"class":"com.finalproject.game.models.Attack","value":"POWER_OF_LITANG"}],"inventory":[{"class":"com.finalproject.game.models.CharacterItem","item":"RELX_V5","count":10},{"class":"com.finalproject.game.models.CharacterItem","item":"SWORD_OF_TRUTH","count":7},{"class":"com.finalproject.game.models.CharacterItem","item":"DRAGONSCALE_ARMOR","count":7},{"class":"com.finalproject.game.models.CharacterItem","item":"ELIXIR_OF_HEALTH","count":13},{"class":"com.finalproject.game.models.CharacterItem","item":"BUTTBOOK","count":7},{"class":"com.finalproject.game.models.CharacterItem","item":"GIGITTY_GUN","count":15},{"class":"com.finalproject.game.models.CharacterItem","item":"BANANA_CAT","count":2}]},{"savingName":"222","id":13,"health":200,"maxHealth":200,"attack":60,"defense":60,"speed":10,"level":11,"name":"Mikado Sun","imagePath":"charactors/xiaochuan.png","monsterKilled":10,"points":1200,"attacks":[{"class":"com.finalproject.game.models.Attack","value":"MIXED_WORDS"},{"class":"com.finalproject.game.models.Attack","value":"OFF_KEY"},{"class":"com.finalproject.game.models.Attack","value":"AWKWARD_PAUSE"},{"class":"com.finalproject.game.models.Attack","value":"PORRIGE_PUNCH"}],"inventory":[{"class":"com.finalproject.game.models.CharacterItem","item":"RELX_V5","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"SWORD_OF_TRUTH","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"DRAGONSCALE_ARMOR","count":6},{"class":"com.finalproject.game.models.CharacterItem","item":"ELIXIR_OF_HEALTH","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"BUTTBOOK","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"GIGITTY_GUN","count":4},{"class":"com.finalproject.game.models.CharacterItem","item":"BANANA_CAT","count":1}]},{"savingName":"yaoshui","id":14,"health":190,"maxHealth":190,"attack":61,"defense":67,"speed":20,"level":12,"name":"Bo Liu","imagePath":"charactors/Medicine.png","monsterKilled":11,"points":1320,"attacks":[{"class":"com.finalproject.game.models.Attack","value":"BACKHANDED_COMPLIMENT"},{"class":"com.finalproject.game.models.Attack","value":"MEME_SLAP"},{"class":"com.finalproject.game.models.Attack","value":"OFF_KEY"},{"class":"com.finalproject.game.models.Attack","value":"DEVALUATION"}],"inventory":[{"class":"com.finalproject.game.models.CharacterItem","item":"RELX_V5","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"SWORD_OF_TRUTH","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"DRAGONSCALE_ARMOR","count":2},{"class":"com.finalproject.game.models.CharacterItem","item":"ELIXIR_OF_HEALTH","count":1},{"class":"com.finalproject.game.models.CharacterItem","item":"BUTTBOOK","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"GIGITTY_GUN","count":2},{"class":"com.finalproject.game.models.CharacterItem","item":"BANANA_CAT","count":4}]},{"savingName":"testDing","id":15,"health":80,"maxHealth":80,"attack":6,"defense":12,"speed":20,"level":1,"name":"Relx Ding","imagePath":"charactors/dingzhen.png","monsterKilled":0,"points":0,"attacks":[{"class":"com.finalproject.game.models.Attack","value":"AWKWARD_PAUSE"},{"class":"com.finalproject.game.models.Attack","value":"OFF_KEY"},{"class":"com.finalproject.game.models.Attack","value":"GROANER"},{"class":"com.finalproject.game.models.Attack","value":"POWER_OF_LITANG"}],"inventory":[{"class":"com.finalproject.game.models.CharacterItem","item":"RELX_V5","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"SWORD_OF_TRUTH","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"DRAGONSCALE_ARMOR","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"ELIXIR_OF_HEALTH","count":2},{"class":"com.finalproject.game.models.CharacterItem","item":"BUTTBOOK","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"GIGITTY_GUN","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"BANANA_CAT","count":0}]},{"savingName":"ding etst 2","id":16,"health":80,"maxHealth":80,"attack":6,"defense":12,"speed":20,"level":1,"name":"Relx Ding","imagePath":"charactors/dingzhen.png","monsterKilled":0,"points":0,"attacks":[{"class":"com.finalproject.game.models.Attack","value":"PEPE_SLAM"},{"class":"com.finalproject.game.models.Attack","value":"LITERAL_LAUNCH"},{"class":"com.finalproject.game.models.Attack","value":"SCOPE_CREEP"},{"class":"com.finalproject.game.models.Attack","value":"POWER_OF_LITANG"}],"inventory":[{"class":"com.finalproject.game.models.CharacterItem","item":"RELX_V5","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"SWORD_OF_TRUTH","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"DRAGONSCALE_ARMOR","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"ELIXIR_OF_HEALTH","count":2},{"class":"com.finalproject.game.models.CharacterItem","item":"BUTTBOOK","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"GIGITTY_GUN","count":0},{"class":"com.finalproject.game.models.CharacterItem","item":"BANANA_CAT","count":0}]}]
+[
+  {
+    "savingName": "111",
+    "id": 29,
+    "health": 150,
+    "maxHealth": 150,
+    "attack": 41,
+    "defense": 47,
+    "speed": 20,
+    "level": 8,
+    "name": "Mark Zucks",
+    "imagePath": "charactors/mark.png",
+    "monsterKilled": 7,
+    "points": 840,
+    "attacks": [
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "NO_TIME_TO_PEE"
+      },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "LITERAL_LAUNCH"
+      },
+      { "class": "com.finalproject.game.models.Attack", "value": "OFF_KEY" },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "PRIVACY_INVASION"
+      }
+    ],
+    "inventory": [
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "RELX_V5",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "SWORD_OF_TRUTH",
+        "count": 0
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "DRAGONSCALE_ARMOR",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "ELIXIR_OF_HEALTH",
+        "count": 2
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BUTTBOOK",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "GIGITTY_GUN",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BANANA_CAT",
+        "count": 2
+      }
+    ]
+  },
+  {
+    "savingName": "222",
+    "id": 30,
+    "health": 200,
+    "maxHealth": 200,
+    "attack": 60,
+    "defense": 60,
+    "speed": 10,
+    "level": 11,
+    "name": "Mikado Sun",
+    "imagePath": "charactors/xiaochuan.png",
+    "monsterKilled": 10,
+    "points": 1200,
+    "attacks": [
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "MIXED_WORDS"
+      },
+      { "class": "com.finalproject.game.models.Attack", "value": "OFF_KEY" },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "AWKWARD_PAUSE"
+      },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "PORRIGE_PUNCH"
+      }
+    ],
+    "inventory": [
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "RELX_V5",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "SWORD_OF_TRUTH",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "DRAGONSCALE_ARMOR",
+        "count": 6
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "ELIXIR_OF_HEALTH",
+        "count": 0
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BUTTBOOK",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "GIGITTY_GUN",
+        "count": 4
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BANANA_CAT",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "savingName": "yaoshui",
+    "id": 31,
+    "health": 190,
+    "maxHealth": 190,
+    "attack": 61,
+    "defense": 67,
+    "speed": 20,
+    "level": 12,
+    "name": "Bo Liu",
+    "imagePath": "charactors/Medicine.png",
+    "monsterKilled": 11,
+    "points": 1320,
+    "attacks": [
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "BACKHANDED_COMPLIMENT"
+      },
+      { "class": "com.finalproject.game.models.Attack", "value": "MEME_SLAP" },
+      { "class": "com.finalproject.game.models.Attack", "value": "OFF_KEY" },
+      { "class": "com.finalproject.game.models.Attack", "value": "DEVALUATION" }
+    ],
+    "inventory": [
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "RELX_V5",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "SWORD_OF_TRUTH",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "DRAGONSCALE_ARMOR",
+        "count": 2
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "ELIXIR_OF_HEALTH",
+        "count": 1
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BUTTBOOK",
+        "count": 0
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "GIGITTY_GUN",
+        "count": 2
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BANANA_CAT",
+        "count": 4
+      }
+    ]
+  },
+  {
+    "savingName": "666",
+    "id": 32,
+    "health": 475,
+    "maxHealth": 475,
+    "attack": 286,
+    "defense": 292,
+    "speed": 20,
+    "level": 57,
+    "name": "Relx Ding",
+    "imagePath": "charactors/dingzhen.png",
+    "monsterKilled": 56,
+    "points": 6720,
+    "attacks": [
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "SCOPE_CREEP"
+      },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "POWER_OF_LITANG"
+      },
+      {
+        "class": "com.finalproject.game.models.Attack",
+        "value": "POWER_OF_LITANG"
+      }
+    ],
+    "inventory": [
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "RELX_V5",
+        "count": 8
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "SWORD_OF_TRUTH",
+        "count": 9
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "DRAGONSCALE_ARMOR",
+        "count": 10
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "ELIXIR_OF_HEALTH",
+        "count": 10
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BUTTBOOK",
+        "count": 11
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "GIGITTY_GUN",
+        "count": 15
+      },
+      {
+        "class": "com.finalproject.game.models.CharacterItem",
+        "item": "BANANA_CAT",
+        "count": 4
+      }
+    ]
+  }
+]

@@ -631,7 +631,7 @@ public class BattleScreen implements Screen {
         System.out.println(monsterBuff.toString() + "   " + playerBuff.toString());
         for (int i = monsterBuff.size() - 1; i >= 0; i--) {
             Buff buff = monsterBuff.get(i);
-            if (buff.getDuration() <= 0) {
+            if (buff.getDuration() <= 1) {
                 monsterBuff.remove(i);
             }
             buff.setDuration(buff.getDuration() - 1);
@@ -640,7 +640,7 @@ public class BattleScreen implements Screen {
         // Process player buffs
         for (int i = playerBuff.size() - 1; i >= 0; i--) {
             Buff buff = playerBuff.get(i);
-            if (buff.getDuration() <= 0) {
+            if (buff.getDuration() <= 1) {
                 playerBuff.remove(i);
             }
             buff.setDuration(buff.getDuration() - 1);
