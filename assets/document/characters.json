@@ -52,7 +52,7 @@
     "level": 1,
     "name": "Beff Jezos",
     "imagePath": "charactors/beffs.png",
-    "lostImagePath": "charactors/beffs.png",
+    "lostImagePath": "charactors/jeffBezosLost.png",
     "description": "Beff is the twin of Jezos, they combined to be Jef Bezo, the richest man in the world. They split in the darkness when no one notices."
   },
   {
@@ -63,7 +63,7 @@
     "level": 1,
     "name": "Jezos Beffs",
     "imagePath": "charactors/jezos.png",
-    "lostImagePath": "charactors/beffs.png",
+    "lostImagePath": "charactors/jeffBezosLost.png",
     "description": "Jezos is the twin of Beff, they combined to be Jef Bezo, the richest man in the world, They split in the darkness when no one notices."
   },
   {
@@ -85,7 +85,7 @@
     "level": 1,
     "name": "Keube Icetea",
     "imagePath": "charactors/koubeIcetea.png",
-    "lostImagePath": "charactors/beffs.png",
+    "lostImagePath": "charactors/koubeIcetea_lost.png",
     "description": "Keube was the best helicopter pilot, until he crashed on a mountain since one of his passengers elbowed him. A mysterious man revivied him with the cost that he will lost his head and forever wear the ice tea shirt he was wearing when he died."
   }
 ]
