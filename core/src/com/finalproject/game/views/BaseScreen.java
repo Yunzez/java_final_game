@@ -221,14 +221,10 @@ public class BaseScreen implements Screen {
         // Calculate the new width to maintain the aspect ratio
         float newWidth = desiredHeight * aspectRatio;
 
-        // Calculate the scale factor based on the desired height
-        float scaleFactor = desiredHeight / originalHeight;
-
         // Now create the Decal with new dimensions
         characterImageDecal = Decal.newDecal(newWidth, desiredHeight, new TextureRegion(characterImage), true);
 
         characterImageDecal.setPosition(-185f, 360f, -450f);
-        // characterImageDecal.setScale(scaleFactor);
 
         instances.add(characterModel, roomModel, battleEntrance, treasureBox);
         instances.add(driveInstance, monitorInstance);
