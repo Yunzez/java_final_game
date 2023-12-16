@@ -38,7 +38,6 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
-
 public class ScoreBoardScreen implements Screen {
     private SpriteBatch spriteBatch;
     private BitmapFont font;
@@ -226,30 +225,43 @@ public class ScoreBoardScreen implements Screen {
             return;
         }
 
-        // add header
+        // Define column widths
+        float rankWidth = 90f; // Adjust as needed
+        float userIdWidth = 200f; // Adjust as needed
+        float nameWidth = 180f; // Adjust as needed
+        float pointsWidth = 140f; // Adjust as needed
+        float monsterKilledWidth = 200f; // Adjust as needed
+        float levelWidth = 120f; // Adjust as needed
+
+        // Header
         Table rowHeaderTable = new Table();
-        rowHeaderTable.add(new Label("Rank", labelStyle)).center().expandX().padRight(10);
-        rowHeaderTable.add(new Label("User Name", labelStyle)).center().expandX().padRight(10);
-        rowHeaderTable.add(new Label("Character", labelStyle)).center().expandX().padRight(10);
-        rowHeaderTable.add(new Label("Points", labelStyle)).center().expandX();
-        rowHeaderTable.add(new Label("Monster Killed", labelStyle)).center().expandX();
-        rowHeaderTable.add(new Label("Level", labelStyle)).center().expandX().padLeft(10);
-        // table.add(rowHeaderTable).expandX().fillX().top().padTop(0);
+        rowHeaderTable.add(new Label("Rank", labelStyle)).left().width(rankWidth);
+        rowHeaderTable.add(new Label("User Name", labelStyle)).left().width(userIdWidth);
+        rowHeaderTable.add(new Label("Character", labelStyle)).left().width(nameWidth);
+        rowHeaderTable.add(new Label("Points", labelStyle)).left().width(pointsWidth);
+        rowHeaderTable.add(new Label("Monster Killed", labelStyle)).left().width(monsterKilledWidth);
+        rowHeaderTable.add(new Label("Level", labelStyle)).left().width(levelWidth);
+        table.add(rowHeaderTable).fillX().top().padTop(0);
         table.row();
+
+        // Data Rows
         int count = 0;
         for (ScoreBoardEntry entry : entries) {
             count++;
             Table rowTable = new Table();
-            rowTable.add(new Label(String.valueOf(count) + ".", labelStyle)).center().expandX().padRight(10);
-            rowTable.add(new Label(entry.getUserId(), labelStyle)).center().expandX().padRight(10);
-            rowTable.add(new Label(entry.getName(), labelStyle)).center().expandX().padRight(10);
-            rowTable.add(new Label(String.valueOf(entry.getPoints()), labelStyle)).center().expandX();
-            rowTable.add(new Label(String.valueOf(entry.getMonsterKilled()), labelStyle)).center().expandX();
-            rowTable.add(new Label(String.valueOf(entry.getLevel()), labelStyle)).center().expandX().padLeft(10);
-            table.add(rowTable).expandX().fillX().top().padTop(0);
+            rowTable.add(new Label(String.valueOf(count) + ".", labelStyle)).center().width(rankWidth).padRight(10);
+            rowTable.add(new Label(entry.getUserId(), labelStyle)).center().width(userIdWidth).padRight(10);
+            rowTable.add(new Label(entry.getName(), labelStyle)).center().width(nameWidth).padRight(10);
+            rowTable.add(new Label(String.valueOf(entry.getPoints()), labelStyle)).center().width(pointsWidth);
+            rowTable.add(new Label(String.valueOf(entry.getMonsterKilled()), labelStyle)).center()
+                    .width(monsterKilledWidth);
+            rowTable.add(new Label(String.valueOf(entry.getLevel()), labelStyle)).center().width(levelWidth)
+                    .padLeft(10);
+            table.add(rowTable).fillX().top().padTop(0);
             table.row();
         }
 
+        table.top();
         // Create the scroll pane and add the table to it
         ScrollPane scrollPane = new ScrollPane(table);
         scrollPane.setScrollingDisabled(true, false); // Disable horizontal, enable vertical
@@ -334,7 +346,8 @@ public class ScoreBoardScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 boolean isPasswordMode = passwordField.isPasswordMode();
                 passwordField.setPasswordMode(!isPasswordMode); // Toggle password mode
-                passwordVisibilityButton.setText(isPasswordMode ? "Hide Password" : "Show Password"); // Toggle button text
+                passwordVisibilityButton.setText(isPasswordMode ? "Hide Password" : "Show Password"); // Toggle button
+                                                                                                      // text
             }
         });
         loginTable.add(passwordVisibilityButton).pad(10);
@@ -374,7 +387,8 @@ public class ScoreBoardScreen implements Screen {
                 }
                 if (!password.matches(passwordRegex)) {
                     Dialog dialog = new Dialog("Warning", finalSkin);
-                    dialog.text("Password must be 8-20 characters long and contain at least one uppercase letter, \none lowercase letter, one number and one special character. (@#$%^&+=)");
+                    dialog.text(
+                            "Password must be 8-20 characters long and contain at least one uppercase letter, \none lowercase letter, one number and one special character. (@#$%^&+=)");
                     dialog.button("OK");
                     dialog.show(finalStage);
                     return;
@@ -391,7 +405,8 @@ public class ScoreBoardScreen implements Screen {
                         final String response = httpResponse.getResultAsString();
                         final int status = httpResponse.getStatus().getStatusCode();
                         // Process the response here (e.g., parse JSON)
-                        // Since we're in a separate thread, use Gdx.app.postRunnable to interact with the UI
+                        // Since we're in a separate thread, use Gdx.app.postRunnable to interact with
+                        // the UI
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -426,7 +441,6 @@ public class ScoreBoardScreen implements Screen {
                     }
                 });
 
-
             }
         });
 
@@ -440,7 +454,7 @@ public class ScoreBoardScreen implements Screen {
                 // first verify the username and password
                 final String username = usernameField.getText();
                 String password = passwordField.getText();
-                final boolean[] isUserValid = new boolean[]{false};
+                final boolean[] isUserValid = new boolean[] { false };
                 // check if username and password are valid
                 Net.HttpRequest httpRequest = new Net.HttpRequest(Net.HttpMethods.POST);
                 httpRequest.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/user/login");
@@ -477,11 +491,12 @@ public class ScoreBoardScreen implements Screen {
                                 System.out.println("Checking if the user has already uploaded the score");
                                 final String[] userRecord = new String[1];
                                 Net.HttpRequest httpRequest2 = new Net.HttpRequest(Net.HttpMethods.GET);
-                                httpRequest2.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/"+username);
+                                httpRequest2
+                                        .setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records/user/" + username);
                                 httpRequest2.setHeader("Content-Type", "application/json");
                                 Gdx.net.sendHttpRequest(httpRequest2, new Net.HttpResponseListener() {
                                     @Override
-                                    public void handleHttpResponse(Net.HttpResponse httpResponse){
+                                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
                                         final String response = httpResponse.getResultAsString();
                                         final int status = httpResponse.getStatus().getStatusCode();
                                         Gdx.app.postRunnable(new Runnable() {
@@ -492,31 +507,36 @@ public class ScoreBoardScreen implements Screen {
                                                     userRecord[0] = response;
                                                 } else {
                                                     userRecord[0] = generateRecord(username);
-                                                    System.out.println("There is no matching userRecord, generate a new one");
+                                                    System.out.println(
+                                                            "There is no matching userRecord, generate a new one");
                                                 }
                                                 // Step 3:
                                                 // update the record
                                                 System.out.println("Updating the record");
-                                                // compare the current character with the record points, if not higher, then return
-                                                if (!isHigherScore(userRecord[0], currentCharacter)){
+                                                // compare the current character with the record points, if not higher,
+                                                // then return
+                                                if (!isHigherScore(userRecord[0], currentCharacter)) {
                                                     Dialog dialog = new Dialog("Warning", finalSkin);
-                                                    if (currentCharacter.getPoints() == 0){
+                                                    if (currentCharacter.getPoints() == 0) {
                                                         dialog.text("Your points is 0, no need to update");
-                                                    } else{
-                                                        dialog.text("Your points is not higher than your points in the database, no need to update");
+                                                    } else {
+                                                        dialog.text(
+                                                                "Your points is not higher than your points in the database, no need to update");
                                                     }
                                                     dialog.button("OK");
                                                     dialog.show(finalStage);
                                                     return;
                                                 }
-                                                System.out.println("Before updating"+userRecord[0]);
+                                                System.out.println("Before updating" + userRecord[0]);
                                                 userRecord[0] = updateRecord(userRecord[0], currentCharacter);
-                                                System.out.println("After updating"+userRecord[0]);
+                                                System.out.println("After updating" + userRecord[0]);
                                                 // Step 4:
                                                 // upload the record
                                                 System.out.println("Uploading the record");
-                                                Net.HttpRequest httpRequest3 = new Net.HttpRequest(Net.HttpMethods.POST);
-                                                httpRequest3.setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records");
+                                                Net.HttpRequest httpRequest3 = new Net.HttpRequest(
+                                                        Net.HttpMethods.POST);
+                                                httpRequest3
+                                                        .setUrl("https://spring-5m6ksrldgq-uc.a.run.app/api/records");
                                                 httpRequest3.setHeader("Content-Type", "application/json");
                                                 httpRequest3.setContent(userRecord[0]);
                                                 Gdx.net.sendHttpRequest(httpRequest3, new Net.HttpResponseListener() {
@@ -573,10 +593,10 @@ public class ScoreBoardScreen implements Screen {
                                     }
                                 });
 
-
                             }
                         });
                     }
+
                     @Override
                     public void failed(Throwable t) {
                         // Handle any errors here
@@ -590,11 +610,10 @@ public class ScoreBoardScreen implements Screen {
             }
         });
 
-
         return loginTable;
     }
 
-    private String generateRecord(String username){
+    private String generateRecord(String username) {
 
         ScoreBoardEntry newRecord = new ScoreBoardEntry();
         newRecord.setUserId(username);
@@ -617,7 +636,7 @@ public class ScoreBoardScreen implements Screen {
         return json.toJson(newRecord);
     }
 
-    private String updateRecord(String record, GameCharacter character){
+    private String updateRecord(String record, GameCharacter character) {
         Json json = new Json();
         json.setOutputType(OutputType.json);
         ScoreBoardEntry newRecord = json.fromJson(ScoreBoardEntry.class, record);
@@ -628,13 +647,13 @@ public class ScoreBoardScreen implements Screen {
         return json.toJson(newRecord);
     }
 
-    private boolean isHigherScore(String record, GameCharacter character){
-        if (character.getPoints() == 0){
+    private boolean isHigherScore(String record, GameCharacter character) {
+        if (character.getPoints() == 0) {
             return false;
         }
         Json json = new Json();
         ScoreBoardEntry newRecord = json.fromJson(ScoreBoardEntry.class, record);
-        if (newRecord.getPoints() <= character.getPoints()){
+        if (newRecord.getPoints() <= character.getPoints()) {
             return true;
         }
         return false;
