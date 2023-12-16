@@ -15,7 +15,7 @@ public enum Item {
     ELIXIR_OF_HEALTH(ItemType.POTION, "Elixir of Health", 20, "A rejuvenating potion that restores health of 20 hp.",
             "items/potion.png", new Buff("Elixir", BuffType.HEALTH, 20, 1)),
     BUTTBOOK(ItemType.WEAPON, "Buttbook", 40,
-            "A weapon that can make you lost all your personal data, give opponent +20 damanges for next 2 rounds.",
+            "A weapon that can make opponent lost all their personal data, +20 damanges for next 2 rounds.",
             "items/buttbook.png",
             new Buff("Buttbook", BuffType.PLAYER_DAMAGE, 20, 2)),
     BANANA_CAT(ItemType.POTION, "Banana Cat", 50,

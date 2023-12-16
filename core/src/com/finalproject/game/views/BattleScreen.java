@@ -674,7 +674,10 @@ public class BattleScreen implements Screen {
                 message += "Monster got damange decrease from " + buff.getName() + " of " + buff.getMagnitude() + ".\n";
             }
 
-            if (buff.getType() == BuffType.DEFENSE) {
+        }
+
+        for (Buff buff: playerBuff) {
+              if (buff.getType() == BuffType.DEFENSE) {
                 harmDeduction += buff.getMagnitude();
                 message += "You defend useing " + buff.getName() + " of " + buff.getMagnitude() + " Harm.\n";
             }
