@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -82,6 +83,11 @@ public class BaseScreen implements Screen {
     private Stage baseStage;
     private Stage currentStage;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+    Label healthLabel;
+    Label levelLabel;
+    Label monsterKilledLabel;
+    Label pointsLabel;
 
     // * loading utils
     private Label loadingLabel;
@@ -280,6 +286,27 @@ public class BaseScreen implements Screen {
         // assets.load("models/campfire/campfire.g3db", Model.class);
         assets.load("models/drive/drive.g3db", Model.class);
         assets.load("models/monitor/monitor.g3db", Model.class);
+
+        Label.LabelStyle gameFont = new Label.LabelStyle(game.font, Color.WHITE);
+        healthLabel = new Label(
+                "Health: " + selectedCharacter.getCurrentHealth() + "/" + selectedCharacter.getMaxHealth(), gameFont);
+        levelLabel = new Label("Level: " + selectedCharacter.getLevel(), gameFont);
+        monsterKilledLabel = new Label("Monsters killed: " + selectedCharacter.getMonsterKilled(), gameFont);
+        pointsLabel = new Label("Points: " + selectedCharacter.getPoints(), gameFont);
+
+        Table statusBarTable = new Table();
+        statusBarTable.bottom().left();
+        Texture statusBarBackground = new Texture(Gdx.files.internal("backgrounds/battleBottomTab.png"));
+        statusBarTable.setBackground(new Image(statusBarBackground).getDrawable());
+        statusBarTable.setBounds(0, -10, Gdx.graphics.getWidth(), 120);
+
+        statusBarTable.add(healthLabel).pad(14);
+        statusBarTable.add(levelLabel).pad(14);
+        statusBarTable.add(monsterKilledLabel).pad(14);
+        statusBarTable.add(pointsLabel).pad(14);
+        System.out.println("Character: " + selectedCharacter.getName());
+        baseStage.addActor(statusBarTable);
+
     }
 
     private void showLoadingMessage(float delta) {
@@ -365,8 +392,11 @@ public class BaseScreen implements Screen {
 
         shapeRenderer.end();
 
+        currentStage.act(delta);
+        currentStage.draw();
+
         // Re-enable depth test if needed elsewhere
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        // Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
     }
 
     private void drawBoundingBox(ShapeRenderer shapeRenderer, BoundingBox box, Color color) {

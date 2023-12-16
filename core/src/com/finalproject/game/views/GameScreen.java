@@ -124,7 +124,7 @@ public class GameScreen implements Screen {
         pointsLabel = new Label("Points: " + currentCharacter.getPoints(), gameFont);
         gameLevelLabel = new Label("Game Level: " + currentGameLevel + "/" + maxGameLevel, gameFont);
         // Create and add the Inventory button
-        TextButton inventoryButton = GameButton.createButton("Inventory", game.font);
+        TextButton inventoryButton = GameButton.createButton("  Inventory  ", game.font);
         inventoryButton.setSize(240, 50);
         inventoryButton.addListener(new ClickListener() {
             @Override

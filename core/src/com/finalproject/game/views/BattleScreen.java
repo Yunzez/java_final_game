@@ -337,7 +337,7 @@ public class BattleScreen implements Screen {
         topTable.add(monsterBuffContainer).right().width(hpBarWidth).padTop(10).height(80); // Use expand() and right()
                                                                                             // for
         // alignment
-        topTable.setDebug(true);
+        topTable.setDebug(false);
         topContainerWrapper.setActor(topTable);
         stage.addActor(topContainerWrapper);
     }
