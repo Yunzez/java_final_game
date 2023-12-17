@@ -12,7 +12,8 @@
       "XstartOnFirstThread"
     ],
     "resources": [
-      "assets"
+      "assets",
+      "document"
     ],
     "minimizeJre": "soft",
     "output": "FinalGame-mac"

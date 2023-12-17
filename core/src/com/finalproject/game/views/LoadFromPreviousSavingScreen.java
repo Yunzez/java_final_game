@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -359,11 +360,14 @@ public class LoadFromPreviousSavingScreen implements Screen {
 
         // Write to file
         try {
-            String jsonFileName = "assets/document/savedCharacters.json";
-            if (!Gdx.files.local(jsonFileName).exists()) {
+            String jsonFileName = "document/savedCharacters.json";
+            FileHandle fileHandle = Gdx.files.local(jsonFileName);
+            System.out.println("Attempting to save to: " + fileHandle.file().getAbsolutePath());
+            if (!fileHandle.exists() || !fileHandle.file().canWrite()) {
                 System.out.println("File not found" + Gdx.files.local(jsonFileName).file().getAbsolutePath());
                 jsonFileName = "document/savedCharacters.json";
             }
+
             FileWriter writer = new FileWriter(Gdx.files.local(jsonFileName).file());
             writer.write(jsonString);
             writer.close();
@@ -382,13 +386,13 @@ public class LoadFromPreviousSavingScreen implements Screen {
 
         try {
             String jsonFileName = "document/savedCharacters.json";
-            if (!Gdx.files.internal("document/savedCharacters.json").exists()) {
+            if (!Gdx.files.local("document/savedCharacters.json").exists()) {
                 System.out.println(
                         "File not found"
-                                + Gdx.files.internal("document/savedCharacters.json").file().getAbsolutePath());
+                                + Gdx.files.local("document/savedCharacters.json").file().getAbsolutePath());
                 jsonFileName = "assets/document/savedCharacters.json";
             }
-            base = jsonReader.parse(Gdx.files.internal(jsonFileName));
+            base = jsonReader.parse(Gdx.files.local(jsonFileName));
         } catch (Exception e) {
             base = null; // File not found or error in reading
         }
@@ -494,10 +498,9 @@ public class LoadFromPreviousSavingScreen implements Screen {
         scrollPane.setPosition(stage.getWidth() * 0.1f, stage.getHeight() * 0.17f);
         scrollPane.setScrollingDisabled(true, false); // Disable horizontal scrolling
         scrollPane.toBack();
-        scrollPane.setDebug(true);
+        scrollPane.setDebug(false);
         stage.addActor(scrollPane);
 
-        parentTable.setFillParent(true);
         for (UserGameCharacters character : savedCharacters) {
 
             Table characterTable = new Table();
