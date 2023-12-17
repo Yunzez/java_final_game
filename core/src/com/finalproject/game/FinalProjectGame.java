@@ -43,6 +43,13 @@ public class FinalProjectGame extends Game {
 
 	}
 
+	public void refreshCharacterList() {
+		characterList.clear();
+		loadCharactersFromJson();
+	}
+
+
+
 	private void loadCharactersFromJson() {
 		JsonReader jsonReader = new JsonReader();
 		JsonValue base = jsonReader.parse(Gdx.files.internal("document/characters.json"));

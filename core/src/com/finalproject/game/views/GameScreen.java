@@ -194,6 +194,7 @@ public class GameScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 isSettingsOpen = false;
                 game.setScreen(new WelcomeScreen(game));
+                game.refreshCharacterList();
                 dispose();
             }
         });
