@@ -2,6 +2,7 @@
 
 
 [Download here](https://github.com/Yunzez/java_final_game/releases)
+
 [Demo of the game](https://drive.google.com/file/d/1ZqTbnSG492zKymKS702Zx6LidNqyazQp/view?usp=sharing)
 
 **Basic Information:**
