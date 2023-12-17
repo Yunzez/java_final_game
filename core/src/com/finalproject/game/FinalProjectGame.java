@@ -24,7 +24,7 @@ public class FinalProjectGame extends Game {
 	public BitmapFont font;
 	Music gameMusic;
 	public Boolean showTutorial = true;
-	private boolean musicEnabled = true;
+	private boolean musicEnabled = false;
 	private ArrayList<GameCharacter> characterList = new ArrayList<GameCharacter>();
 
 	@Override
