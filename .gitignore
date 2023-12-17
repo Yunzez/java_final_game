@@ -117,3 +117,7 @@ Thumbs.db
 
 ## fbx-conv
 /fbx-conv-mac/
+myKeyStore.jks
+jdk*
+FinalGame-*
+```

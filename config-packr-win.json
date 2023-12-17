@@ -1,0 +1,20 @@
+{
+    "platform": "windows64",
+    "jdk": "/Users/yunzezhao/Code/finalProjectGame/jdk-21_macos-x64_bin.tar.gz",
+    "executable": "MemeVilliage",
+    "classpath": [
+      "/Users/yunzezhao/Code/finalProjectGame/desktop/build/libs/desktop-1.0.jar",
+      "/Users/yunzezhao/Code/finalProjectGame/core/build/libs/core-1.0.jar"
+    ],
+    "mainclass": "com.finalproject.game.DesktopLauncher",
+
+    "vmArgs": [
+      "XstartOnFirstThread"
+    ],
+    "resources": [
+      "assets"
+    ],
+    "minimizeJre": "soft",
+    "output": "FinalGame-win"
+  }
+  

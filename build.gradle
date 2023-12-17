@@ -10,6 +10,7 @@ buildscript {
         
 
     }
+
 }
 
 allprojects {
@@ -39,7 +40,24 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java-library"
-    
+
+     jar {
+        // Set the duplicates strategy
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+        // Include contents from runtime classpath
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+
+        // Exclude signature files
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+        // Configure the manifest if needed
+        manifest {
+            attributes 'Main-Class': 'com.finalproject.game.DesktopLauncher'
+        }
+    }
 
     dependencies {
         implementation project(":core")
@@ -53,6 +71,23 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java-library"
 
+    jar {
+        // Set the duplicates strategy
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+        // Include contents from runtime classpath
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+
+        // Exclude signature files
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+        // Configure the manifest if needed
+        manifest {
+            attributes 'Main-Class': 'com.finalproject.game.FinalProjectGame'
+        }
+    }
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
