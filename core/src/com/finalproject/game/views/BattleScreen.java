@@ -116,7 +116,7 @@ public class BattleScreen implements Screen {
         float tableHeight = Gdx.graphics.getHeight() * 0.2f;
         centerTable.setSize(tableWidth, tableHeight);
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/infotable_bg.png"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/Infotable_bg.png"));
         TextureRegion region = new TextureRegion(backgroundTexture);
         Drawable backgroundDrawable = new TextureRegionDrawable(region);
         backgroundDrawable.setMinWidth(tableWidth);
@@ -378,7 +378,7 @@ public class BattleScreen implements Screen {
 
         // Set a maximum size for the tooltip table
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/infotable_bg.png"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("backgrounds/Infotable_bg.png"));
         TextureRegion region = new TextureRegion(backgroundTexture);
         Drawable backgroundDrawable = new TextureRegionDrawable(region);
         float tableMaxWidth = Gdx.graphics.getWidth() * 0.4f;
