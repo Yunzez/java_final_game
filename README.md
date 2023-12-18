@@ -3,6 +3,7 @@
 
 [Download here](https://github.com/Yunzez/java_final_game/releases)
 
+[Demo of the game](https://drive.google.com/file/d/1ZqTbnSG492zKymKS702Zx6LidNqyazQp/view?usp=sharing)
 
 **Basic Information:**
 This project is a 2D RPG game program designed based on libGDX API. Players could choose up to 8 different characters to make an exciting adventure. This program is supported to execute in Visual Studio Code under Windows and MacOSX. 
